@@ -1,0 +1,83 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 6rem;
+    padding-right: 6rem;
+    height: 80px;
+    background-color: #18181b; /* zinc-900 */
+  }
+  
+  .logo {
+    height: 100px;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .nav-link {
+    font-size: 1rem;
+    color: #d6d3d1; /* stone-300 */
+    text-decoration: none;
+  }
+  .nav-link:hover{
+    border-bottom: solid 1px white;
+  }
+  .login-btn {
+    padding: 0 1.25rem;
+    height: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3d2c1d; /* yellow-900 */
+    background-color: #facc15; /* yellow-400 */
+    border: none;
+    cursor: pointer;
+  }
+  .login-btn:hover{
+    background-color: white;
+  }
+  
+  /* Media queries para responsive */
+  
+  @media (max-width: 768px) {
+    .header {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  
+    .nav {
+      gap: 1.25rem;
+    }
+  
+    .nav-link,
+    .login-btn {
+      font-size: 0.875rem;
+    }
+  
+    .login-btn {
+      padding: 0 1rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .header {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+  
+    .logo {
+      flex-grow: 1;
+    }
+  
+    .nav {
+      display: none;
+    }
+  
+    .login-btn {
+      padding: 0 0.625rem;
+    }
+  }
+  

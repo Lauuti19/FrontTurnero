@@ -1,0 +1,103 @@
+.drakkar-hero {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 4rem 0;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    background-color: #18181b; /* zinc-900 */
+    max-width: 1440px;
+    box-sizing: border-box;
+  }
+  
+  .hero-content {
+    margin-left: 7rem;
+    width: 786px;
+  }
+  
+  .hero-title {
+    margin-bottom: 1.25rem;
+    font-size: 5rem;
+    font-weight: bold;
+    line-height: 1;
+    color: white;
+  }
+  
+  .hero-subtitle {
+    margin-bottom: 2rem;
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.25;
+    color: #f59e0b; /* amber-400 */
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #a8a29e; /* stone-500 */
+  }
+  
+  .hero-image-wrapper {
+    width: 320px;
+    height: 520px;
+    background-color: #f59e0b; /* fondo amarillo */
+    position: relative;
+    overflow: visible; /* permite que la imagen sobresalga */
+    margin-right: 7rem;
+  }
+  
+  .hero-image {
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    width: 380px; /* más grande que el wrapper */
+    height: 580px;
+    object-fit: cover;
+  }
+  
+  
+  /* Responsive */
+  @media (max-width: 991px) {
+    .drakkar-hero {
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 0;
+      max-width: 991px;
+    }
+  
+    .hero-content {
+      margin: 0 0 2.5rem 0;
+      width: 90%;
+    }
+  
+    .hero-image {
+      margin: 0;
+      width: 80%;
+      height: auto;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .drakkar-hero {
+      max-width: 100%;
+    }
+  
+    .hero-title {
+      font-size: 3.75rem;
+    }
+  
+    .hero-subtitle {
+      font-size: 1.875rem;
+    }
+  
+    .hero-description {
+      font-size: 0.875rem;
+    }
+  
+    .hero-image {
+      width: 100%;
+    }
+  }
+  
