@@ -1,0 +1,67 @@
+.register-user-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #18181b;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .register-user-box {
+    background-color: #27272a;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+    width: 100%;
+    color: white;
+  }
+  
+  .register-user-title {
+    font-size: 2rem;
+    font-family: 'Brigends';
+    text-align: center;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05rem;
+  }
+  
+  .register-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .register-user-form input,
+  .register-user-form select {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #3f3f46;
+    color: white;
+  }
+  
+  .register-user-form select:focus,
+  .register-user-form input:focus {
+    outline: 2px solid #fbf106;
+  }
+  
+  .register-user-btn {
+    margin-top: 1rem;
+    background-color: #fbf106;
+    color: #1f1d1b;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-user-btn:hover {
+    background-color: #e6db04;
+  }
+  

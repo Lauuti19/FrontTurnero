@@ -14,7 +14,7 @@ const LoginPage = () => {
     password: ""
   });
 
-  const navigate = useNavigate(); // ⬅️ para redirigir
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +57,6 @@ const LoginPage = () => {
         if (response.ok) {
           localStorage.setItem("token", data.token);
 
-          // Obtener perfil
           const perfilRes = await fetch("http://localhost:3001/api/auth/perfil", {
             headers: {
               Authorization: `Bearer ${data.token}`
@@ -67,7 +66,6 @@ const LoginPage = () => {
           const perfilData = await perfilRes.json();
           const id_rol = perfilData.usuario.id_rol;
 
-          // Redireccionar según rol
           switch (id_rol) {
             case 1:
               navigate("/admin");
@@ -105,7 +103,7 @@ const LoginPage = () => {
         <div className="form-content">
           <h2 className="TituloLogin">{isRegistering ? "Registrarse" : "Iniciar Sesión"}</h2>
           
-          {/* Solo mostrar "nombre" si es registro */}
+          
           {isRegistering && (
             <input
               type="text"
@@ -116,7 +114,6 @@ const LoginPage = () => {
             />
           )}
 
-          {/* Campos comunes para login y registro */}
           <input
             type="email"
             name="email"
