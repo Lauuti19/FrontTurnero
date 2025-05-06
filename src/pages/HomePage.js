@@ -1,4 +1,3 @@
-import Header from "../components/Header.js"
 import MujerMain from '../assets/MujerMain.png'
 import LogoNuevo from '../assets/DrakkarMejor.png';
 import '../styles/HomeHero.css';
