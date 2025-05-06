@@ -1,7 +1,7 @@
 import { useState } from "react";
 import '../styles/Login.css'
 import loginImage from "../assets/login-image.jpg";
-import registerImage from "../assets/register-image.jpeg";
+import registerImage from "../assets/register-image.jpg";
 
 const LoginPage = () => {
     const [isRegistering, setIsRegistering] = useState(false);
@@ -53,7 +53,7 @@ const LoginPage = () => {
           </div>
           <div className="form-box">
             <div className="form-content">
-              <h2>{isRegistering ? "Registrarse" : "Iniciar Sesión"}</h2>
+              <h2 className="TituloLogin">{isRegistering ? "Registrarse" : "Iniciar Sesión"}</h2>
               <input type="text" name="nombre" placeholder="Usuario" value={formData.nombre} onChange={handleChange} />
               {isRegistering && (
                 <>

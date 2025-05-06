@@ -2,26 +2,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 6rem;
-    padding-right: 6rem;
     height: 80px;
-    background-color: #18181b; /* zinc-900 */
+    margin: 0 auto;
+    width: 100%;
+    background-color: #18181b;  
   }
   
   .logo {
     height: 100px;
   }
-  
   .nav {
     display: flex;
     gap: 2rem;
     align-items: center;
-  }
-  
+    text-transform: uppercase;
+    margin: 0 auto;
+}
+
   .nav-link {
     font-size: 1rem;
     color: #d6d3d1; /* stone-300 */
     text-decoration: none;
+    padding: 0 1.25rem;
   }
   .nav-link:hover{
     border-bottom: solid 1px white;
@@ -30,14 +32,17 @@
     padding: 0 1.25rem;
     height: 40px;
     font-size: 1rem;
-    font-weight: 600;
-    color: #3d2c1d; /* yellow-900 */
-    background-color: #facc15; /* yellow-400 */
+    color: #3d2c1d;
+    background-color: white;
     border: none;
     cursor: pointer;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    
   }
   .login-btn:hover{
-    background-color: white;
+    
+    background-color: #fbf106;
   }
   
   /* Media queries para responsive */

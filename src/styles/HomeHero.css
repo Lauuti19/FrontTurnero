@@ -19,7 +19,7 @@
   
   .hero-title {
     margin-bottom: 1.25rem;
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: bold;
     line-height: 1;
     color: white;
@@ -27,10 +27,10 @@
   
   .hero-subtitle {
     margin-bottom: 2rem;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: bold;
     line-height: 1.25;
-    color: #f59e0b; /* amber-400 */
+    color: #fbf106; 
   }
   
   .hero-description {
@@ -40,9 +40,9 @@
   }
   
   .hero-image-wrapper {
-    width: 320px;
-    height: 520px;
-    background-color: #f59e0b; /* fondo amarillo */
+    width: 340px;
+    height: 530px;
+    background-color: #fbf106; /* fondo amarillo */
     position: relative;
     overflow: visible; /* permite que la imagen sobresalga */
     margin-right: 7rem;
@@ -50,11 +50,13 @@
   
   .hero-image {
     position: absolute;
-    top: -20px;
-    left: -30px;
+    top: -60px;
+    left: -20px;
     width: 380px; /* más grande que el wrapper */
-    height: 580px;
+    height: 590px;
     object-fit: cover;
+    mask-image: linear-gradient(black 80%, transparent);
+
   }
   
   

@@ -11,15 +11,16 @@
   }
   
   .auth-container.registering {
-    background-color: #facc15;
+    background-color: #fbf106;
+    width: 100%;
   }
   
   .image-background {
     position: absolute;
-    top: 0;
+    top: 40;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 80%;
     overflow: hidden;
     z-index: 0;
   }
@@ -27,26 +28,35 @@
   .background-img {
     position: absolute;
     top: 0;
-    height: 100vh;
-    width: 50%;
+    height: 80vh;
+    width: 60%;
     object-fit: cover;
     transition: transform 0.6s ease, opacity 0.6s ease;
     opacity: 0.8;
     border-radius: 0;
+    object-position: 90% 75%; 
+  }
+  .background-video {
+    width: 70%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   
   .auth-container .background-img {
     left: 0;
   }
-  
   .auth-container.registering .background-img {
-    transform: translateX(100%);
+    transform: translateX(60%);
   }
   
   .form-box {
     position: relative;
     z-index: 1;
     width: 90%;
+    min-height: 70vh;
     max-width: 450px;
     padding: 2.5rem 3rem;
     background-color: #27272a;
@@ -73,14 +83,18 @@
     color: #18181b;
   }
   
-  .form-content h2 {
+  .TituloLogin {
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.3rem;
+    font-family: 'Brigends';
+    font-weight: lighter;
+    letter-spacing: 0.1rem;
   }
   
   input {
     padding: 0.75rem;
     font-size: 1rem;
+    height: 25px;
     border: none;
     border-radius: 4px;
     background-color: #3f3f46;
@@ -101,8 +115,12 @@
   }
   
   .btn.primary {
-    background-color: #facc15;
+    background-color: #fbf106;
     color: #1f1d1b;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    
   }
   
   .btn.link {
