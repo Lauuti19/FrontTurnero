@@ -1,0 +1,138 @@
+/* CTA Button */
+.cta-button {
+    padding: 1rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid #d6d3d1;
+    color: #000000;
+    cursor: pointer;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .cta-button:hover {
+    background-color: #fbf106;
+    color: #0c0a09;
+    border: 1px solid #fbf106;
+  }
+  
+  .services-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  #first-data{
+    width: 40vw;
+  }
+  #second-data{
+    padding-right: 7rem;
+    width: 35vw;
+  }
+  
+  .discover-services,
+  .trainer-showcase,
+  .group-classes-section {
+    min-height: 80vh;
+  }
+  
+  /* Discover Services */
+  .discover-services {
+    background-color: #0f0e0e;
+    height: 80vh;
+    width: 80vw;
+  }
+  /* Section Article */
+  .section-article {
+    max-width: 50vw;
+    margin: 0 auto;
+  }
+  #second-data{
+    padding-top: 2.5rem;;
+  }
+  .section-subtitle {
+    margin-top:3rem;
+    margin-bottom: 2.25rem;
+    font-size: 2.25rem;
+    font-weight: 500;
+    color: #fbf106;
+    width: 50vw;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-weight: lighter;
+  }
+  
+  .section-title {
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+    color: white;
+  }
+  
+  .section-text {
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.75rem;
+    color: #a1a1aa;
+  }
+  
+  /* Trainer Showcase */
+  .trainer-showcase {
+    display: flex;
+    justify-content: center;
+    background-color: #fbf106;
+    height: 80vh;
+  }
+  
+  .trainer-video {
+    object-fit: cover;
+    height: 80vh;
+    width: 600px;
+    filter: brightness(0.6);
+  }
+  #video2 {
+    object-position: right center; /* O por ejemplo: 80% center */
+  }
+  
+  
+  /* Group Classes */
+  .group-classes-section {
+    width: 100%;
+    background-color: #292524;
+    height: 80vh;
+  }
+  
+  .group-title {
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+    color: white;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-weight: lighter;
+    display: flex;
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+  }
+  #Barra{font-family: Arial, Helvetica, sans-serif;}
+  
+  .group-subtitle {
+    font-size: 2.25rem;
+    font-weight: 500;
+    color: #fbf106;
+    width: 40vw;
+  }
+  
+
+  

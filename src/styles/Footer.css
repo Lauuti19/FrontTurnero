@@ -1,0 +1,41 @@
+.footer{
+    background-color: #070707;
+    display: flex;
+    height: 300px;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+.Contenedor-Footer{
+    height: 150px;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+.Contenedor-Footer a{
+    padding: 5px;
+    font-size: 12px;
+    color: #4b4b4e;
+    text-decoration: none;
+}
+.Contenedor-Footer h3{
+    padding: 5px;
+    color: #4b4b4e;
+    margin-bottom: -5px;
+    font-size: 15px;
+}
+.TextoLogo{
+    margin: 0px;
+    font-weight: lighter;
+    color: #4b4b4e;
+}
+.Logo-img{
+    height: 80px;
+    width: 100px;
+    filter: opacity(0.4);
+}
+#logo-cont{
+    justify-content: center;
+    align-items: center;
+}

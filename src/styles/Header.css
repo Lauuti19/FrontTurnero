@@ -28,22 +28,6 @@
   .nav-link:hover{
     border-bottom: solid 1px white;
   }
-  .login-btn {
-    padding: 0 1.25rem;
-    height: 40px;
-    font-size: 1rem;
-    color: #3d2c1d;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    font-family: 'Phonk';
-    text-transform: uppercase;
-    
-  }
-  .login-btn:hover{
-    
-    background-color: #fbf106;
-  }
   
   /* Media queries para responsive */
   
@@ -55,15 +39,6 @@
   
     .nav {
       gap: 1.25rem;
-    }
-  
-    .nav-link,
-    .login-btn {
-      font-size: 0.875rem;
-    }
-  
-    .login-btn {
-      padding: 0 1rem;
     }
   }
   
@@ -81,8 +56,5 @@
       display: none;
     }
   
-    .login-btn {
-      padding: 0 0.625rem;
-    }
   }
   

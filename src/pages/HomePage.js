@@ -1,5 +1,6 @@
 import MujerMain from '../assets/MujerMain.png'
 import LogoNuevo from '../assets/DrakkarMejor.png';
+import HomeSection2 from '../components/HomeSection2';
 import '../styles/HomeHero.css';
 
 const HomePage = () => {
@@ -8,7 +9,7 @@ const HomePage = () => {
         <section className="drakkar-hero">
             <div className="hero-content">
                 <h1 className="hero-title">Bienvenido a</h1>
-                <img className="logo" src={LogoNuevo}></img>
+                <img className="logo" src={LogoNuevo} alt=''></img>
                 <h2 className="hero-subtitle">Descubre nuestras disciplinas</h2>
                 <p className="hero-description">
                 En Drakkar nos especializamos en ofrecer programas de entrenamiento en
@@ -25,6 +26,7 @@ const HomePage = () => {
 </div>
 
             </section>
+            <HomeSection2></HomeSection2>
         </div>
 )
 }
