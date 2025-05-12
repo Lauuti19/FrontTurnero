@@ -2,6 +2,9 @@ import React from "react";
 import "../styles/HomeSection2.css";
 import EntrenamientoVideo1 from '../assets/login.MOV';
 import EntrenamientoVideo2 from '../assets/Ejemplo2.MOV';
+//<p className="hero-description">
+//Además de nuestras clases grupales, ofrecemos horarios flexibles con modalidad Open Box, donde podrás entrenar fuera de las clases y utilizar libremente los elementos del gimnasio para diseñar tu propia rutina. Mejora tu fuerza, resistencia y movilidad a tu ritmo y de una manera divertida y efectiva.
+//</p>
 
 import CTAButton from "./CTAButton";
 
@@ -70,6 +73,39 @@ const ImageShow2 = () => {
     </section>
   );
 };
+const OpenBoxSection = () => {
+  return (
+    <section className="openbox-section">
+      <article className="open-article" id="third-data">
+      <h2 className="open-title">Horarios flexibles</h2>
+        <h3 className="open-subtitle">Open Box</h3>
+        <p className="open-section-text">
+        Además de nuestras clases grupales, ofrecemos horarios flexibles con modalidad 
+        Open Box, donde podrás entrenar fuera de las clases y utilizar libremente los 
+        elementos del gimnasio para diseñar tu propia rutina. Mejora tu fuerza, resistencia 
+        y movilidad a tu ritmo y de una manera divertida y efectiva.
+        </p>
+        <CTAButton text="Reserva tu lugar" />
+      </article>
+    </section>
+  );
+};
+
+const OpenBoxImg = () => {
+  return (
+    <section className="open-showcase">
+      <video
+        className="open-video"
+        id="video3"
+        src={EntrenamientoVideo2}
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+    </section>
+  );
+};
 
 
 const HomeSection2 = () => {
@@ -82,6 +118,10 @@ const HomeSection2 = () => {
       <div className="row">
         <ImageShow2 />
         <GroupClassesSection />
+      </div>
+      <div className="row">
+        <OpenBoxSection />
+        <OpenBoxImg />
       </div>
     </main>
   );

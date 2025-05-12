@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
 
 const LoginPage = () => {
+  const { login } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
@@ -64,6 +66,10 @@ const LoginPage = () => {
           });
 
           const perfilData = await perfilRes.json();
+
+          login(perfilData.usuario);
+
+
           const id_rol = perfilData.usuario.id_rol;
 
           switch (id_rol) {
@@ -79,6 +85,7 @@ const LoginPage = () => {
             default:
               alert("Rol desconocido");
               break;
+
           }
         } else {
           alert(data.message || "Error al iniciar sesión");

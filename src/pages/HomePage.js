@@ -18,14 +18,13 @@ const HomePage = () => {
                 </p>
             </div>
             <div className="hero-image-wrapper">
-  <img
-    src={MujerMain}
-    className="hero-image"
-    alt="Fitness Model"
-  />
-</div>
-
-            </section>
+              <img
+                src={MujerMain}
+                className="hero-image"
+                alt="Fitness Model"
+              />
+            </div>
+          </section>
             <HomeSection2></HomeSection2>
         </div>
 )

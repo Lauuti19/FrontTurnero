@@ -30,7 +30,6 @@
   }
   
   /* Media queries para responsive */
-  
   @media (max-width: 768px) {
     .header {
       padding-left: 3rem;

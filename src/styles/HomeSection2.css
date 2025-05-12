@@ -37,7 +37,10 @@
     padding-right: 7rem;
     width: 35vw;
   }
-  
+  #third-data{
+    padding-left: 7rem;
+    width: 40vw;
+  }
   .discover-services,
   .trainer-showcase,
   .group-classes-section {
@@ -102,6 +105,9 @@
   #video2 {
     object-position: right center; /* O por ejemplo: 80% center */
   }
+  #video3 {
+    object-position: left center; /* O por ejemplo: 80% center */
+  }
   
   
   /* Group Classes */
@@ -135,4 +141,56 @@
   }
   
 
+  .openbox-section {
+    width: 100%;
+    background-color: #0f0e0e;
+    height: 80vh;
+  }
   
+  .open-title {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+    color: white;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-weight: lighter;
+    display: flex;
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+  }
+  #Barra{font-family: Arial, Helvetica, sans-serif;}
+  
+  .open-subtitle {
+    margin-top: -20px;
+    margin-bottom: 0px;
+    font-size: 4rem;
+    font-family: 'Phonk';
+    text-transform: uppercase;
+    font-weight: lighter;
+    color: #fbf106;
+    width: 40vw;
+  }
+  .open-showcase {
+    display: flex;
+    justify-content: center;
+    background-color: #fbf106;
+    height: 80vh;
+  }
+  
+  .open-video {
+    object-fit: cover;
+    height: 80vh;
+    width: 400px;
+    filter: brightness(0.6);
+  }
+
+  .open-section-text {
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.75rem;
+    color: #a1a1aa;
+  }
