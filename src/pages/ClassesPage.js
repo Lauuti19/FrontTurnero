@@ -1,25 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ClassSchedule from "../components/ClassSchedule";
 
-const ProfesorPage = () => {
+const ClassesPage = () => {
   const navigate = useNavigate();
-  const [nombreUsuario, setNombreUsuario] = useState("");
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
 
     if (!usuario || usuario.id_rol !== 2) {
       navigate("/");
-    } else {
-      setNombreUsuario(usuario.nombre);
     }
   }, [navigate]);
 
   return (
     <div>
-      <h1>Bienvenido, {nombreUsuario}</h1>
+      <ClassSchedule />
     </div>
   );
 };
 
-export default ProfesorPage;
+export default ClassesPage;

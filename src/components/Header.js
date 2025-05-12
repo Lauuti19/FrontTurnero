@@ -1,16 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CTAButton from './CTAButton';
 import '../styles/Header.css';
 import { useAuth } from "../AuthContext";
 
 const Header = () => {
-  const { usuario, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+  const { usuario } = useAuth();
 
   return (
     <header className="header">
@@ -20,9 +14,7 @@ const Header = () => {
         <a href="/" className="nav-link">Sobre Nosotros</a>
         <a href="/" className="nav-link">Contacto</a>
 
-        {usuario ? (
-          <CTAButton text="Cerrar Sesion" onClick={handleLogout}/>
-        ) : (
+        {!usuario && (
           <Link to="/login">
             <CTAButton text="Ingresar" className="btn-lgn" />
           </Link>

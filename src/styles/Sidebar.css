@@ -1,0 +1,99 @@
+/* Estilo general del sidebar */
+.sidebar {
+  position: fixed;
+  top: 80px; /* debajo del header */
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background-color: #27272a;
+  color: white;
+  padding: 2rem 1.5rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #fbf106;
+  font-family: 'Phonk';
+  text-transform: uppercase;
+}
+
+/* Opciones dentro del sidebar */
+.OpcionesSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.OpcionSidebar {
+  font-size: 1.1rem;
+  color: #d6d3d1;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.OpcionSidebar:hover {
+  color: #fbf106;
+  text-decoration: underline;
+}
+
+/* Botón de logout */
+.LogOutBTN {
+  background-color: #fbf106;
+  color: #1f1d1b;
+  padding: 0.6rem 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Phonk';
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.LogOutBTN:hover {
+  background-color: #e6db04;
+}
+
+/* Botón flotante de toggle */
+.toggle-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.toggle-button::before {
+  content: "☰"; /* ícono hamburguesa */
+  font-size: 1.8rem;
+  color: #fbf106;
+}
+
+/* Responsive: Ocultar sidebar en pantallas muy pequeñas si se desea */
+@media (max-width: 640px) {
+  .sidebar {
+    width: 80%;
+  }
+
+  .toggle-button {
+    top: 15px;
+    left: 15px;
+  }
+}

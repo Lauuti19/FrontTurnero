@@ -64,4 +64,9 @@
   .register-user-btn:hover {
     background-color: #e6db04;
   }
-  
+.botonDias{
+  margin: 15px;
+}
+  .botonDias:hover {
+    background-color: #e6db04;
+  }
