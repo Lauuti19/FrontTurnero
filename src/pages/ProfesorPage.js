@@ -7,7 +7,7 @@ const ProfesorPage = () => {
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    if (!usuario || usuario.id_rol !== 3) {
+    if (!usuario || usuario.id_rol !== 2) {
       navigate("/"); // Redirige a login o inicio si no es alumno
     }
   }, []);

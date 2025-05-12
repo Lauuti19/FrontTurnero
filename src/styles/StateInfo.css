@@ -1,0 +1,27 @@
+.state-info-container{
+    background-color: #18181b; 
+    height: 60vh;
+    padding-top: 20px;
+}
+.info-estado{
+    margin: 0 auto;
+    width: 800px;
+}
+.info-estado h1{
+    font-family: 'phonk';
+    text-transform: uppercase;
+    background-color: black;
+    color: #fbf106;
+    width: 600px;
+    justify-self: center;
+    padding: 20px;
+    font-size: 2.5rem;
+}
+.info-estado h4{
+    font-weight: lighter;
+    color: #a1a1aa;
+    padding: 20px;
+    font-size: 1.4rem;
+    width: 600px;
+    justify-self: center;
+}
