@@ -11,7 +11,7 @@ const AdminPage = () => {
     if (!usuario || usuario.id_rol !== 1) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

@@ -10,7 +10,7 @@ const ProfesorPage = () => {
     if (!usuario || usuario.id_rol !== 2) {
       navigate("/"); // Redirige a login o inicio si no es alumno
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

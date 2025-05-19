@@ -11,7 +11,7 @@ const AlumnoPage = () => {
     if (!usuario || usuario.id_rol !== 3) {
       navigate("/"); 
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

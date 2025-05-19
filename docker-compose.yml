@@ -1,0 +1,11 @@
+services:
+  frontend-turnero:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: frontend-turnero
+    ports:
+      - "3002:3000"
+    volumes:
+      - .:/app
+    restart: always
