@@ -10,9 +10,9 @@ const Header = () => {
     <header className="header">
       <nav className="nav">
         <a href="/" className="nav-link">Inicio</a>
-        <a href="/" className="nav-link">Disciplinas</a>
-        <a href="/" className="nav-link">Sobre Nosotros</a>
-        <a href="/" className="nav-link">Contacto</a>
+        <a href="/disciplinas" className="nav-link">Disciplinas</a>
+        <a href="/sobrenosotros" className="nav-link">Sobre Nosotros</a>
+        <a href="/contacto" className="nav-link">Contacto</a>
 
         {!usuario && (
           <Link to="/login">

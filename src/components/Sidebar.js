@@ -25,21 +25,30 @@ const Sidebar = () => {
   if (usuario.id_rol === 1) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/registerUser"><h4 className='OpcionSidebar'>Registrar Usuario</h4></Link>
+        <Link to="/registerUser" className='OpcionSidebar'>Registrar Usuario</Link>
+        <Link to="#" className='OpcionSidebar'>Usuarios</Link>
+        <Link to="#" className='OpcionSidebar'>Reportes</Link>
+        <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
   } else if (usuario.id_rol === 2) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clases"><h4 className='OpcionSidebar'>Clases</h4></Link>
+        <Link to="/clases" className='OpcionSidebar'>Clases</Link>
+        <Link to="#" className='OpcionSidebar'>Alumnos</Link>
+        <Link to="#" className='OpcionSidebar'>Agenda</Link>
+        <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
   } else if (usuario.id_rol === 3) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clasesUser"><h4 className='OpcionSidebar'>Clases</h4></Link>
+        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
+        <Link to="#" className='OpcionSidebar'>Mi Perfil</Link>
+        <Link to="#" className='OpcionSidebar'>Progreso</Link>
+        <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -47,10 +56,35 @@ const Sidebar = () => {
 
   return (
     <div>
-      <button onClick={toggleSidebar} className="toggle-button">
-        
+      {isOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={toggleSidebar}
+          aria-label="Cerrar menú"
+        />
+      )}
+      <button
+        onClick={toggleSidebar}
+        className={`toggle-button${isOpen ? " open" : ""}`}
+        style={{
+          left: isOpen ? 260 : 0,
+          transition: 'left 0.3s cubic-bezier(.77,0,.18,1)'
+        }}
+        aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+      >
+        <span style={{
+          fontSize: "2rem",
+          color: isOpen ? "#fbf106" : "#232526",
+          transition: "color 0.3s, transform 0.3s",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%"
+        }}>
+          {isOpen ? "✕" : "☰"}
+        </span>
       </button>
-
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <h2>Opciones</h2>
         {content}

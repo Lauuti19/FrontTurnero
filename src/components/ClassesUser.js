@@ -15,7 +15,7 @@ const ClassesUser = () => {
 
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log("Usuario del localStorage:", usuario); // 👈 VERIFICACIÓN
+    console.log("Usuario del localStorage:", usuario, usuario.id_usuario, usuario.id_rol); 
 
     if (usuario && usuario.id_usuario) {
       fetchClassesForUser(usuario.id_usuario);

@@ -11,6 +11,9 @@ import Sidebar from "./components/Sidebar";
 import RegisterPage from "./pages/RegisterPage";
 import ClassesPage from "./pages/ClassesPage";
 import ClassesPageUser from "./pages/ClassesPageUser.js";
+import DisciplinasPage from "./pages/DisciplinasPage.js";
+import SobreNosotrosPage from "./pages/SobreNosotrosPage.js";
+import ContactoPage from "./pages/ContactoPage.js";
 
 import './App.css';
 
@@ -30,6 +33,9 @@ function AppContent() {
         <Route path="/registerUser" element={<RegisterPage />} />
         <Route path="/clases" element={<ClassesPage />} />
         <Route path="/clasesUser" element={<ClassesPageUser />} />
+        <Route path="/disciplinas" element={<DisciplinasPage />} />
+        <Route path="/sobrenosotros" element={<SobreNosotrosPage />} />
+        <Route path="/contacto" element={<ContactoPage />} />
 
       </Routes>
       <Footer />
