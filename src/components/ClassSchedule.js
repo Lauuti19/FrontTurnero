@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
+import ClassUsersModal from '../components/ClassUsersModal.js';
+import { FaUsers } from 'react-icons/fa';
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -12,6 +14,18 @@ const ClassSchedule = () => {
 
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
+
+  const openUsersModal = (clase) => {
+    setSelectedClass(clase);
+    setShowModal(true);
+  };
+
+  const closeUsersModal = () => {
+    setShowModal(false);
+    setSelectedClass(null);
+  };
 
   const formatDateForAPI = (date) => {
     return date.toISOString().split("T")[0]; 
@@ -95,6 +109,12 @@ const ClassSchedule = () => {
                   </div>
                   <div className='Contenido-Map-Clases2'>
                     <button
+                      className="boton-ver-anotados"
+                      title="Ver anotados"
+                      onClick={() => openUsersModal(clase)}
+                    ><FaUsers />
+                    </button>
+                    <button
                       className={`botonReservar${esPasada ? " no-disponible" : ""}`}
                       disabled={esPasada}
                       style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
@@ -111,6 +131,14 @@ const ClassSchedule = () => {
           )}
         </div>
       </div>
+
+      {showModal && selectedClass && (
+        <ClassUsersModal
+          classId={selectedClass.id_clase}
+          fecha={formatDateForAPI(currentDate)}
+          onClose={closeUsersModal}
+        />
+      )}
     </div>
   );
 };
