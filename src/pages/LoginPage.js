@@ -67,6 +67,7 @@ const LoginPage = () => {
 
           const perfilData = await perfilRes.json();
 
+
           login(perfilData.usuario);
 
 
