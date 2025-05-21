@@ -46,7 +46,7 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 3) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
+        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Mi Perfil</Link>
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
