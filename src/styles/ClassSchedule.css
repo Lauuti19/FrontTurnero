@@ -92,6 +92,12 @@
     color: #fbf106;
     box-shadow: #fbf106 0px 0px 4px;
 }
+.botonReservar.no-disponible {
+  background: #bdbdbd ;
+  color: #494646 !important;
+  cursor: not-allowed ;
+  pointer-events: none;
+}
 .guion-fecha {
   font-family: 'Courier New', Courier, monospace; /* O la fuente que prefieras */
   margin: 0 6px;
