@@ -72,22 +72,20 @@ const LoginPage = () => {
 
 
           const id_rol = perfilData.usuario.id_rol;
+          const id_estado = perfilData.usuario.id_estado;
 
-          switch (id_rol) {
-            case 1:
-              navigate("/admin");
-              break;
-            case 2:
-              navigate("/profesor");
-              break;
-            case 3:
-              navigate("/alumno");
-              break;
-            default:
-              alert("Rol desconocido");
-              break;
-
+          if (id_estado === 1 && id_rol === 1) {
+            navigate("/admin");
+          } else if (id_estado === 1 && id_rol === 2) {
+            navigate("/profesor");
+          } else if (id_estado === 1 && id_rol === 3) {
+            navigate("/alumno");
+          } else if (id_estado === 2 || id_estado === 3) {
+            navigate("/estado");
+          } else {
+            alert("Rol desconocido");
           }
+
         } else {
           alert(data.message || "Error al iniciar sesión");
         }

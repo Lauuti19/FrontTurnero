@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClassesUser from "../components/ClassesUser";
 import '../styles/AlumnoPage.css';
 
+
 const AlumnoPage = () => {
   const navigate = useNavigate();
   const [nombreUsuario, setNombreUsuario] = useState("");
