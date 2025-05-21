@@ -67,6 +67,13 @@ const ClassSchedule = () => {
               const ocupacion = 1 - (clase.disponibles / totalLugares);
               const porcentaje = Math.round(ocupacion * 100);
 
+              // Compara solo la fecha (sin hora)
+              const hoy = new Date();
+              hoy.setHours(0,0,0,0);
+              const claseDate = new Date(currentDate);
+              claseDate.setHours(0,0,0,0);
+              const esPasada = claseDate < hoy;
+
               return (
                 <div
                   key={clase.id_clase}
@@ -81,8 +88,12 @@ const ClassSchedule = () => {
                     <h1 id='Horario'>{clase.hora}</h1>
                   </div>
                   <div className='Contenido-Map-Clases2'>
-                    <button className="botonReservar">
-                      <h3>Anotarse</h3>
+                    <button
+                      className={`botonReservar${esPasada ? " no-disponible" : ""}`}
+                      disabled={esPasada}
+                      style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
+                    >
+                      <h3>{esPasada ? "No disponible" : "Anotarse"}</h3>
                     </button>
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
