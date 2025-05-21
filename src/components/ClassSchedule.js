@@ -1,53 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/ClassSchedule.css'; 
-import CTAButton from './CTAButton';
+import '../styles/ClassSchedule.css';
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
 const ClassSchedule = () => {
-  
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
+
   const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchClassesForDay(daysOfWeek[currentDate.getDay()]);
-  }, [currentDate]);
-
-  const fetchClassesForDay = (day) => {
-    fetch('http://localhost:3001/api/classes')
-      .then(response => response.json())
-      .then(data => {
-        const filteredClasses = data.filter(clase => clase.dia === day);
-        setClasses(filteredClasses);
-      })
-      .catch(error => console.error('Error fetching classes:', error));
+  const formatDateForAPI = (date) => {
+    return date.toISOString().split("T")[0]; 
   };
 
+  useEffect(() => {
+    const fetchClasses = async () => {
+      setLoading(true);
+      const formattedDate = formatDateForAPI(currentDate);
+
+      try {
+        const res = await fetch(`http://localhost:3001/api/classes/all?fecha=${formattedDate}`);
+        const data = await res.json();
+        setClasses(data);
+      } catch (error) {
+        console.error('Error al obtener las clases:', error);
+        setClasses([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClasses();
+  }, [currentDate]);
+
   const handlePreviousDay = () => {
-    setCurrentDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() - 1);
-      return newDate;
-    });
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() - 1);
+    setCurrentDate(newDate);
   };
 
   const handleNextDay = () => {
-    setCurrentDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() + 1);
-      return newDate;
-    });
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + 1);
+    setCurrentDate(newDate);
   };
 
   const formattedDay = (
     <>
       {daysOfWeek[currentDate.getDay()]}{" "}
       <span className="fecha-numero">
-        {currentDate.getDate().toString().padStart(2, '0')}
+        {String(currentDate.getDate()).padStart(2, '0')}
       </span>
       <span className="guion-fecha">-</span>
       <span className="fecha-numero">
-        {(currentDate.getMonth() + 1).toString().padStart(2, '0')}
+        {String(currentDate.getMonth() + 1).padStart(2, '0')}
       </span>
     </>
   );
@@ -61,18 +71,14 @@ const ClassSchedule = () => {
           <button className="botonDias" onClick={handleNextDay}>▶</button>
         </div>
         <div className="Class-Schedule-form">
-          {classes.length > 0 ? (
+          {loading ? (
+            <p>Cargando clases...</p>
+          ) : classes.length > 0 ? (
             classes.map((clase) => {
-              const totalLugares = 20;
-              const ocupacion = 1 - (clase.disponibles / totalLugares);
-              const porcentaje = Math.round(ocupacion * 100);
-
-              // Compara solo la fecha (sin hora)
+              const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
               const hoy = new Date();
-              hoy.setHours(0,0,0,0);
-              const claseDate = new Date(currentDate);
-              claseDate.setHours(0,0,0,0);
-              const esPasada = claseDate < hoy;
+              hoy.setHours(0, 0, 0, 0);
+              const esPasada = currentDate < hoy;
 
               return (
                 <div
