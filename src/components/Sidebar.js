@@ -26,6 +26,7 @@ const Sidebar = () => {
     content = (
       <div className='OpcionesSidebar'>
         <Link to="/registerUser" className='OpcionSidebar'>Registrar Usuario</Link>
+        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Usuarios</Link>
         <Link to="#" className='OpcionSidebar'>Reportes</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
@@ -35,7 +36,7 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 2) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clases" className='OpcionSidebar'>Clases</Link>
+        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Alumnos</Link>
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
@@ -45,7 +46,7 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 3) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
+        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Mi Perfil</Link>
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>

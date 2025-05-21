@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/RegisterUser.css'; // Asegúrate de que el CSS esté correctamente importado
+import '../styles/ClassSchedule.css'; 
+import CTAButton from './CTAButton';
+
+const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
 const ClassSchedule = () => {
-  const [classes, setClasses] = useState([]);
-  const [currentDayIndex, setCurrentDayIndex] = useState(0);
   
-  // Declarar daysOfWeek fuera de useEffect
-  const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [classes, setClasses] = useState([]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // Llamada a la API cuando el índice del día cambia
-    fetchClassesForDay(daysOfWeek[currentDayIndex]);
-  }, [currentDayIndex]); // Solo depende de currentDayIndex
+    fetchClassesForDay(daysOfWeek[currentDate.getDay()]);
+  }, [currentDate]);
 
   const fetchClassesForDay = (day) => {
     fetch('http://localhost:3001/api/classes')
@@ -25,41 +24,71 @@ const ClassSchedule = () => {
   };
 
   const handlePreviousDay = () => {
-    setCurrentDayIndex((prevIndex) => (prevIndex === 0 ? 6 : prevIndex - 1));
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(prevDate.getDate() - 1);
+      return newDate;
+    });
   };
 
   const handleNextDay = () => {
-    setCurrentDayIndex((prevIndex) => (prevIndex === 6 ? 0 : prevIndex + 1));
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(prevDate.getDate() + 1);
+      return newDate;
+    });
   };
 
-  return (
-    <div className="register-user-container">
-      <div className="register-user-box">
-        <div className="register-user-title">
-          <button className="botonDias" onClick={handlePreviousDay}>&lt;</button>
-          <span>{daysOfWeek[currentDayIndex]}</span>
-          <button className="botonDias" onClick={handleNextDay}>&gt;</button>
-        </div>
+  const formattedDay = (
+    <>
+      {daysOfWeek[currentDate.getDay()]}{" "}
+      <span className="fecha-numero">
+        {currentDate.getDate().toString().padStart(2, '0')}
+      </span>
+      <span className="guion-fecha">-</span>
+      <span className="fecha-numero">
+        {(currentDate.getMonth() + 1).toString().padStart(2, '0')}
+      </span>
+    </>
+  );
 
-        <div className="register-user-form">
+  return (
+    <div className="ClassSchedule-container">
+      <div className="ClassSchedule-container-box">
+        <div className="ClassSchedule-container-title">
+          <button className="botonDias" onClick={handlePreviousDay}>◀</button>
+          <span>{formattedDay}</span>
+          <button className="botonDias" onClick={handleNextDay}>▶</button>
+        </div>
+        <div className="Class-Schedule-form">
           {classes.length > 0 ? (
-            classes.map((clase) => (
-              <div key={clase.id_clase}>
-                <div>
-                  <strong>Disciplina:</strong> {clase.disciplina}
+            classes.map((clase) => {
+              const totalLugares = 20;
+              const ocupacion = 1 - (clase.disponibles / totalLugares);
+              const porcentaje = Math.round(ocupacion * 100);
+
+              return (
+                <div
+                  key={clase.id_clase}
+                  className="Class-Schedule-item"
+                  style={{
+                    background: `linear-gradient(90deg, #fbf106 ${porcentaje}%, #27272a ${porcentaje}%)`
+                  }}
+                >
+                  <div className='Contenido-Map-Clases1'>
+                    <h1>{clase.disciplina}</h1>
+                    <h1>-</h1>
+                    <h1 id='Horario'>{clase.hora}</h1>
+                  </div>
+                  <div className='Contenido-Map-Clases2'>
+                    <button className="botonReservar">
+                      <h3>Anotarse</h3>
+                    </button>
+                    <h3>Lugares disponibles: {clase.disponibles}</h3>
+                  </div>
                 </div>
-                <div>
-                  <strong>Hora:</strong> {clase.hora}
-                </div>
-                <div>
-                  <strong>Capacidad Max:</strong> {clase.capacidad_max}
-                </div>
-                <div>
-                  <strong>Disponibles:</strong> {clase.disponibles}
-                </div>
-                <hr />
-              </div>
-            ))
+              );
+            })
           ) : (
             <p>No hay clases para este día.</p>
           )}
