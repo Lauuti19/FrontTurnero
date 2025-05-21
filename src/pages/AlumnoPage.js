@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ClassesUser from "../components/ClassesUser";
 import '../styles/AlumnoPage.css';
 
 
@@ -26,9 +25,6 @@ const AlumnoPage = () => {
         <div className="alumno-welcome-text">
           Aquí podrás ver tus ejercicios, clases, progreso y mucho más.
         </div>
-      </div>
-      <div>
-        <ClassesUser />
       </div>
       
     </div>

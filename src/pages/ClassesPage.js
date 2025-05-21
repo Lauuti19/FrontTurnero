@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ClassSchedule from "../components/ClassSchedule";
+import ClassSchedule from "../components/ClassSchedule.js";
 
 const ClassesPage = () => {
   const navigate = useNavigate();
