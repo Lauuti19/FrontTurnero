@@ -28,8 +28,7 @@ const Sidebar = () => {
         <Link to="/registerUser" className='OpcionSidebar'>Registrar Usuario</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Usuarios</Link>
-        <Link to="#" className='OpcionSidebar'>Reportes</Link>
-        <Link to="#" className='OpcionSidebar'>Configuracion</Link>
+        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link> {/* <-- NUEVO */}
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );

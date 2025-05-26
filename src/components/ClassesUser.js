@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
+import { useAuth } from "../AuthContext";
+import ClassUsersModal from './ClassUsersModal';
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -12,19 +14,22 @@ const ClassesUser = () => {
 
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
 
-  const getUserId = () => {
-    try {
-      const usuario = JSON.parse(localStorage.getItem('usuario'));
-      return usuario?.id_usuario || null;
-    } catch {
-      return null;
-    }
+  const { getUserId } = useAuth();
+
+  const openUsersModal = (clase) => {
+    setSelectedClass(clase);
+    setShowModal(true);
   };
 
-  const formatDateForAPI = (date) => {
-    return date.toISOString().split("T")[0];
+  const closeUsersModal = () => {
+    setShowModal(false);
+    setSelectedClass(null);
   };
+
+  const formatDateForAPI = (date) => date.toISOString().split("T")[0];
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -52,7 +57,7 @@ const ClassesUser = () => {
     };
 
     fetchClasses();
-  }, [currentDate]);
+  }, [currentDate, getUserId]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -112,6 +117,13 @@ const ClassesUser = () => {
                   </div>
                   <div className='Contenido-Map-Clases2'>
                     <button
+                      className="boton-ver-anotados"
+                      title="Ver anotados"
+                      onClick={() => openUsersModal(clase)}
+                    >
+                      <h3>Ver anotados</h3>
+                    </button>
+                    <button
                       className={`botonReservar${esPasada ? " no-disponible" : ""}`}
                       disabled={esPasada}
                       style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
@@ -124,10 +136,18 @@ const ClassesUser = () => {
               );
             })
           ) : (
-            <p>No hay clases para este día.</p>
+            <p>No tienes clases disponibles para el dia de hoy.</p>
           )}
         </div>
       </div>
+
+      {showModal && selectedClass && (
+        <ClassUsersModal
+          classId={selectedClass.id_clase}
+          fecha={formatDateForAPI(currentDate)}
+          onClose={closeUsersModal}
+        />
+      )}
     </div>
   );
 };

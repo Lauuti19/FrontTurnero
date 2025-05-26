@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from '../components/ClassUsersModal.js';
-import { FaUsers } from 'react-icons/fa';
+
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -112,7 +112,7 @@ const ClassSchedule = () => {
                       className="boton-ver-anotados"
                       title="Ver anotados"
                       onClick={() => openUsersModal(clase)}
-                    ><FaUsers />
+                    ><h3>Ver anotados</h3>
                     </button>
                     <button
                       className={`botonReservar${esPasada ? " no-disponible" : ""}`}
@@ -127,7 +127,7 @@ const ClassSchedule = () => {
               );
             })
           ) : (
-            <p>No hay clases para este día.</p>
+            <p>No tienes clases disponibles para el dia de hoy</p>
           )}
         </div>
       </div>

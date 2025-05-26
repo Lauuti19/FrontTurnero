@@ -10,7 +10,14 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`);
+        // Obtén el token del localStorage
+        const token = localStorage.getItem('token');
+        const res = await fetch(
+          `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
+        );
         const data = await res.json();
         setUsers(data);
       } catch (err) {
