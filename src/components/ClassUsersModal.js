@@ -10,7 +10,7 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        // Obtén el token del localStorage
+        
         const token = localStorage.getItem('token');
         const res = await fetch(
           `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
