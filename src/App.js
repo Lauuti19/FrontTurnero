@@ -15,11 +15,13 @@ import ClassSchedule from "./components/ClassSchedule.js";
 import DisciplinasPage from "./pages/DisciplinasPage.js";
 import SobreNosotrosPage from "./pages/SobreNosotrosPage.js";
 import ContactoPage from "./pages/ContactoPage.js";
+import BuyCredits from './components/BuyCredits';
+import RegistrarCuota from './components/RegistrarCuota';
 
 import './App.css';
 
 function AppContent() {
-  const { usuario } = useAuth(); // ✅ Ahora sí dentro del contexto
+  const { usuario } = useAuth();
 
   return (
     <Router>
@@ -38,7 +40,8 @@ function AppContent() {
         <Route path="/sobrenosotros" element={<SobreNosotrosPage />} />
         <Route path="/contacto" element={<ContactoPage />} />
         <Route path="/clasesTodos" element={<ClassSchedule />} />
-
+        <Route path="/comprar-creditos" element={<BuyCredits />} />
+        <Route path="/registrar-cuota" element={<RegistrarCuota />} />
       </Routes>
       <Footer />
     </Router>

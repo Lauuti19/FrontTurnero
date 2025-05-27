@@ -5,7 +5,8 @@ services:
       dockerfile: .devcontainer/Dockerfile
     image: frontend-turnero
     ports:
-      - "3002:3000"
+      - "3000:3000"
     volumes:
       - .:/app
+      - /app/node_modules
     restart: always

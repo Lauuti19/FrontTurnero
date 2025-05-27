@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
+import { useAuth } from "../AuthContext";
+import ClassUsersModal from './ClassUsersModal';
+import { FaUsers } from 'react-icons/fa';
+import RegisterButton from './RegisterButton';
+
+
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -12,25 +18,28 @@ const ClassesUser = () => {
 
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
 
-  const getUserId = () => {
-    try {
-      const usuario = JSON.parse(localStorage.getItem('usuario'));
-      return usuario?.id_usuario || null;
-    } catch {
-      return null;
-    }
+  const { getUserId } = useAuth();
+  const userId = getUserId();
+
+  const openUsersModal = (clase) => {
+    setSelectedClass(clase);
+    setShowModal(true);
   };
 
-  const formatDateForAPI = (date) => {
-    return date.toISOString().split("T")[0];
+  const closeUsersModal = () => {
+    setShowModal(false);
+    setSelectedClass(null);
   };
+
+  const formatDateForAPI = (date) => date.toISOString().split("T")[0];
 
   useEffect(() => {
     const fetchClasses = async () => {
       setLoading(true);
       const formattedDate = formatDateForAPI(currentDate);
-      const userId = getUserId();
 
       if (!userId) {
         console.error("No se encontró el id del usuario en localStorage");
@@ -52,7 +61,7 @@ const ClassesUser = () => {
     };
 
     fetchClasses();
-  }, [currentDate]);
+  }, [currentDate, userId]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -95,7 +104,7 @@ const ClassesUser = () => {
               const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
               const hoy = new Date();
               hoy.setHours(0, 0, 0, 0);
-              const esPasada = currentDate < hoy;
+              /*const esPasada = currentDate < hoy;*/
 
               return (
                 <div
@@ -112,22 +121,40 @@ const ClassesUser = () => {
                   </div>
                   <div className='Contenido-Map-Clases2'>
                     <button
-                      className={`botonReservar${esPasada ? " no-disponible" : ""}`}
-                      disabled={esPasada}
-                      style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
+                      className="boton-ver-anotados"
+                      title="Ver anotados"
+                      onClick={() => openUsersModal(clase)}
                     >
-                      <h3>{esPasada ? "No disponible" : "Anotarse"}</h3>
+                      <FaUsers />
                     </button>
+                    <RegisterButton
+                      classId={clase.id_clase}
+                      fecha={formatDateForAPI(currentDate)}
+                      hora={clase.hora}
+                      disciplina={clase.disciplina}
+                      userId={getUserId()}
+                      onSuccess={() => {
+                        // Puedes volver a cargar las clases aquí si quieres
+                      }}
+                    />
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>
               );
             })
           ) : (
-            <p>No hay clases para este día.</p>
+            <p>No tienes clases disponibles para el dia de hoy.</p>
           )}
         </div>
       </div>
+
+      {showModal && selectedClass && (
+        <ClassUsersModal
+          classId={selectedClass.id_clase}
+          fecha={formatDateForAPI(currentDate)}
+          onClose={closeUsersModal}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from '../components/ClassUsersModal.js';
 import { FaUsers } from 'react-icons/fa';
+import RegisterButton from '../components/RegisterButton'; // Asegúrate de que la ruta sea correcta
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -16,6 +17,9 @@ const ClassSchedule = () => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+
+  const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
+  const userId = usuarioLocal?.id; // Ajusta el campo según tu modelo
 
   const openUsersModal = (clase) => {
     setSelectedClass(clase);
@@ -35,21 +39,23 @@ const ClassSchedule = () => {
     const fetchClasses = async () => {
       setLoading(true);
       const formattedDate = formatDateForAPI(currentDate);
+      const res = await fetch(`http://localhost:3001/api/classes/all?fecha=${formattedDate}`);
+      const data = await res.json();
 
-      try {
-        const res = await fetch(`http://localhost:3001/api/classes/all?fecha=${formattedDate}`);
-        const data = await res.json();
-        setClasses(data);
-      } catch (error) {
-        console.error('Error al obtener las clases:', error);
-        setClasses([]);
-      } finally {
-        setLoading(false);
-      }
+      // Para cada clase, verifica si el usuario está anotado
+      const clasesConInscripto = await Promise.all(
+        data.map(async (clase) => {
+          const anotado = await estaAnotadoEnClase(clase.id_clase, formattedDate);
+          return { ...clase, inscripto: anotado };
+        })
+      );
+
+      setClasses(clasesConInscripto);
+      setLoading(false);
     };
 
     fetchClasses();
-  }, [currentDate]);
+  }, [currentDate, estaAnotadoEnClase]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -76,6 +82,12 @@ const ClassSchedule = () => {
     </>
   );
 
+  const estaAnotadoEnClase = useCallback(async (classId, fecha) => {
+    const res = await fetch(`http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`);
+    const users = await res.json();
+    return users.some(user => user.id === userId);
+  }, [userId]);
+
   return (
     <div className="ClassSchedule-container">
       <div className="ClassSchedule-container-box">
@@ -92,7 +104,7 @@ const ClassSchedule = () => {
               const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
               const hoy = new Date();
               hoy.setHours(0, 0, 0, 0);
-              const esPasada = currentDate < hoy;
+              /*const esPasada = currentDate < hoy;*/
 
               return (
                 <div
@@ -114,13 +126,17 @@ const ClassSchedule = () => {
                       onClick={() => openUsersModal(clase)}
                     ><FaUsers />
                     </button>
-                    <button
-                      className={`botonReservar${esPasada ? " no-disponible" : ""}`}
-                      disabled={esPasada}
-                      style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
-                    >
-                      <h3>{esPasada ? "No disponible" : "Anotarse"}</h3>
-                    </button>
+                    <RegisterButton
+                      classId={clase.id_clase}
+                      fecha={formatDateForAPI(currentDate)}
+                      hora={clase.hora}
+                      disciplina={clase.disciplina}
+                      userId={userId}
+                      disabled={clase.inscripto}
+                      onSuccess={() => {
+                        console.log('Inscripción exitosa');
+                      }}
+                    />
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>

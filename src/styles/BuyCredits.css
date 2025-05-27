@@ -1,0 +1,80 @@
+.buy-credits{
+    background-color: #18181b;
+    padding: 40px;
+    height: auto;
+}
+.buy-credits-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2em 2.5em;
+  text-align: center;
+}
+
+.buy-credits-container h2 {
+  margin-bottom: 1.5rem;
+  color: #222;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.ContenedorPlanes{
+    border-bottom: solid 1px gray;
+    border-top: solid 1px gray;
+    padding: 20px;
+    text-align: left;
+}
+.buy-credits-container h3 {
+    margin-bottom: 1em;
+    color: #555;
+    font-weight: 500;
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.buy-credits-container li {
+  background: #f7f7f7;
+  border-radius: 8px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.buy-credits-container strong {
+  font-size: 1.1em;
+  color: #1a237e;
+}
+
+.buy-credits-container button {
+  padding: 0.5em 1.5em;
+  background: #ffd600;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.buy-credits-container button:hover {
+  background: #ffea00;
+}
+
+.buy-credits-container span {
+  font-size: 0.95em;
+  color: #555;
+}
+#credits{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#credits p{
+    color: gray;
+    font-size: 15px;
+}

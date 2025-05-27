@@ -28,7 +28,34 @@
   .nav-link:hover{
     border-bottom: solid 1px white;
   }
-  
+  .creditos-header{
+    color: white;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    width: 140px;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 0;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 120%; /* debajo del elemento */
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9em;
+}
+
+.creditos-header:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
   /* Media queries para responsive */
   @media (max-width: 768px) {
     .header {
@@ -56,4 +83,3 @@
     }
   
   }
-  
