@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
 import { useAuth } from "../AuthContext";
 import ClassUsersModal from './ClassUsersModal';
+import { FaUsers } from 'react-icons/fa';
+import RegisterButton from './RegisterButton';
+
+
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -18,6 +22,7 @@ const ClassesUser = () => {
   const [selectedClass, setSelectedClass] = useState(null);
 
   const { getUserId } = useAuth();
+  const userId = getUserId();
 
   const openUsersModal = (clase) => {
     setSelectedClass(clase);
@@ -35,7 +40,6 @@ const ClassesUser = () => {
     const fetchClasses = async () => {
       setLoading(true);
       const formattedDate = formatDateForAPI(currentDate);
-      const userId = getUserId();
 
       if (!userId) {
         console.error("No se encontró el id del usuario en localStorage");
@@ -57,7 +61,7 @@ const ClassesUser = () => {
     };
 
     fetchClasses();
-  }, [currentDate, getUserId]);
+  }, [currentDate, userId]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -100,7 +104,7 @@ const ClassesUser = () => {
               const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
               const hoy = new Date();
               hoy.setHours(0, 0, 0, 0);
-              const esPasada = currentDate < hoy;
+              /*const esPasada = currentDate < hoy;*/
 
               return (
                 <div
@@ -121,15 +125,18 @@ const ClassesUser = () => {
                       title="Ver anotados"
                       onClick={() => openUsersModal(clase)}
                     >
-                      <h3>Ver anotados</h3>
+                      <FaUsers />
                     </button>
-                    <button
-                      className={`botonReservar${esPasada ? " no-disponible" : ""}`}
-                      disabled={esPasada}
-                      style={esPasada ? { cursor: "not-allowed", background: "#bdbdbd", color: "#fff" } : {}}
-                    >
-                      <h3>{esPasada ? "No disponible" : "Anotarse"}</h3>
-                    </button>
+                    <RegisterButton
+                      classId={clase.id_clase}
+                      fecha={formatDateForAPI(currentDate)}
+                      hora={clase.hora}
+                      disciplina={clase.disciplina}
+                      userId={getUserId()}
+                      onSuccess={() => {
+                        // Puedes volver a cargar las clases aquí si quieres
+                      }}
+                    />
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>
