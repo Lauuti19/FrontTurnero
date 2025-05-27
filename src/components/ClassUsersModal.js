@@ -1,6 +1,7 @@
-// src/components/ClassUsersModal.jsx
 import React, { useEffect, useState } from 'react';
 import '../styles/ClassUserModal.css'; 
+
+//obtiene los usuarios de una clase
 
 const ClassUsersModal = ({ classId, fecha, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -10,7 +11,6 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        // Obtén el token del localStorage
         const token = localStorage.getItem('token');
         const res = await fetch(
           `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
@@ -20,6 +20,7 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
         );
         const data = await res.json();
         setUsers(data);
+        console.log('Usuarios obtenidos:', data);
       } catch (err) {
         console.error('Error al obtener los usuarios anotados:', err);
         setUsers([]);
