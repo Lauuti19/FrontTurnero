@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from '../components/ClassUsersModal.js';
 import { FaUsers } from 'react-icons/fa';
-import RegisterButton from '../components/RegisterButton'; // Asegúrate de que la ruta sea correcta
+import RegisterButton from '../components/RegisterButton'; 
+
+//mapeo de las clases pero de profe, osea todas
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -36,26 +38,18 @@ const ClassSchedule = () => {
   };
 
   useEffect(() => {
-    const fetchClasses = async () => {
-      setLoading(true);
-      const formattedDate = formatDateForAPI(currentDate);
-      const res = await fetch(`http://localhost:3001/api/classes/all?fecha=${formattedDate}`);
-      const data = await res.json();
+  const fetchClasses = async () => {
+    setLoading(true);
+    const formattedDate = formatDateForAPI(currentDate);
+    const res = await fetch(`http://localhost:3001/api/classes/all?fecha=${formattedDate}`);
+    const data = await res.json();
+    setClasses(data);
+    setLoading(false);
+  };
 
-      // Para cada clase, verifica si el usuario está anotado
-      const clasesConInscripto = await Promise.all(
-        data.map(async (clase) => {
-          const anotado = await estaAnotadoEnClase(clase.id_clase, formattedDate);
-          return { ...clase, inscripto: anotado };
-        })
-      );
+  fetchClasses();
+}, [currentDate]);
 
-      setClasses(clasesConInscripto);
-      setLoading(false);
-    };
-
-    fetchClasses();
-  }, [currentDate, estaAnotadoEnClase]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -81,12 +75,6 @@ const ClassSchedule = () => {
       </span>
     </>
   );
-
-  const estaAnotadoEnClase = useCallback(async (classId, fecha) => {
-    const res = await fetch(`http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`);
-    const users = await res.json();
-    return users.some(user => user.id === userId);
-  }, [userId]);
 
   return (
     <div className="ClassSchedule-container">

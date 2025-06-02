@@ -1,6 +1,6 @@
-// src/components/ClassUsersModal.jsx
 import React, { useEffect, useState } from 'react';
 import '../styles/ClassUserModal.css'; 
+
 
 const ClassUsersModal = ({ classId, fecha, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -20,6 +20,7 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
         );
         const data = await res.json();
         setUsers(data);
+        console.log('Usuarios obtenidos:', data);
       } catch (err) {
         console.error('Error al obtener los usuarios anotados:', err);
         setUsers([]);

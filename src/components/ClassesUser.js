@@ -4,10 +4,14 @@ import { useAuth } from "../AuthContext";
 import ClassUsersModal from './ClassUsersModal';
 import { FaUsers } from 'react-icons/fa';
 import RegisterButton from './RegisterButton';
+import {useNavigate} from 'react-router-dom';
 
+
+//Mapeo de las clases 
 
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
 
 const ClassesUser = () => {
   const [currentDate, setCurrentDate] = useState(() => {
@@ -20,9 +24,11 @@ const ClassesUser = () => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const navigate = useNavigate();
+  
+
 
   const { getUserId } = useAuth();
-  const userId = getUserId();
 
   const openUsersModal = (clase) => {
     setSelectedClass(clase);
@@ -40,6 +46,7 @@ const ClassesUser = () => {
     const fetchClasses = async () => {
       setLoading(true);
       const formattedDate = formatDateForAPI(currentDate);
+      const userId = getUserId();
 
       if (!userId) {
         console.error("No se encontró el id del usuario en localStorage");
@@ -61,7 +68,7 @@ const ClassesUser = () => {
     };
 
     fetchClasses();
-  }, [currentDate, userId]);
+  }, [currentDate, getUserId]);
 
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
@@ -128,15 +135,14 @@ const ClassesUser = () => {
                       <FaUsers />
                     </button>
                     <RegisterButton
-                      classId={clase.id_clase}
-                      fecha={formatDateForAPI(currentDate)}
-                      hora={clase.hora}
-                      disciplina={clase.disciplina}
-                      userId={getUserId()}
-                      onSuccess={() => {
-                        // Puedes volver a cargar las clases aquí si quieres
-                      }}
-                    />
+                        classId={clase.id_clase}
+                        fecha={formatDateForAPI(currentDate)}
+                        hora={clase.hora}
+                        disciplina={clase.disciplina}
+                        userId={getUserId()}
+                        onSuccess={() => navigate(0)}
+                      />
+
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>
