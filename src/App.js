@@ -17,7 +17,7 @@ import SobreNosotrosPage from "./pages/SobreNosotrosPage.js";
 import ContactoPage from "./pages/ContactoPage.js";
 import BuyCredits from './components/BuyCredits';
 import RegistrarCuota from './components/RegistrarCuota';
-
+import UserProfile from "./pages/UserProfile.js";
 import './App.css';
 
 function AppContent() {
@@ -42,6 +42,7 @@ function AppContent() {
         <Route path="/clasesTodos" element={<ClassSchedule />} />
         <Route path="/comprar-creditos" element={<BuyCredits />} />
         <Route path="/registrar-cuota" element={<RegistrarCuota />} />
+        <Route path="/perfil" element={<UserProfile />} />
       </Routes>
       <Footer />
     </Router>

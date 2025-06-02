@@ -28,7 +28,8 @@ const Sidebar = () => {
         <Link to="/registerUser" className='OpcionSidebar'>Registrar Usuario</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Usuarios</Link>
-        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link> {/* <-- NUEVO */}
+        <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
+        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -38,7 +39,8 @@ const Sidebar = () => {
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Alumnos</Link>
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
-        <Link to="#" className='OpcionSidebar'>Configuracion</Link>
+        <Link to="perfil" className='OpcionSidebar'>Perfil</Link>
+        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -46,7 +48,7 @@ const Sidebar = () => {
     content = (
       <div className='OpcionesSidebar'>
         <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
-        <Link to="#" className='OpcionSidebar'>Mi Perfil</Link>
+        <Link to="perfil" className='OpcionSidebar'>Mi Perfil</Link>
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>

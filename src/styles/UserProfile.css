@@ -1,0 +1,41 @@
+.register-user-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0.2rem;
+}
+
+.register-user-box {
+  background-color: #27272a;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+  width: 100%;
+  color: white;
+}
+
+.register-user-title {
+  font-size: 2rem;
+  font-family: 'Brigends', sans-serif;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05rem;
+}
+
+.register-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.register-user-form p {
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.register-user-form strong {
+  color: #fbf106;
+}
