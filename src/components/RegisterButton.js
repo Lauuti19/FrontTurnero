@@ -85,7 +85,7 @@ onSuccess?.();
       html: `¿Querés cancelar tu inscripción a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, cancelar',
+      confirmButtonText: 'Sí, Desanotarse',
       cancelButtonText: 'Volver',
       buttonsStyling: false,
     customClass: {
@@ -100,8 +100,8 @@ onSuccess?.();
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:3001/api/classes/cancel', {
-        method: 'DELETE',
+      const res = await fetch('http://localhost:3001/api/classes/unregister', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, classId, fecha }),
       });
@@ -127,7 +127,7 @@ onSuccess?.();
   className={`botonReservar ${isRegistered ? 'botonCancelar' : 'botonAnotarse'}`}
   onClick={isRegistered ? handleCancel : handleRegister}
 >
-  <h3>{isRegistered ? 'Cancelar' : 'Anotarse'}</h3>
+  <h3>{isRegistered ? 'Desanotarse' : 'Anotarse'}</h3>
 </button>
 
   );
