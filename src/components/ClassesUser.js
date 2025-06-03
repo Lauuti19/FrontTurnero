@@ -71,16 +71,21 @@ const ClassesUser = () => {
   }, [currentDate, getUserId]);
 
   const handlePreviousDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - 1);
-    setCurrentDate(newDate);
-  };
+  const newDate = new Date(currentDate);
+  do {
+    newDate.setDate(newDate.getDate() - 1);
+  } while (newDate.getDay() === 0); // 0 es domingo
+  setCurrentDate(newDate);
+};
 
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + 1);
-    setCurrentDate(newDate);
-  };
+const handleNextDay = () => {
+  const newDate = new Date(currentDate);
+  do {
+    newDate.setDate(newDate.getDate() + 1);
+  } while (newDate.getDay() === 0); // 0 es para que se saltee el domingod
+  setCurrentDate(newDate);
+};
+
 
   const formattedDay = (
     <>
@@ -109,9 +114,30 @@ const ClassesUser = () => {
           ) : classes.length > 0 ? (
             classes.map((clase) => {
               const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
-              const hoy = new Date();
-              hoy.setHours(0, 0, 0, 0);
-              /*const esPasada = currentDate < hoy;*/
+              const ahora = new Date();
+              ahora.setSeconds(0, 0); // Limpiamos milisegundos
+
+              // Creamos un Date de la clase con fecha y hora combinadas
+              const [horaClase, minutosClase] = clase.hora.split(":").map(Number);
+              const claseDateTime = new Date(currentDate);
+              claseDateTime.setHours(horaClase, minutosClase, 0, 0);
+
+              // Restamos diferencia en milisegundos
+              const diferenciaEnMinutos = (claseDateTime - ahora) / (1000 * 60);
+
+              // Reglas:
+              const esPasada = claseDateTime < ahora;
+              const esMuyCerca = diferenciaEnMinutos < 30;
+
+              let disabledReason = "";
+              if (esPasada) {
+                disabledReason = "Finalizada";
+              } else if (esMuyCerca) {
+                disabledReason = "Por Iniciar";
+              }
+
+              const desactivarRegistro = esPasada || esMuyCerca;
+
 
               return (
                 <div
@@ -134,14 +160,20 @@ const ClassesUser = () => {
                     >
                       <FaUsers />
                     </button>
-                    <RegisterButton
+                    <div  title={esPasada ? "La clase ya terminó" : esMuyCerca ? "Falta menos de 30 minutos" : ""}>
+                      <RegisterButton classname="botonrsv"
                         classId={clase.id_clase}
                         fecha={formatDateForAPI(currentDate)}
                         hora={clase.hora}
                         disciplina={clase.disciplina}
                         userId={getUserId()}
                         onSuccess={() => navigate(0)}
+                        disabled={desactivarRegistro}
+                        disabledReason={disabledReason}
                       />
+
+                    </div>
+
 
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>

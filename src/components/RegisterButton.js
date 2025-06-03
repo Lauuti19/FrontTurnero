@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../styles/RegisterButton.css';
 import Swal from 'sweetalert2';
 
-const RegisterButton = ({ classId, fecha, hora, disciplina, userId, onSuccess }) => {
+const RegisterButton = ({ classId, fecha, hora, disciplina, userId, onSuccess, disabled, disabledReason
+}) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -122,7 +123,15 @@ onSuccess?.();
 
   if (loading) return <button className="botonReservar" disabled>Cargando...</button>;
 
+  if (disabled) {
   return (
+    <button className="botonReservar botonDesactivado" disabled title={disabledReason}>
+      <h3>{disabledReason || "No disponible"}</h3>
+    </button>
+  );
+}
+
+return (
     <button
   className={`botonReservar ${isRegistered ? 'botonCancelar' : 'botonAnotarse'}`}
   onClick={isRegistered ? handleCancel : handleRegister}

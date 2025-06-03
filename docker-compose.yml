@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend-turnero:
     build:
@@ -9,4 +11,12 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    networks:
+      - turnero-network
     restart: always
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+networks:
+  turnero-network:
+    external: true

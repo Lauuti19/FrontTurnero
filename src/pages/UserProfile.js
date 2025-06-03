@@ -47,7 +47,8 @@ const UserProfile = () => {
     <div className="register-user-container">
       <div className="register-user-box">
         <h2 className="register-user-title">Perfil del Usuario</h2>
-        <div className="register-user-form">
+        <div className='separador-user'>
+        <div className="user-form">
           <p><strong>Email:</strong> {usuario.email}</p>
           <p><strong>Rol:</strong> {usuario.rol}</p>
           <p><strong>DNI:</strong> {usuario.dni}</p>
@@ -72,6 +73,10 @@ const UserProfile = () => {
               </p>
             )}
           </div>
+        </div>
+        <div className='Derecha'>
+          <a href='/editar'>⚙</a>
+        </div>
         </div>
       </div>
     </div>

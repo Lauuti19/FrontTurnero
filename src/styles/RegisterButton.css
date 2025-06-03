@@ -80,3 +80,14 @@
     color:rgb(121, 118, 118);
     font-weight: bolder;
 }
+.botonDesactivado {
+  background-color: #aaa;
+  cursor: not-allowed;
+  color: #1f1e1e;
+}
+.botonDesactivado:hover{
+  background-color: #aaa;
+  cursor: not-allowed;
+  color: #1f1e1e;
+  box-shadow: none;
+}

@@ -45,25 +45,43 @@ const LoginPage = () => {
       }
     } else {
       try {
-        const response = await fetch("http://localhost:3001/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-          })
-        });
+        //const response = await fetch("//http://localhost:3001/api/auth/login", {
+        //  method: "POST",
+        //  headers: { "Content-Type": "application/json" },
+        //  body: JSON.stringify({
+        //    email: formData.email,
+        //    password: formData.password
+        //  })
+        //});
+          console.log("API URL:", process.env.REACT_APP_API_URL);
+
+         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    email: formData.email,
+    password: formData.password
+  })
+});
+
+
 
         const data = await response.json();
 
         if (response.ok) {
           localStorage.setItem("token", data.token);
 
-          const perfilRes = await fetch("http://localhost:3001/api/auth/perfil", {
+          //const perfilRes = await fetch("http://localhost:3001/api/auth/perfil", {
+          //  headers: {
+          //    Authorization: `Bearer ${data.token}`
+          //  }
+          //});
+          const perfilRes = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/perfil`, {
             headers: {
               Authorization: `Bearer ${data.token}`
             }
           });
+
 
           const perfilData = await perfilRes.json();
 

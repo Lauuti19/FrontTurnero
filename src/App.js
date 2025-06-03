@@ -19,6 +19,7 @@ import BuyCredits from './components/BuyCredits';
 import RegistrarCuota from './components/RegistrarCuota';
 import UserProfile from "./pages/UserProfile.js";
 import './App.css';
+import EditProfile from "./pages/EditProfile.js";
 
 function AppContent() {
   const { usuario } = useAuth();
@@ -43,6 +44,7 @@ function AppContent() {
         <Route path="/comprar-creditos" element={<BuyCredits />} />
         <Route path="/registrar-cuota" element={<RegistrarCuota />} />
         <Route path="/perfil" element={<UserProfile />} />
+        <Route path="/editar" element={<EditProfile />} />
       </Routes>
       <Footer />
     </Router>
