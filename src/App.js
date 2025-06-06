@@ -20,6 +20,7 @@ import RegistrarCuota from './components/RegistrarCuota';
 import UserProfile from "./pages/UserProfile.js";
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
+import ModifyPage from "./pages/ModifyPage.js";
 
 function AppContent() {
   const { usuario } = useAuth();
@@ -45,6 +46,7 @@ function AppContent() {
         <Route path="/registrar-cuota" element={<RegistrarCuota />} />
         <Route path="/perfil" element={<UserProfile />} />
         <Route path="/editar" element={<EditProfile />} />
+        <Route path="/modifier" element={<ModifyPage />} />
       </Routes>
       <Footer />
     </Router>

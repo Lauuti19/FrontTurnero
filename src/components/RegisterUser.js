@@ -49,8 +49,9 @@ const RegisterUser = () => {
 
   return (
     <div className="register-user-container">
+      <h2 className="register-user-title">Crear Usuario</h2>
       <div className="register-user-box">
-        <h2 className="register-user-title">Registrar nuevo usuario</h2>
+        
         <form className="register-user-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           <input
             name="nombre"
