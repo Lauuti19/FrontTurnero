@@ -25,9 +25,9 @@ const Sidebar = () => {
   if (usuario.id_rol === 1) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/registerUser" className='OpcionSidebar'>Registrar Usuario</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Usuarios</Link>
+        <Link to="/modifier" className='OpcionSidebar'>Modificar</Link>
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
