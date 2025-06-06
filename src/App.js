@@ -18,6 +18,7 @@ import ContactoPage from "./pages/ContactoPage.js";
 import BuyCredits from './components/BuyCredits';
 import RegistrarCuota from './components/RegistrarCuota';
 import UserProfile from "./pages/UserProfile.js";
+import TimerPage from './pages/TimerPage.js';
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
 
@@ -45,6 +46,8 @@ function AppContent() {
         <Route path="/registrar-cuota" element={<RegistrarCuota />} />
         <Route path="/perfil" element={<UserProfile />} />
         <Route path="/editar" element={<EditProfile />} />
+        <Route path="/timer" element={<TimerPage />} />
+
       </Routes>
       <Footer />
     </Router>

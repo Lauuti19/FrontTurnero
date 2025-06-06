@@ -30,6 +30,8 @@ const Sidebar = () => {
         <Link to="#" className='OpcionSidebar'>Usuarios</Link>
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
+        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -41,6 +43,8 @@ const Sidebar = () => {
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
         <Link to="perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
+        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -51,6 +55,8 @@ const Sidebar = () => {
         <Link to="perfil" className='OpcionSidebar'>Mi Perfil</Link>
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
+        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );

@@ -46,13 +46,12 @@
 }
 .Contenido-Map-Clases1{
     display: flex;
-    gap: 10px;
-    padding: 2rem 2.0rem;
+    gap: 8px;
+    padding: 1rem 2.0rem;
     align-items: center;
 }
 #Horario{
     font-size: 1.8rem;
-   filter: drop-shadow(0 0 5px #616161);
 }
 .Contenido-Map-Clases2{
     display: flex;
@@ -69,13 +68,13 @@
     border: none;
     color: white;
     border: solid 1px #fbf106;
-    padding: 15px 32px;
+    padding: 5px;
     text-align: center;
     justify-self: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 10px 2px;
     cursor: pointer;
 }
 .botonReservar{
@@ -84,7 +83,7 @@
     font-weight: lighter;
     text-transform: uppercase;
     font-size: 1rem;
-    height: 70px;
+    height: 60px;
     border: none;
 }
 .botonReservar:hover{
@@ -102,12 +101,12 @@
   font-family: 'Courier New', Courier, monospace; /* O la fuente que prefieras */
   margin: 0 6px;
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 .fecha-numero {
   font-family: 'Phonk';
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 1em;
 }
 .boton-ver-anotados{
   background-color: transparent;
@@ -120,3 +119,4 @@
 .botonReservar{
     width: 100%;
 }
+
