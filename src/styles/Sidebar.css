@@ -27,6 +27,7 @@
 .sidebar h2 {
   font-size: 1.6rem;
   margin-bottom: 2.2rem;
+  margin-top: -29px;
   color: #fbf106;
   font-family: 'Phonk', Arial, sans-serif;
   text-transform: uppercase;

@@ -25,11 +25,9 @@ const Sidebar = () => {
   if (usuario.id_rol === 1) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
-        <Link to="#" className='OpcionSidebar'>Usuarios</Link>
-        <Link to="/modifier" className='OpcionSidebar'>Modificar</Link>
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
-        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
+        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
+        <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
@@ -38,11 +36,11 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 2) {
     content = (
       <div className='OpcionesSidebar'>
+        <Link to="perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Alumnos</Link>
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
-        <Link to="perfil" className='OpcionSidebar'>Perfil</Link>
-        <Link to="/registrar-cuota" className='OpcionSidebar'>Cuotas</Link>
+        <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
@@ -51,8 +49,8 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 3) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
         <Link to="perfil" className='OpcionSidebar'>Mi Perfil</Link>
+        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>

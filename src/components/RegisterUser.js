@@ -53,31 +53,36 @@ const RegisterUser = () => {
       <div className="register-user-box">
         
         <form className="register-user-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+          <label>Nombre</label>
           <input
             name="nombre"
-            placeholder="Nombre y apellido"
+            placeholder="John Doe"
             value={formData.nombre}
             onChange={handleChange}
           />
+          <label>Email</label>
           <input
             name="email"
             type="email"
-            placeholder="Email"
+            placeholder="Email@example.com"
             value={formData.email}
             onChange={handleChange}
           />
+          <label>Dni</label>
           <input
             name="dni"
-            placeholder="DNI"
+            placeholder="12123456"
             value={formData.dni}
             onChange={handleChange}
           />
+          <label>Celular</label>
           <input
             name="celular"
-            placeholder="Celular"
+            placeholder="2364 123456"
             value={formData.celular}
             onChange={handleChange}
           />
+          <label>Contraseña</label>
           <input
             name="password"
             type="password"
@@ -85,6 +90,7 @@ const RegisterUser = () => {
             value={formData.password}
             onChange={handleChange}
           />
+          <label>Rol</label>
           <select name="id_rol" value={formData.id_rol} onChange={handleChange}>
             <option value="1">Administrador</option>
             <option value="2">Profesor</option>

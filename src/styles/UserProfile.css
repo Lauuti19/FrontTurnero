@@ -1,4 +1,4 @@
-.register-user-container {
+.user-profile-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,53 +7,93 @@
   background-color:#18181b;
 }
 
-.register-user-box {
-  background-color: #27272a;
-  padding: 2rem 3rem;
+.user-profile-box {
+  background-color:#ececf0;
+  padding: 2rem 3rem ;
   border-radius: 10px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  max-width: 500px;
+  max-width: 800px;
   width: 100%;
   color: white;
+  margin-bottom: 50px;
 }
 
-.register-user-title {
-  font-size: 2rem;
+.user-profile-title {
+  font-size: 1.2rem;
   font-family: 'Brigends', sans-serif;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.05rem;
-  color: white;
+  text-align: start;
+  color: rgb(26, 25, 25);
+  margin-bottom: 0px;
 }
 
+/* El resto de las clases ya no llevan el prefijo register- */
 .user-form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   font-size: 1rem;
   width: 70%;
+  color: #18181b;
 }
-
-.user-form p {
-  margin: 0.25rem 0;
+.user-form h2{
+  text-align: start;
+  color: #18181b;
+  font-size: 1.2rem;
+}
+.user-mail{
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 3rem;
+  font-weight: bolder;
+  color: #18181b;
+}
+.user-rol{
+  text-transform: uppercase;
+  font-weight: bolder;
+  color: rgb(51, 49, 49);
+  padding: 10px;
+  width: 150px;
+  height: 20px;
+  text-align: center;
+  background-color: #fbf106;
+}
+.resto-user-info h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #292927;
+  text-align: start;
+}
+.resto-user-info, .cuota-info{
+  padding: 20px;
   line-height: 1.4;
+  background: #aca3a3;
+  border-radius: 10px;
+  color: #292927;
 }
-
+.cuota-info .cuota-inactiva{
+  color: rgb(216, 29, 29);
+  font-weight: bolder;
+}
 .user-form strong {
-  color: #fbf106;
+  color: #292927;
 }
 .separador-user{
   display: flex;
+  gap: 1rem;
 }
 .Derecha{
   text-align: right;
   width: 30%;
   font-size: 40px;
   font-weight: bolder;
+  padding-top: 20px;
 }
 .Derecha a{
   text-decoration: none;
   color: gray;
+}
+.Derecha a:hover{
+  color: black;
 }
 .user-form input {
   width: 100%;
@@ -91,4 +131,25 @@
   flex-direction: column;
   gap: 0.5rem;
   font-size: 1rem;
+}
+.contenido-record{
+  background-color: #aca3a3;
+  border-radius: 10px;
+  text-align: start;
+}
+.records{
+  padding-top: 100px;
+}
+.records h2{
+  color: #292927;
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: start;
+  margin-bottom: 10px;
+}
+.contenido-record{
+  color: #292927;
+  font-size: 1.2rem;
+  padding: 20px;
+  height: 350px;
 }

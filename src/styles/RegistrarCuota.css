@@ -1,66 +1,89 @@
-.registrar-cuota{
-    background-color: #18181b;
-    padding: 40px;
-    height: auto;
+.registrar-cuota {
+  background-color: #18181b;
+  padding: 40px;
+  min-height: 100vh;
 }
+
 .registrar-cuota-container {
-  max-width: 430px;
+  background-color: #27272a;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+  width: 100%;
+  color: white;
   margin: 40px auto;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  padding: 2.5em 2em 2em 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
   text-align: center;
 }
 
-.registrar-cuota-container h2 {
+.registrar-cuota h2 {
   margin-bottom: 1.5em;
-  color: #1a237e;
-  font-weight: 700;
+  color: white;
+  font-size: 2rem;
+  font-family: 'Brigends';
+  font-weight: lighter;
+  letter-spacing: 0.05rem;
 }
 
 .registrar-cuota-container form {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 1.2rem;
 }
 
-.registrar-cuota-container input {
-  padding: 0.7em 1em;
-  border: 1px solid #bdbdbd;
-  border-radius: 6px;
-  font-size: 1em;
-  outline: none;
-  transition: border 0.2s;
+.registrar-cuota-container label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: white;
+  text-align: left;
 }
 
-.registrar-cuota-container input:focus {
-  border: 1.5px solid #ffd600;
+.registrar-cuota-container input,
+.registrar-cuota-container select {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #3f3f46;
+  color: white;
+}
+.input-buscar-user{
+  width: 95%;
+}
+.registrar-cuota-container input:focus,
+.registrar-cuota-container select:focus {
+  outline: 2px solid #fbf106;
 }
 
 .registrar-cuota-container button[type="submit"] {
-  margin-top: 1em;
-  padding: 0.7em 0;
-  background: #ffd600;
-  color: #222;
+  margin-top: 1rem;
+  background-color: #fbf106;
+  color: #1f1d1b;
+  font-family: 'Phonk';
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.75rem;
   border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 1.1em;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color 0.3s ease;
 }
 
 .registrar-cuota-container button[type="submit"]:hover {
-  background: #ffea00;
+  background-color: #e6db04;
 }
-/* Agrega esto a RegistrarCuota.css */
+
+/* Sugerencias */
 .suggestions-list {
   position: absolute;
   left: 0;
   right: 0;
   top: 38px;
-  background: #fff;
+  background: #27272a;
   border: 1px solid #ddd;
   border-radius: 0 0 6px 6px;
   z-index: 10;
@@ -69,11 +92,14 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  color: white;
 }
+
 .suggestions-list li {
   padding: 8px 12px;
   cursor: pointer;
 }
+
 .suggestions-list li:hover {
-  background: #f5f5f5;
+  background: #3f3f46;
 }

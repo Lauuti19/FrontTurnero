@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import ModifierClass from "../components/ModifierClass";
 import ModifierPlan from "../components/ModifierPlan";
 import RegisterPage from "./RegisterPage";
+import RegistrarCuota from "../components/RegistrarCuota";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import "../styles/ModifyPage.css"; 
 
 const CreatePage = () => {
   const components = [
+    { name: "Cuotas", component: <RegistrarCuota /> },
     { name: "Clases", component: <ModifierClass /> },
     { name: "Planes", component: <ModifierPlan /> },
     { name: "Usuarios", component: <RegisterPage /> }
+    
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

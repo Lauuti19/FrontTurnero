@@ -62,10 +62,13 @@ const RegistrarCuota = () => {
 
   return (
     <div className='registrar-cuota'>
+      <h2>Registrar Cuota</h2>
       <div className="registrar-cuota-container">
-        <h2>Registrar Cuota</h2>
+        
         <form onSubmit={handleSubmit} autoComplete="off">
+          <label>Buscar Usuario</label>
           <div style={{ position: 'relative' }}>
+            
             <input
               name="nombre_usuario"
               value={nombreUsuario}
@@ -76,6 +79,7 @@ const RegistrarCuota = () => {
               placeholder="Nombre de usuario"
               required
               autoComplete="off"
+              className='input-buscar-user'
             />
             {showSuggestions && usuarios.length > 0 && (
               <ul className="suggestions-list">
@@ -90,6 +94,7 @@ const RegistrarCuota = () => {
               </ul>
             )}
           </div>
+          <label>Plan seleccionado</label>
           <select
             name="id_plan"
             value={idPlan}
@@ -103,6 +108,7 @@ const RegistrarCuota = () => {
               </option>
             ))}
           </select>
+          <label>Fecha del pago</label>
           <input
             name="fecha_pago"
             type="date"
