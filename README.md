@@ -1,4 +1,4 @@
-# 🏥 FrontTurnero - Sistema de Turnos Gimnasio 
+# ⚙️FrontTurnero - Sistema de Turnos Gimnasio 
 
 Aplicación React que consume la API de BackTurnero para gestionar turnos.  
 
