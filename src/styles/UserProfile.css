@@ -111,14 +111,15 @@
   font-family: 'Brigends';
   letter-spacing: 0.1rem;
   font-size: 20px;
-  border: none;
+  border:solid 1px #fbf106;
   border-radius: 4px;
   cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 
 .botonGuardarPerfil:hover {
   background-color: #e0e2e6;
-  box-shadow: 1px 0px 3px #fbf106;
+  border: solid 1px #fbf106;
 }
 
 .mensajeExito {
@@ -152,4 +153,65 @@
   font-size: 1.2rem;
   padding: 20px;
   height: 350px;
+}
+.fila-edit{
+  display: flex;
+}
+/* Estilos para EditProfile */
+.edit-user-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #18181b;
+}
+
+.edit-user-box {
+  background-color: #27272a;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+  width: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.edit-user-title {
+  font-size: 2rem;
+  font-family: 'Brigends';
+  text-align: center;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05rem;
+  color: white;
+  font-weight: lighter;
+}
+.edit-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.edit-user-form h3{
+  font-size: 25px;
+  margin: 0px;
+}
+.botonClave{
+  background-color: transparent;
+  border: solid 1px white;
+  color: white;
+  border-radius: 5px;
+  width: 300px;
+  font-size: 15px !important;
+  font-weight: lighter;
+  font-family: 'Brigends';
+  padding: 15px 0px;
+  text-align: center;
+  transition: 0.2s ease-in-out;
+}
+.botonClave:hover{
+  background-color: white;
+  color: #18181b;
 }

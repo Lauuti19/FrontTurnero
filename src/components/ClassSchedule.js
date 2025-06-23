@@ -89,7 +89,7 @@ const ClassSchedule = () => {
             <p>Cargando clases...</p>
           ) : classes.length > 0 ? (
             classes.map((clase) => {
-              const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
+              const porcentaje = Math.round((1 - clase.disponibles / clase.total) * 100);
               const hoy = new Date();
               hoy.setHours(0, 0, 0, 0);
               /*const esPasada = currentDate < hoy;*/
