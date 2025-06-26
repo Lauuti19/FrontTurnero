@@ -29,6 +29,7 @@ const Sidebar = () => {
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+        <Link to="/rutinas" className='OpcionSidebar'>Rutinas</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
@@ -42,6 +43,7 @@ const Sidebar = () => {
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
         <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+        <Link to="/rutinas" className='OpcionSidebar'>Rutinas</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
@@ -54,6 +56,7 @@ const Sidebar = () => {
         <Link to="#" className='OpcionSidebar'>Progreso</Link>
         <Link to="#" className='OpcionSidebar'>Configuracion</Link>
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
+        <Link to="/rutina" className='OpcionSidebar'>Mi Rutina</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
