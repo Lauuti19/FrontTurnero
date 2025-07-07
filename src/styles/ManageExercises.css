@@ -1,0 +1,124 @@
+
+.ManageExercisesContainer {
+  background-color: #18181b;
+  padding: 40px;
+  min-height: 100vh;
+  justify-content: space-around;
+}
+
+.ManageExercisesContainer h2 {
+  color: white;
+  font-size: 2rem;
+  font-family: 'Brigends';
+  font-weight: lighter;
+  letter-spacing: 0.05rem;
+  margin-bottom: 1.5em;
+  text-align: center;
+}
+
+.checkbox-group {
+  background-color: #27272a;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  width: 100%;
+  color: white;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  
+  gap: 1.2rem;
+}
+.div-buttons{
+    display: flex;
+}
+.checkbox-group > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #23232a;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.checkbox-group > div:hover {
+  background: #32323a;
+}
+
+.checkbox-group h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fbf106;
+}
+
+.checkbox-group a {
+  color: #fbf106;
+  text-decoration: underline;
+  font-size: 0.95em;
+  margin-left: 8px;
+}
+
+.checkbox-group input[type="text"] {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #3f3f46;
+  color: white;
+  width: 140px;
+}
+
+.checkbox-group input[type="text"]:focus {
+  outline: 2px solid #fbf106;
+}
+
+.checkbox-group button {
+  background: #fbf106;
+  color: #1f1d1b;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-left: 4px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.checkbox-group button:hover {
+  background: #e6db04;
+}
+
+.checkbox-group button[title="Eliminar"] {
+  background: #e74c3c;
+  color: white;
+}
+
+.checkbox-group button[title="Eliminar"]:hover {
+  background: #c0392b;
+}
+
+.checkbox-group button[title="Editar"] {
+  background: #3498db;
+  color: white;
+}
+
+.checkbox-group button[title="Editar"]:hover {
+  background: #217dbb;
+}
+
+.checkbox-group button[title="Cancelar"] {
+  background: #888;
+  color: white;
+}
+
+.checkbox-group button[title="Cancelar"]:hover {
+  background: #555;
+}

@@ -79,10 +79,12 @@
 
 /* Sugerencias */
 .suggestions-list {
+  display: block;
   position: absolute;
   left: 0;
   right: 0;
   top: 38px;
+  overflow: visible;
   background: #27272a;
   border: 1px solid #ddd;
   border-radius: 0 0 6px 6px;
@@ -98,7 +100,9 @@
 .suggestions-list li {
   padding: 8px 12px;
   cursor: pointer;
+  color: white;
 }
+
 
 .suggestions-list li:hover {
   background: #3f3f46;

@@ -92,11 +92,11 @@ const LoginPage = () => {
           const id_estado = perfilData.usuario.id_estado;
 
           if (id_estado === 1 && id_rol === 1) {
-            navigate("/admin");
+            navigate("/perfil");
           } else if (id_estado === 1 && id_rol === 2) {
-            navigate("/profesor");
+            navigate("/perfil");
           } else if (id_estado === 1 && id_rol === 3) {
-            navigate("/alumno");
+            navigate("/perfil");
           } else if (id_estado === 2 || id_estado === 3) {
             navigate("/estado");
           } else {

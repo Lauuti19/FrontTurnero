@@ -28,7 +28,7 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, userId, onSuccess, d
     console.log('Se hizo clic en Anotarse');
     const result = await Swal.fire({
     title: '<span class="simbolo">¿</span>Confirmar inscripción<span class="simbolo">?</span>',
-    html: `<div class="textos-alert"><h2 class="texto-alert1">¿Querés anotarte a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?</h2><h2 class="texto-alert2">Recuerda que se descontara 1 credito de tu cuenta</h2></div>`,
+    html: `<div classname="textos-alert"><h2 class="texto-alert1">¿Querés anotarte a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?</h2><h2 class="texto-alert2">Recuerda que se descontara 1 credito de tu cuenta</h2></div>`,
     icon: 'question',
     showCancelButton: true,
     confirmButtonText: 'Sí, anotarme',
@@ -50,6 +50,7 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, userId, onSuccess, d
 }
 
 console.log('El usuario confirmó el SweetAlert');
+console.log('Datos enviados:', { userId, classId, fecha });
 
     try {
       const res = await fetch('http://localhost:3001/api/classes/register', {
@@ -60,11 +61,13 @@ console.log('El usuario confirmó el SweetAlert');
 
 console.log('Respuesta de success:', res);
 
+
 const text = await res.text();
 console.log('Texto recibido del backend:', text);
 
 if (!res.ok) {
   console.log('No se pudo hacer el try');
+  console.log('Datos enviados:', { userId, classId, fecha });
   throw new Error(text || 'No se pudo registrar');
 }
 

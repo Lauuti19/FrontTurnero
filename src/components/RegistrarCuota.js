@@ -11,12 +11,12 @@ const RegistrarCuota = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
-  if (nombreUsuario.length > 1) {
+  if (nombreUsuario.length >= 1) {
     fetch(`http://localhost:3001/api/usuarios/buscar?nombre=${nombreUsuario}`)
       .then(res => res.json())
       .then(data => {
-        console.log('Respuesta usuarios:', data); // <-- Agrega esto
-        setUsuarios(data.usuarios || []);
+        // Si data es un array, úsalo directamente
+        setUsuarios(Array.isArray(data) ? data : data.usuarios || []);
       });
     setShowSuggestions(true);
   } else {
@@ -81,6 +81,7 @@ const RegistrarCuota = () => {
               autoComplete="off"
               className='input-buscar-user'
             />
+            {console.log('showSuggestions:', showSuggestions, 'usuarios:', usuarios)}
             {showSuggestions && usuarios.length > 0 && (
               <ul className="suggestions-list">
                 {usuarios.map(u => (

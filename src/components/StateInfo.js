@@ -15,7 +15,7 @@ const StateInfo = () => {
           <h1>¡Tu cuota ha vencido!</h1>
           <h4>Por favor, acercate a renovar el pago de tu cuota o hazlo haciendo click</h4><a>aqui</a>
           </div>
-          <div class="contenedor">
+          <div classname="contenedor">
             <img src="drakkar" alt="Imagen" class="imagen-difuminada" />
           </div>
 
