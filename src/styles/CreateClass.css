@@ -1,137 +1,144 @@
-.CreateClassContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  min-height: 100vh;
+/* CreateClass.css */
+.create-class-container {
   padding: 2rem;
-  background-color:  #18181b;
-}
-.CreateClassContainer h1{
-    font-weight: lighter;
-}
-.form-group-class {
-  background-color: #27272a;
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  max-width: 500px;
-  width: 100%;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #292927;
 }
 
-.CreateClassContainer h1 {
+.create-class-container h1,
+.create-class-container h2 {
   font-size: 2rem;
-  font-family: 'Brigends';
-  text-align: center;
   margin-bottom: 1.5rem;
-  letter-spacing: 0.05rem;
-  color: white;
+  color: #18181b;
+  text-align: center;
+}
+
+.form-group-class {
+  background-color: #ececf0;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .form-group-class label {
+  display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  color: #27272a;
 }
 
 .form-group-class input,
-.form-group-class select {
-  padding: 0.75rem;
-  border: none;
+.form-group-class select,
+.form-group-class textarea {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: #3f3f46;
-  color: white;
 }
 
-.form-group-class input:focus,
-.form-group-class select:focus {
-  outline: 2px solid #fbf106;
+.form-group-class textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
-.form-group-class button[type="submit"] {
-  margin-top: 1rem;
+.form-group-class button {
+  padding: 0.8rem 1.5rem;
   background-color: #fbf106;
-  color: #1f1d1b;
-  font-family: 'Phonk';
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 0.75rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+  font-size: 1rem;
+  width: 100%;
 }
 
-.form-group-class button[type="submit"]:hover {
-  background-color: #e6db04;
-}
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.checkbox-group label {
-  cursor: pointer;
-}
 .plan-item {
-  background-color: #f9f9f9;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 6px;
   margin-bottom: 1rem;
-  position: relative;
-  width: 400px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .plan-item h3 {
   margin-top: 0;
+  color: #27272a;
 }
 
-.plan-item input,
-.plan-item textarea {
-  display: block;
-  width: 380px;
-  padding: 20px;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.plan-item p {
+  margin: 0.5rem 0;
+  color: #666;
 }
 
 .plan-item button {
-  background: none;
-  border: none;
-  cursor: pointer;
+  padding: 0.5rem 1rem;
   margin-right: 0.5rem;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.plan-item button:hover {
-  color: #007bff;
-}
-
-.plan-item button:last-of-type:hover {
-  color: red;
-}
-#Title-Planes, #Title-Clases{
-  color: white;
-  font-size: 2rem;
-  font-weight: lighter;
-  letter-spacing: 0.1rem;
-}
-.date-picker {
-  width: 400px;
-  padding: 0.5rem;
+  border: none;
   border-radius: 4px;
-  border: 1px solid #ccc;
-  background-color: #3f3f46;
+  cursor: pointer;
+}
+
+.plan-item button:first-of-type {
+  background-color: #4CAF50;
   color: white;
-  margin: 20px;
-} 
+}
+
+.plan-item button:last-of-type {
+  background-color: #f44336;
+  color: white;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkbox-group div {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group input {
+  width: auto;
+  margin-right: 0.5rem;
+  margin-bottom: 0;
+}
+
+.date-picker {
+  margin-bottom: 1.5rem;
+}
+
+.date-picker label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #27272a;
+}
+
+.date-picker input {
+  width: auto;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* AnotarUsuarioAClase.css */
+.anotar-usuario-a-clase {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #292927;
+}
+
+.anotar-usuario-a-clase h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #18181b;
+  text-align: center;
+}

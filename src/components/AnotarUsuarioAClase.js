@@ -5,6 +5,7 @@ import '../styles/AnotarUsuarioAClase.css';
 
 const AnotarUsuarioAClase = () => {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+  console.log("Usuario seleccionado:", usuarioSeleccionado);
 
   return (
     <div className="anotar-usuario-a-clase">

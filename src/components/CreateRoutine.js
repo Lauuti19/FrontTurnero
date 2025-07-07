@@ -1,6 +1,6 @@
 // CreateRoutine.js
 import React, { useState, useEffect } from 'react';
-import { useAuth } from "../../../FrontTurnero/src/AuthContext.js";
+import { useAuth } from '../AuthContext';
 
 
 

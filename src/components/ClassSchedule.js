@@ -8,7 +8,7 @@ import RegisterButton from '../components/RegisterButton';
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
-const ClassSchedule = () => {
+const ClassSchedule = ({ userId: propUserId }) => {
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -21,7 +21,9 @@ const ClassSchedule = () => {
   const [selectedClass, setSelectedClass] = useState(null);
 
   const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
-  const userId = usuarioLocal?.id; // Ajusta el campo según tu modelo
+  const userId = usuarioLocal?.id_rol === 1 ? propUserId : usuarioLocal?.id;
+
+
 
   const openUsersModal = (clase) => {
     setSelectedClass(clase);
