@@ -19,6 +19,9 @@ import BuyCredits from './components/BuyCredits';
 import RegistrarCuota from './components/RegistrarCuota';
 import UserProfile from "./pages/UserProfile.js";
 import TimerPage from './pages/TimerPage.js';
+import UserRoutines from './components/UserRoutines/UserRoutines.js';
+import RoutinesManager from './pages/RoutineManagerPage.js';
+
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
 import ModifyPage from "./pages/ModifyPage.js";
@@ -49,6 +52,9 @@ function AppContent() {
         <Route path="/editar" element={<EditProfile />} />
         <Route path="/timer" element={<TimerPage />} />
         <Route path="/modifier" element={<ModifyPage />} />
+        <Route path="/rutina" element={<UserRoutines />} />
+        <Route path="/rutinas" element={<RoutinesManager />} />
+
       </Routes>
       <Footer />
     </Router>
