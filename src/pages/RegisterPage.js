@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterUser from "../components/RegisterUser";
+import transition from '../transition'
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -20,4 +21,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default transition(RegisterPage);

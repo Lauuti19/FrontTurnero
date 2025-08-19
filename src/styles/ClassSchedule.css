@@ -121,3 +121,36 @@
     width: 100%;
 }
 
+@media (max-width: 768px) {
+    .ClassSchedule-container{
+        overflow-x: hidden;
+        width:100%
+    }
+    .ClassSchedule-container-title {
+        font-size: 1.5rem;
+        justify-content: center;
+        align-items: center;
+    }
+    .ClassSchedule-container-title span{
+        padding-left:2px;
+        padding-right:2px;
+    }
+    .Class-Schedule-item {
+        flex-direction: column;
+        align-items: center;
+        display: flex;
+        justify-content:center;
+        width:90%;
+        
+    }
+    .Contenido-Map-Clases1, .Contenido-Map-Clases2 {
+        width: 100%;
+        text-align: center;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    .botonReservar {
+        width: 90%;
+    }
+}

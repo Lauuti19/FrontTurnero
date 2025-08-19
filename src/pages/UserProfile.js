@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiSliders } from "react-icons/fi";
 import '../styles/UserProfile.css';
+import transition from '../transition'
 import { useAuth } from '../AuthContext'; 
 
 const UserProfile = () => {
@@ -97,4 +98,4 @@ return (
 );
 }
 
-export default UserProfile;
+export default transition(UserProfile);
