@@ -14,6 +14,7 @@
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(.77,0,.18,1);
   z-index: 999;
+  overflow-y: auto; /* Agregado para hacer el sidebar desplazable */
 }
 
 .sidebar.open {
@@ -50,7 +51,7 @@
   border: none;
   padding: 0.7rem 0.8rem;
   border-radius: 7px;
-  font-family: 'Phonk', Arial, sans-serif;
+  font-family: 'Brigends', Arial, sans-serif;
   text-align: left;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   cursor: pointer;
@@ -64,6 +65,32 @@
   color: #232526;
   box-shadow: 0 2px 12px #fbf10633;
   text-decoration: none;
+}
+.sb-submenu {
+  display: flex;
+  flex-direction: column;
+  background: #1c1c1c;
+  border-radius: 6px;
+  margin: 0.4rem 0 0 1.2rem; /* sangría hacia la derecha */
+  padding: 0.4rem 0.6rem;
+  gap: 0.3rem;
+  z-index: 1001; /* encima de otros elementos */
+}
+
+.sb-submenu-item {
+  color: #fbf106;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;  /* un poco más pequeño que las opciones normales */
+  border-radius: 4px;
+}
+
+.sb-submenu-item:hover {
+  background: #fbf10622; /* resalta al pasar el mouse */
+  color: #fff;
 }
 
 /* Botón de logout */
@@ -133,6 +160,16 @@
   backdrop-filter: blur(3px);
   z-index: 998;
   transition: background 0.3s;
+}
+
+/* Scrollbar personalizada para el sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+  background: #232526;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #fbf10688;
+  border-radius: 4px;
 }
 
 /* Responsive: Ocultar sidebar en pantallas muy pequeñas si se desea */

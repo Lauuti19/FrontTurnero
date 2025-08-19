@@ -15,7 +15,7 @@ const RegistrarCuota = () => {
     fetch(`http://localhost:3001/api/usuarios/buscar?nombre=${nombreUsuario}`)
       .then(res => res.json())
       .then(data => {
-        // Si data es un array, úsalo directamente
+        
         setUsuarios(Array.isArray(data) ? data : data.usuarios || []);
       });
     setShowSuggestions(true);

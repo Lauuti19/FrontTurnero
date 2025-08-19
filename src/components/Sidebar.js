@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import '../styles/Sidebar.css';
 import { useAuth } from "../AuthContext";
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showGestionSubmenu, setShowGestionSubmenu] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,7 +29,30 @@ const Sidebar = () => {
       <div className='OpcionesSidebar'>
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
-        <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
+
+       <div className="sb-group">
+          <button
+            className='OpcionSidebar'
+            onClick={() => setShowGestionSubmenu(prev => !prev)}
+            type="button"
+          >
+            Gestión
+            {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+          </button>
+          {showGestionSubmenu && (
+            <div className={`sb-submenu ${showGestionSubmenu ? 'open' : ''}`}>
+              <Link to="/manager/clases"><button className="sb-submenu-item">Clases</button></Link>
+              <Link to="/manager/planes"><button className="sb-submenu-item">Planes</button></Link>
+              <Link to="/manager/disciplinas"><button className="sb-submenu-item">Disciplinas</button></Link>
+              <Link to="/manager/usuarios"><button className="sb-submenu-item">Usuarios</button></Link>
+              <Link to="/manager/rutinas"><button className="sb-submenu-item">Rutinas</button></Link>
+              <Link to="registrar-cuota"><button className="sb-submenu-item">Cuotas</button></Link>
+              <Link to="/manager/ejercicios"><button className="sb-submenu-item">Ejercicios</button></Link>
+            </div>
+          )}
+        </div>
+
+
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
         <Link to="/rutinas" className='OpcionSidebar'>Rutinas</Link>
 
@@ -37,12 +62,33 @@ const Sidebar = () => {
   } else if (usuario.id_rol === 2) {
     content = (
       <div className='OpcionesSidebar'>
-        <Link to="perfil" className='OpcionSidebar'>Perfil</Link>
+        <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
-        <Link to="/modifier" className='OpcionSidebar'>Gestion</Link> 
-        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
 
+        <div className="sidebar-group">
+          <button
+            className="sidebar-item"
+            onClick={() => setShowGestionSubmenu(prev => !prev)}
+            type="button"
+          >
+            Gestión
+            {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+          </button>
+          {showGestionSubmenu && (
+            <div className="submenu">
+              <button className="submenu-item">Clases</button>
+              <button className="submenu-item">Planes</button>
+              <button className="submenu-item">Disciplinas</button>
+              <button className="submenu-item">Usuarios</button>
+              <button className="submenu-item">Rutinas</button>
+              <button className="submenu-item">Cuotas</button>
+              <button className="submenu-item">Ejercicios</button>
+            </div>
+          )}
+        </div>
+
+        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
     );
@@ -94,6 +140,7 @@ const Sidebar = () => {
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <h2>Opciones</h2>
         {content}
+        
       </div>
     </div>
   );

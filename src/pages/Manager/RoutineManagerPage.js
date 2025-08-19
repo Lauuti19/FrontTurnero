@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import SearchRoutines from '../components/SearchRoutines.js';
-import CreateRoutine from '../components/CreateRoutine.js';
-import '../styles/RoutineManager.css';
+import SearchRoutines from '../../components/SearchRoutines.js';
+import CreateRoutine from '../../components/CreateRoutine.js';
+import '../../styles/ModifyPage.css';
 
 const RoutineManagerPage = () => {
     const [activeTab, setActiveTab] = useState('search');
@@ -15,13 +15,13 @@ const RoutineManagerPage = () => {
                     className={activeTab === 'search' ? 'active' : ''}
                     onClick={() => setActiveTab('search')}
                 >
-                    Buscar Rutinas
+                    Buscar rutinas de usuarios
                 </button>
                 <button 
                     className={activeTab === 'create' ? 'active' : ''}
                     onClick={() => setActiveTab('create')}
                 >
-                    Crear Rutina
+                    Crear rutina a usuario
                 </button>
             </div>
             

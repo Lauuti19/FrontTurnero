@@ -7,7 +7,7 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, userId, onSuccess, d
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Consultar si el usuario ya está anotado al cargar el componente
+  // consultar si el usuario ya esta anotado al cargar el componente
   useEffect(() => {
     const checkRegistration = async () => {
       try {

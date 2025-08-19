@@ -4,6 +4,7 @@ import { useAuth } from "../AuthContext";
 import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
+import transition from '../transition'
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -24,6 +25,8 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(process.env.REACT_APP_API_URL)
+console.log(formData.email, 'Email', formData.password, 'Password');  
     if (isRegistering) {
       try {
         const response = await fetch("http://localhost:3001/api/auth/register", {
@@ -45,24 +48,24 @@ const LoginPage = () => {
       }
     } else {
       try {
-        //const response = await fetch("//http://localhost:3001/api/auth/login", {
+        const response = await fetch("http://localhost:3001/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          })
+        });
+
+        // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         //  method: "POST",
         //  headers: { "Content-Type": "application/json" },
         //  body: JSON.stringify({
         //    email: formData.email,
         //    password: formData.password
+        //    
         //  })
-        //});
-
-         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    email: formData.email,
-    password: formData.password
-  })
-});
-
+        //  });
 
 
         const data = await response.json();
@@ -190,4 +193,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default transition(LoginPage);

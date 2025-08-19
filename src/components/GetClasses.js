@@ -78,7 +78,6 @@ const ViewClasses = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h2 id='Title-Clases'>Clases del día</h2>
       <div className="date-picker">
         <label>Fecha:</label>
         <input type="date" value={fechaHoy} onChange={e => setFechaHoy(e.target.value)} />

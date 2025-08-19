@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
+import { AnimatePresence } from 'framer-motion';
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
@@ -20,8 +21,12 @@ import RegistrarCuota from './components/RegistrarCuota';
 import UserProfile from "./pages/UserProfile.js";
 import TimerPage from './pages/TimerPage.js';
 import UserRoutines from './components/UserRoutines/UserRoutines.js';
-import RoutinesManager from './pages/RoutineManagerPage.js';
-
+import RoutinesManager from './pages/Manager/RoutineManagerPage.js';
+import ClassesManagerPage from './pages/Manager/ClassesManagerPage.js';
+import PlansManagerPage from "./pages/Manager/PlansManagerPage.js";
+import DisciplinesManagerPage from "./pages/Manager/DisciplinesManagerPage.js";
+import UsersManagerPage from "./pages/Manager/UsersManagerPage.js";
+import ExcercisesManagerPage from "./pages/Manager/ExcercisesManagerPage.js"; 
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
 import ModifyPage from "./pages/ModifyPage.js";
@@ -33,6 +38,7 @@ function AppContent() {
     <Router>
       <Header />
       {usuario && <Sidebar />}
+      <AnimatePresence mode='wait'>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -53,9 +59,14 @@ function AppContent() {
         <Route path="/timer" element={<TimerPage />} />
         <Route path="/modifier" element={<ModifyPage />} />
         <Route path="/rutina" element={<UserRoutines />} />
-        <Route path="/rutinas" element={<RoutinesManager />} />
-
+        <Route path="/manager/rutinas" element={<RoutinesManager />} />
+        <Route path="/manager/clases" element={<ClassesManagerPage />} />
+        <Route path="/manager/planes" element={<PlansManagerPage />} />
+        <Route path="/manager/disciplinas" element={<DisciplinesManagerPage />} />
+        <Route path="/manager/usuarios" element={<UsersManagerPage />} />
+        <Route path="/manager/ejercicios" element={<ExcercisesManagerPage />} />
       </Routes>
+      </AnimatePresence>
       <Footer />
     </Router>
   );
