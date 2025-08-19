@@ -18,12 +18,14 @@ const HomePage = () => {
                 </p>
             </div>
             <div className="hero-image-wrapper">
+              <div className="hero-bg-anim" aria-hidden="true"></div>
               <img
                 src={MujerMain}
                 className="hero-image"
                 alt="Fitness Model"
               />
             </div>
+
           </section>
             <HomeSection2></HomeSection2>
         </div>

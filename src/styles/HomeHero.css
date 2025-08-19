@@ -42,66 +42,126 @@
   }
   
   .hero-image-wrapper {
-    width: 340px;
-    height: 530px;
-    background-color: #fbf106; /* fondo amarillo */
-    position: relative;
-    overflow: visible; /* permite que la imagen sobresalga */
-    margin-right: 7rem;
-  }
-  
-  .hero-image {
-    position: absolute;
-    top: -60px;
-    left: -20px;
-    width: 380px; /* más grande que el wrapper */
-    height: 590px;
-    object-fit: cover;
-    mask-image: linear-gradient(black 80%, transparent);
+  width: 340px;
+  height: 530px;
+  /* background-color: #fbf106;  <-- quitar esto */
+  position: relative;
+  overflow: visible;          /* permite que la imagen sobresalga */
+  margin-right: 7rem;
+}
 
+/* Fondo animado separado */
+.hero-bg-anim {
+  position: absolute;
+  inset: 0;                   /* top/right/bottom/left: 0 */
+  background-color: #fbf106;  /* fondo amarillo */
+  z-index: 0;                 /* detrás de la imagen */
+  /* (si quieres animar también en desktop, deja la animación aquí)
+  animation: slideInLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  */
+}
+
+.hero-image {
+  position: absolute;
+  top: -60px;
+  left: -20px;
+  width: 380px;  /* más grande que el wrapper */
+  height: 590px;
+  object-fit: cover;
+  z-index: 1;    /* encima del fondo */
+  mask-image: linear-gradient(black 80%, transparent);
+  -webkit-mask-image: linear-gradient(black 80%, transparent); /* por compatibilidad */
+}
+  
+   @keyframes slideInLeft {
+    from { transform: translateX(-30%); opacity: 0.2; }
+    to   { transform: translateX(0);     opacity: 1; }
   }
-  
-  
   /* Responsive */
   @media (max-width: 991px) {
-    .drakkar-hero {
-      flex-direction: column;
-      align-items: center;
-      padding: 2.5rem 0;
-      max-width: 991px;
-    }
-  
-    .hero-content {
-      margin: 0 0 2.5rem 0;
-      width: 90%;
-    }
-  
-    .hero-image {
-      margin: 0;
-      width: 80%;
-      height: auto;
-    }
+  .drakkar-hero {
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 0;
+    max-width: 991px;
   }
-  
-  @media (max-width: 640px) {
-    .drakkar-hero {
-      max-width: 100%;
-    }
-  
-    .hero-title {
-      font-size: 3.75rem;
-    }
-  
-    .hero-subtitle {
-      font-size: 1.875rem;
-    }
-  
-    .hero-description {
-      font-size: 0.875rem;
-    }
-  
-    .hero-image {
-      width: 100%;
-    }
+
+  .hero-content {
+    margin: 0 0 2.5rem 0;
+    width: 90%;
   }
-  
+
+  .hero-bg-anim {
+    position: absolute;
+    height: 90%;
+    width: 90vw;
+    background-color: #fbf106;
+    z-index: 1;
+    /* 👇 aquí va la animación sin transform fijo */
+    animation: slideInLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  }
+
+  .hero-image {
+    position: absolute;
+    top: -60px; /* mueve hacia arriba para que se vea la mitad superior */
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    object-fit: cover;
+    object-position: top; /* 👈 asegura que se vea desde arriba */
+  }
+}
+
+@media (max-width: 640px) {
+  .drakkar-hero {
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 0;
+    max-width: 640px;
+  }
+
+  .hero-content {
+    width: 90vw;
+    z-index: 2;
+  }
+
+  .hero-title { font-size: 2rem; margin: 20px 0; }
+  .logo { width: 100%; padding: 0; height: 80px !important; }
+  .hero-subtitle { font-size: 1.3rem; width: 100%; margin: 20px 0; }
+  .hero-description { font-size: 0.875rem; }
+
+  .hero-image-wrapper {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    margin-right: 0;
+    overflow: visible;    /* <-- deja que la imagen sobresalga */
+    background: transparent; /* aseguramos que no tape la animación */
+    z-index: 3;
+  }
+
+  .hero-bg-anim {
+    position: absolute;
+    height: 90%;
+    width: 90vw;
+    inset: 0;
+    background-color: #fbf106;
+    z-index: 1;
+    /* 👇 aquí va la animación sin transform fijo */
+    animation: slideInLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  }
+
+  .hero-image {
+    position: absolute;
+    top: -60px; /* mueve hacia arriba para que se vea la mitad superior */
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    object-fit: cover;
+    object-position: top; /* 👈 asegura que se vea desde arriba */
+  }
+
+ 
+}

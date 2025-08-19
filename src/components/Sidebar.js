@@ -134,7 +134,7 @@ const Sidebar = () => {
           width: "100%",
           height: "100%"
         }}>
-          {isOpen ? "✕" : "☰"}
+          {isOpen ? "" : "☰"}
         </span>
       </button>
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
