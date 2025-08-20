@@ -60,7 +60,6 @@ const CreatePlan = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h1>Crear Planes</h1>
       <form className="form-group-class" onSubmit={handleCreatePlan}>
         <label>Nombre:</label>
         <input
@@ -104,6 +103,7 @@ const CreatePlan = () => {
                   value={d.id_disciplina}
                   checked={formData.disciplines.includes(d.id_disciplina)}
                   onChange={handleDisciplineChange}
+                  classname="checkbox-input"
                 />
                 {d.disciplina}
               </label>

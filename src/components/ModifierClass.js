@@ -51,7 +51,6 @@ const CreateClass = ({ onClassCreated }) => {
 
   return (
     <div className="CreateClassContainer">
-      <h1>Crear Clases</h1>
       <form className="form-group-class" onSubmit={handleCreateClass}>
         <label>Disciplina:</label>
         <select name="id_disciplina" value={formData.id_disciplina} onChange={handleChange} required>

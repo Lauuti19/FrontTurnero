@@ -66,9 +66,9 @@ const Sidebar = () => {
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
 
-        <div className="sidebar-group">
+        <div className="sb-group">
           <button
-            className="sidebar-item"
+            className='OpcionSidebar'
             onClick={() => setShowGestionSubmenu(prev => !prev)}
             type="button"
           >
@@ -76,14 +76,14 @@ const Sidebar = () => {
             {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
           </button>
           {showGestionSubmenu && (
-            <div className="submenu">
-              <button className="submenu-item">Clases</button>
-              <button className="submenu-item">Planes</button>
-              <button className="submenu-item">Disciplinas</button>
-              <button className="submenu-item">Usuarios</button>
-              <button className="submenu-item">Rutinas</button>
-              <button className="submenu-item">Cuotas</button>
-              <button className="submenu-item">Ejercicios</button>
+            <div className={`sb-submenu ${showGestionSubmenu ? 'open' : ''}`}>
+              <Link to="/manager/clases"><button className="sb-submenu-item">Clases</button></Link>
+              <Link to="/manager/planes"><button className="sb-submenu-item">Planes</button></Link>
+              <Link to="/manager/disciplinas"><button className="sb-submenu-item">Disciplinas</button></Link>
+              <Link to="/manager/usuarios"><button className="sb-submenu-item">Usuarios</button></Link>
+              <Link to="/manager/rutinas"><button className="sb-submenu-item">Rutinas</button></Link>
+              <Link to="registrar-cuota"><button className="sb-submenu-item">Cuotas</button></Link>
+              <Link to="/manager/ejercicios"><button className="sb-submenu-item">Ejercicios</button></Link>
             </div>
           )}
         </div>

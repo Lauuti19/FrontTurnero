@@ -97,27 +97,37 @@
   gap: 0.5rem;
   margin-bottom: 1.5rem;
 }
-
-.checkbox-group div {
-  display: flex;
-  align-items: center;
+.checkbox-group div label{
+  display: flex !important;
+  align-items: center!important;
+  justify-content: center!important;
+  color:white;
+  height: auto;
+  
 }
-
 .checkbox-group input {
   width: auto;
   margin-right: 0.5rem;
   margin-bottom: 0;
+  height: 20px;
+  background-color: red;
 }
 
 .date-picker {
-  margin-bottom: 1.5rem;
+  padding: 20px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
 }
 
 .date-picker label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #27272a;
+  font-size: 2rem;
+  color: #ccc;
 }
 
 .date-picker input {
@@ -128,7 +138,6 @@
   font-size: 1rem;
 }
 
-/* AnotarUsuarioAClase.css */
 .anotar-usuario-a-clase {
   padding: 2rem;
   max-width: 1200px;
@@ -141,4 +150,19 @@
   margin-bottom: 1.5rem;
   color: #18181b;
   text-align: center;
+}
+@media (max-width: 640px) {
+  .form-group-class{
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  .form-group-class input,
+  .form-group-class select,
+  .form-group-class textarea {
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+  }
+  .checkbox-group{
+    width: 99% !important;
+  }
 }

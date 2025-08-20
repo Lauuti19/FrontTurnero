@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import '../styles/RegisterButton.css';
 import Swal from 'sweetalert2';
 
-const RegisterButton = ({
-  classId, fecha, hora, disciplina, userId, onSuccess, disabled, disabledReason
-}) => {
+const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled, disabledReason }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const userId = usuario?.id;
+    console.log('Usuario completo:', usuario);
+  console.log('userId:', userId);
 
   useEffect(() => {
     const checkRegistration = async () => {
       try {
         const res = await fetch(`http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`);
         const data = await res.json();
-        setIsRegistered(data.some(user => user.id_usuario === userId));
+        setIsRegistered(data.some(usuario => usuario.id === userId));
       } catch (err) {
         console.error("Error al verificar registro:", err);
       } finally {
@@ -59,7 +62,9 @@ const RegisterButton = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, classId, fecha }),
       });
-
+      console.log('Los parametros que viajan son: ',userId, classId, fecha )
+      console.log('userId:', userId);
+      
       const text = await res.text();
       if (!res.ok) throw new Error(text || 'No se pudo registrar');
 
@@ -86,7 +91,7 @@ const RegisterButton = ({
           confirmButton: 'mi-boton-confirmar'
         }
       });
-
+      console.log(err);
     }
   };
 

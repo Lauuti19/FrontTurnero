@@ -29,7 +29,6 @@ import UsersManagerPage from "./pages/Manager/UsersManagerPage.js";
 import ExcercisesManagerPage from "./pages/Manager/ExcercisesManagerPage.js"; 
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
-import ModifyPage from "./pages/ModifyPage.js";
 
 function AppContent() {
   const { usuario } = useAuth();
@@ -57,7 +56,6 @@ function AppContent() {
         <Route path="/perfil" element={<UserProfile />} />
         <Route path="/editar" element={<EditProfile />} />
         <Route path="/timer" element={<TimerPage />} />
-        <Route path="/modifier" element={<ModifyPage />} />
         <Route path="/rutina" element={<UserRoutines />} />
         <Route path="/manager/rutinas" element={<RoutinesManager />} />
         <Route path="/manager/clases" element={<ClassesManagerPage />} />

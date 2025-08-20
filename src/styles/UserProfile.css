@@ -1,8 +1,8 @@
 .user-profile-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  justify-content:center;
+  align-items:center;
+  height: auto !important;
   padding: 0.2rem;
   background-color:#18181b;
 }
@@ -16,8 +16,28 @@
   width: 100%;
   color: white;
   margin-bottom: 50px;
+  display:block;
+  height:auto;
 }
-
+.top-info{
+  display:flex;
+  width:100%;
+  justify-content:space-between;
+  align-items: center;
+  padding:0px;
+  margin:0px;
+}
+.top-info a{
+  font-size: 50px;
+  color:black;
+  width:50px !important;
+  height:60px !important;
+  
+}
+.top-info a:hover{
+  cursor:pointer;
+  color:grey;
+}
 .user-profile-title {
   font-size: 1.2rem;
   font-family: 'Brigends', sans-serif;
@@ -38,7 +58,7 @@
 .user-form h2{
   text-align: start;
   color: #18181b;
-  font-size: 1.2rem;
+  margin:0px;
 }
 .user-mail{
   margin-top: 0px;
@@ -86,7 +106,6 @@
   width: 30%;
   font-size: 40px;
   font-weight: bolder;
-  padding-top: 20px;
 }
 .Derecha a{
   text-decoration: none;
@@ -138,15 +157,12 @@
   border-radius: 10px;
   text-align: start;
 }
-.records{
-  padding-top: 100px;
-}
 .records h2{
   color: #292927;
   font-size: 1.5rem;
   margin: 0;
   text-align: start;
-  margin-bottom: 10px;
+  padding: 3px 0px;
 }
 .contenido-record{
   color: #292927;
@@ -156,6 +172,15 @@
 }
 .fila-edit{
   display: flex;
+  justify-content:space-between;
+}
+.bloque-edit{
+  padding:10px 0px;
+  width:200px;
+}
+.bloque-edit input{
+  padding:10px 0px;
+  width:200px !important;
 }
 /* Estilos para EditProfile */
 .edit-user-container {
@@ -214,4 +239,98 @@
 .botonClave:hover{
   background-color: white;
   color: #18181b;
+}
+.mobile-info-container{
+  display:none;
+}
+
+@media (max-width:768px) {
+  /*estilos del perfil*/
+  .mobile-info-container{
+    display:block;
+    min-height: 50vh;
+  }
+  .separador-user{
+  display:none !important;
+  }
+  .mobile-options{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    padding:10px 0px;
+  }
+  .mobile-options button{
+    background-color: transparent;
+    border:solid 2px #fbf106;
+    width:100%;
+    font-family:'Brigends';
+    font-size: 15px;
+  }
+  .mobile-options button.active-tab {
+  background-color: #fbf106;
+  color: rgb(29, 28, 28);
+  font-weight: bolder;
+}
+
+  .mobile-options button:hover {
+    background-color: #fbf106;
+    color: rgb(29, 28, 28);
+  }
+  .mobile-personal h2, .mobile-fees h2, .mobile-records h2{
+    padding:0px;
+    margin:0px;
+    color:grey;
+  }
+  .mobile-personal, .mobile-fees, .mobile-records{
+    background-color:#222;
+    padding:20px 10px;
+    border-radius: 5px;
+  }
+  .user-mail{
+    font-size: 25px;
+    max-width:75wv;
+    word-break: break-all;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-align: start;
+  }
+  .user-profile-box{
+    width: 80vw;
+    padding:10px 20px;
+  }
+  /*estilos de editar*/
+  .user-profile-container {
+    width:100%;
+    padding:0px;
+    margin:0px;
+    box-sizing:content-box;
+  }
+  .edit-user-box{
+    width: 90vw !important;
+    max-width: 450px !important;
+    padding:10px !important;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  .fila-edit{
+    display:flex;
+    flex-direction:column;
+  }
+  .bloque-edit{
+    display:flex;
+    justify-content:space-between;
+    padding: 10px 0px;
+    align-items: center;
+    width:100%
+  }
+  .botonClave{
+    width:100%;
+    padding:20px 0px;
+    margin-bottom: 20px !important;
+  }
+  .botonGuardarPerfil{
+    font-size: 20px;
+  }
 }
