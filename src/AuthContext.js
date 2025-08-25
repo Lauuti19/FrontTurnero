@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     setUsuario(null);
   };
 
-  // NUEVO: función para obtener el id del usuario
   const getUserId = () => {
     try {
       const usuario = JSON.parse(localStorage.getItem('usuario'));
