@@ -13,7 +13,6 @@ import ManageDisciplines from "../components/ManageDisciplines";
 import RegistrarCuota from "../components/RegistrarCuota";
 import CreateExercise from "../components/CreateExercise";
 import ManageExercises from "../components/ManageExercises";
-import RoutineManagerPage from "./RoutineManagerPage";
 import { FaChevronDown, FaChevronUp, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import "../styles/ModifyPage.css"; 
 
@@ -57,12 +56,6 @@ const CreatePage = () => {
       subItems: [
         { name: "Crear Usuarios", component: <RegisterPage mode="create" /> },
         { name: "Actualizar Clave", component: <ModifierClass mode="create" /> },
-      ]
-    },
-     { 
-      name: "Rutinas", 
-      component: <RoutineManagerPage />,
-      subItems: [
       ]
     },
     { 
