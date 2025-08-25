@@ -22,6 +22,12 @@ const ClassSchedule = ({ userId: propUserId }) => {
 
   const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
   const userId = usuarioLocal?.id_rol === 1 ? propUserId : usuarioLocal?.id;
+  const [expandedClassId, setExpandedClassId] = useState(null);
+
+  const toggleExpand = (id) => {
+    setExpandedClassId(expandedClassId === id ? null : id);
+  };
+
 
 
 
@@ -66,8 +72,9 @@ const ClassSchedule = ({ userId: propUserId }) => {
   };
 
   const formattedDay = (
-    <>
-      {daysOfWeek[currentDate.getDay()]}{" "}
+  <div className="clase-fecha-mobile">
+    <span className="fecha-dia">{daysOfWeek[currentDate.getDay()]}</span>
+    <div className="fecha-numeros">
       <span className="fecha-numero">
         {String(currentDate.getDate()).padStart(2, '0')}
       </span>
@@ -75,15 +82,17 @@ const ClassSchedule = ({ userId: propUserId }) => {
       <span className="fecha-numero">
         {String(currentDate.getMonth() + 1).padStart(2, '0')}
       </span>
-    </>
-  );
+    </div>
+  </div>
+);
+
 
   return (
     <div className="ClassSchedule-container">
       <div className="ClassSchedule-container-box">
         <div className="ClassSchedule-container-title">
           <button className="botonDias" onClick={handlePreviousDay}>◀</button>
-          <span>{formattedDay}</span>
+          <span className='Fecha'>{formattedDay}</span>
           <button className="botonDias" onClick={handleNextDay}>▶</button>
         </div>
         <div className="Class-Schedule-form">
@@ -99,21 +108,27 @@ const ClassSchedule = ({ userId: propUserId }) => {
               return (
                 <div
                   key={clase.id_clase}
-                  className="Class-Schedule-item"
+                  className={`Class-Schedule-item ${expandedClassId === clase.id_clase ? "expanded" : ""}`}
                   style={{
                     background: `linear-gradient(90deg, #fbf106 ${porcentaje}%, #27272a ${porcentaje}%)`
                   }}
+                  onClick={() => toggleExpand(clase.id_clase)} // 👈 click para expandir/colapsar
                 >
                   <div className='Contenido-Map-Clases1'>
                     <h1>{clase.disciplina}</h1>
                     <h1>-</h1>
                     <h1 id='Horario'>{clase.hora}</h1>
                   </div>
-                  <div className='Contenido-Map-Clases2'>
+
+                  {/* Esto solo se muestra si está expandido o si no es mobile */}
+                  <div className={`Contenido-Map-Clases2 ${expandedClassId === clase.id_clase ? "visible" : ""}`}>
                     <button
                       className="boton-ver-anotados"
                       title="Ver anotados"
-                      onClick={() => openUsersModal(clase)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // evita que cierre el acordeón al hacer click
+                        openUsersModal(clase);
+                      }}
                     ><FaUsers />
                     </button>
                     <RegisterButton
@@ -130,6 +145,7 @@ const ClassSchedule = ({ userId: propUserId }) => {
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>
+
               );
             })
           ) : (

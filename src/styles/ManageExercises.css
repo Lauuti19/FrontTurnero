@@ -1,63 +1,102 @@
 
-.ManageExercisesContainer {
-  background-color: #18181b;
-  padding: 40px;
-  min-height: 100vh;
-  justify-content: space-around;
-}
-
-.ManageExercisesContainer h2 {
-  color: white;
-  font-size: 2rem;
+.ManageExercisesContainer h2, .CreateClassContainer h2 {
+  color: black;
+  border-bottom: solid 1px black;
+  width:600px;
+  text-align:center !important;
+  margin:0 auto;
+  display:flex;
+  font-size: 30px;
   font-family: 'Brigends';
   font-weight: lighter;
   letter-spacing: 0.05rem;
-  margin-bottom: 1.5em;
-  text-align: center;
+  padding:20px 0px;
 }
-
+.info-group,.info-dis-group{
+  background-color: white;
+  color: #292927;
+  width:600px;
+  margin: 20px auto;
+  padding: 20px 10px;
+  border-radius:4px;
+}
+.info-group div,.info-dis-group div{
+  display:flex;
+  justify-content:space-between;
+  margin: 10px 0px;
+}
+.info-dis-group div h3{
+  padding:20px 20px;
+  border-bottom: solid 1px grey;
+  width:100%;
+  max-width:230px;
+}
+.info-group
 .checkbox-group {
-  background-color: #27272a;
-  padding: 2rem 3rem;
-  border-radius: 10px;
+  background-color: #1f1d1b;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
   max-width: 600px;
   width: 100%;
   color: white;
-  margin: 40px auto;
   display: flex;
   flex-direction: column;
-  
-  gap: 1.2rem;
+  padding:20px 0px;
 }
 .div-buttons{
     display: flex;
+    gap:5px;
 }
-.checkbox-group > div {
+.div-buttons button{
+  padding:10px;
+  border-radius: 2px;
+}
+.div-disciplinas   {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  background: #23232a;
-  border-radius: 6px;
-  padding: 12px 16px;
+  justify-content:space-between !important;
+  margin: 0 auto;
+  width:100%;
+  max-width:500px;
+  border:solid 1px black;
+  background-color: #dfd8d8;
+  border-radius: 4px;
+  padding: 10px 10px;
   margin-bottom: 8px;
   transition: background 0.2s;
 }
-
+.div-disciplinas label{
+  color:black !important;
+  margin:0px;
+}
 .checkbox-group > div:hover {
-  background: #32323a;
+  background: #e6db04;
 }
 
 .checkbox-group h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #fbf106;
+  font-size: 15px;
+  letter-spacing: 0.1px;
+  font-weight: lighter;
+  color: black;
+  font-family:'Brigends';
+}
+.info-group div h3{
+  width:200px;
+}
+.link-ejercicio{
+  text-align:right;
+  margin:0px !important;
+  padding:0px !important;
+  width:300px;
+}
+a.link-ejercicio{
+  color:rgb(82, 80, 80) !important;
+}
+a.link-ejercicio:hover{
+  color:blue !important;
 }
 
 .checkbox-group a {
-  color: #fbf106;
+  color: black;
   text-decoration: underline;
   font-size: 0.95em;
   margin-left: 8px;
@@ -69,9 +108,42 @@
   border-radius: 4px;
   font-size: 1rem;
   background-color: #3f3f46;
-  color: white;
+  color: black;
   width: 140px;
 }
+/* Reseteamos el checkbox */
+.checkbox-group input[type="checkbox"] {
+  appearance: none;      /* quitamos estilo nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: #222 !important;   /* fondo por defecto */
+  cursor: pointer;
+  position: relative;
+}
+
+/* Cuando está checked */
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: #fbf106; /* fondo amarillo */
+  border-color: #fbf106;
+}
+
+/* Dibujar el tilde negro */
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: black;             /* tilde negro */
+  font-size: 14px;
+  position: absolute;
+  background-color:#fbf106;
+  padding:6px 5px;
+  border-radius: 4px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 
 .checkbox-group input[type="text"]:focus {
   outline: 2px solid #fbf106;
@@ -95,30 +167,93 @@
 .checkbox-group button:hover {
   background: #e6db04;
 }
-
-.checkbox-group button[title="Eliminar"] {
+.info-group button[title="Eliminar"],.info-dis-group button[title="Eliminar"] {
   background: #e74c3c;
+  border:none;
   color: white;
 }
 
-.checkbox-group button[title="Eliminar"]:hover {
+.info-group button[title="Eliminar"]:hover,.info-dis-group button[title="Eliminar"]:hover {
   background: #c0392b;
 }
 
-.checkbox-group button[title="Editar"] {
+.info-group button[title="Editar"],.info-dis-group button[title="Editar"] {
   background: #3498db;
+  border:none;
   color: white;
 }
 
-.checkbox-group button[title="Editar"]:hover {
+.info-group button[title="Editar"]:hover,.info-dis-group button[title="Editar"]:hover {
   background: #217dbb;
 }
 
-.checkbox-group button[title="Cancelar"] {
+.info-group button[title="Cancelar"], .info-dis-group button[title="Cancelar"] {
   background: #888;
   color: white;
+  border:none;
+  padding:10px;
 }
 
-.checkbox-group button[title="Cancelar"]:hover {
+.info-group button[title="Cancelar"]:hover, .info-dis-group button[title="Cancelar"]:hover {
   background: #555;
+}
+.info-group button[title="Guardar"], .info-dis-group button[title="Guardar"] {
+  padding:10px;
+  background-color: rgb(25, 194, 75);
+  color: white;
+  border:none;
+}
+.info-group button[title="Guardar"]:hover, .info-dis-group button[title="Guardar"]:hover {
+  background-color: rgb(20, 150, 60);
+}
+@media(max-width:768px){
+  .info-dis-group{
+    width:100%;
+    max-width:400px !important;
+    padding:20px 0px;
+  }
+  .info-dis-group div h3{
+  width:100%;
+  max-width:150px !important;
+  margin:0px 20px !important;
+}
+.info-dis-group div{
+  gap:0px !important;
+}
+.div-buttons{
+  margin:0px 20px !important;
+}
+.info-group{
+    width:100%;
+    max-width:400px;
+    padding:20px 0px !important; 
+    display:flex;
+    flex-direction:column;
+  }
+
+  .exercise-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction:column;
+  }
+
+  .exercise-info {
+    flex: 1; 
+    text-align: left !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .exercise-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .ManageExercisesContainer h2{
+    font-size:20px !important;
+    width:100%;
+  }
+
+
 }

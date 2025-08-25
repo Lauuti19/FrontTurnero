@@ -75,8 +75,8 @@ const ManagePlans = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h2 id='Title-Planes'>Editar/Eliminar Planes</h2>
-      <div>
+      <h2 id='Title-Planes'>Planes</h2>
+      <div className="plans-list">
         {planes.map((p) => (
           <div key={p.id_plan} className="plan-item">
             {editingPlanId === p.id_plan ? (

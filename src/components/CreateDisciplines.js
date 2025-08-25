@@ -31,7 +31,7 @@ const CreateDiscipline = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h1>Crear Disciplina</h1>
+      <h2>Crear disciplina</h2>
       <form className="form-group-class" onSubmit={handleCreateDiscipline}>
         <label>Nombre:</label>
         <input

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #27272a;
+  background-color: #27272a !important;
   color: white;
   padding: 1.7rem;
   border-radius: 10px;
@@ -12,21 +12,24 @@
   max-width: 600px;
   box-sizing: border-box;
 }
-
 .timer-container h2 {
   font-size: 2rem;
   font-family: 'Brigends';
-  margin-bottom: 1rem;
+  padding:0px;
   text-align: center;
 }
 
 .timer-controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction:column;
   gap: 1rem;
   justify-content: center;
-  margin-bottom: 1rem;
-  width: 100%;
+  align-items: center;
+  margin: 0 auto;
+  width: 500px;
+  padding: 20px 0px;
+  border-radius: 5px;
+  background-color:#222;
 }
 
 .timer-controls input {
@@ -48,7 +51,7 @@
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
-  max-width: 250px;
+  max-width: 350px;
 }
 
 .timer-btn:hover {
@@ -66,11 +69,14 @@
   .timer-controls {
     flex-direction: column;
     align-items: center;
+    padding:0px;
+    max-width:200px;
   }
 
   .timer-controls input {
     width: 80%;
-    max-width: 250px;
+    max-width:200px;
+    margin:10px 0px;
   }
 
   .timer-btn {

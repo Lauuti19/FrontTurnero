@@ -60,6 +60,7 @@ const CreatePlan = () => {
 
   return (
     <div className="CreateClassContainer">
+      <h2>Crear Plan</h2>
       <form className="form-group-class" onSubmit={handleCreatePlan}>
         <label>Nombre:</label>
         <input
@@ -96,17 +97,19 @@ const CreatePlan = () => {
         <label>Disciplinas:</label>
         <div className="checkbox-group">
           {disciplinas.map((d) => (
-            <div key={d.id_disciplina}>
+            <div key={d.id_disciplina} className="div-disciplinas">
               <label>
-                <input
+                
+                {d.disciplina}
+              </label>
+              <input
                   type="checkbox"
                   value={d.id_disciplina}
                   checked={formData.disciplines.includes(d.id_disciplina)}
                   onChange={handleDisciplineChange}
-                  classname="checkbox-input"
+                  className="checkbox-input"
                 />
-                {d.disciplina}
-              </label>
+              
             </div>
           ))}
         </div>

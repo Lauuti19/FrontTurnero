@@ -1,0 +1,45 @@
+.timer-page-container{
+    background-color: #18181b;
+    color:green;
+    margin:0px;
+    padding:20px 0px;
+}
+.timer-content{
+    background-color:white;
+    width:800px;
+    margin:0 auto;
+    
+}
+.timer-content h2{
+    padding:20px 0px;
+    margin:0px;
+}
+.timer-selected{
+    padding:20px 0px;
+}
+.timer-page-controls{
+  display: flex;
+  flex-direction:column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 600px;
+  padding: 20px 0px;
+  border-radius: 5px;
+  background-color:#222;
+}
+@media (max-width:768px){
+    .timer-content{
+        width:90vw !important;
+    }
+    .timer-content{
+        width:100%;
+    }
+    .timer-page-controls{
+        width:100%;
+    }
+    .timer-page-controls button{
+        margin: 5px 0px;
+    }
+}

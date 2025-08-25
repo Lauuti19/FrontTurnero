@@ -35,6 +35,7 @@ const Sidebar = () => {
             className='OpcionSidebar'
             onClick={() => setShowGestionSubmenu(prev => !prev)}
             type="button"
+            id="boton-gestion"
           >
             Gestión
             {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}

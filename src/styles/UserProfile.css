@@ -333,4 +333,9 @@
   .botonGuardarPerfil{
     font-size: 20px;
   }
+  .edit-user-title{
+    font-size: 30px;
+    word-break:normal;
+    text-align: center;
+  }
 }

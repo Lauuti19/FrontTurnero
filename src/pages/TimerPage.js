@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import TimerModeSelector from '../components/timers/TimerModeSelector';
+import '../styles/TimerPage.css';
 
 const TimerPage = () => {
   const [mode, setMode] = useState('');
 
   return (
-    <div>
-      <h2 style={{ textAlign: 'center', marginTop: '1rem' }}>Selecciona un modo de temporizador</h2>
-      <div className="timer-controls" style={{ justifyContent: 'center' }}>
+    <div className="timer-page-container">
+      <div className="timer-content">
+      <h2>Selecciona un modo de temporizador</h2>
+      <div className="timer-page-controls" style={{ justifyContent: 'center' }}>
         {['Tabata', 'AMRAP', 'ForTime', 'EMOM', 'OTM'].map(tipo => (
           <button
             key={tipo}
@@ -18,7 +20,10 @@ const TimerPage = () => {
           </button>
         ))}
       </div>
-      <TimerModeSelector mode={mode} />
+      <div className="timer-selected">
+        <TimerModeSelector mode={mode} />
+      </div>
+      </div>
     </div>
   );
 };

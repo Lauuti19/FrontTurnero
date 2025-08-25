@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
+import { HiOutlineX } from "react-icons/hi";
 import '../styles/ManageExercises.css'; 
 
 const ManageExercises = () => {
@@ -87,40 +88,70 @@ const ManageExercises = () => {
   return (
     <div className="ManageExercisesContainer">
       <h2>Ejercicios</h2>
-      <div className="checkbox-group">
+      <div className="info-group">
         {exercises.map((e) => (
-          <div key={e.id_ejercicio} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {editing === e.id_ejercicio ? (
-              <>
-                <input
-                  type="text"
-                  name="name"
-                  value={editForm.name}
-                  onChange={handleEditChange}
-                  required
-                />
-                <input
-                  type="text"
-                  name="link"
-                  value={editForm.link}
-                  onChange={handleEditChange}
-                  placeholder="Link (opcional)"
-                />
-                <button onClick={() => handleEditSave(e.id_ejercicio)}>Guardar</button>
-                <button onClick={handleCancelEdit}>Cancelar</button>
-              </>
-            ) : (
-              <>
-                <h3 style={{ margin: 0 }}>{e.nombre}</h3>
-                {e.link && <a href={e.link} target="_blank" rel="noopener noreferrer">{e.link}</a>}
-                <div className='div-buttons'>
-                <button onClick={() => handleEditClick(e)} title="Editar"><FaEdit /></button>
-                <button onClick={() => handleDelete(e.id_ejercicio)} title="Eliminar"><FaTrash /></button>
-                </div>
-              </>
-            )}
+          <div key={e.id_ejercicio} className="exercise-row">
+            {/* Info del ejercicio */}
+            <div className="exercise-info">
+              {editing === e.id_ejercicio ? (
+                <>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editForm.name}
+                    onChange={handleEditChange}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="link"
+                    value={editForm.link}
+                    onChange={handleEditChange}
+                    placeholder="Link (opcional)"
+                  />
+                </>
+              ) : (
+                <>
+                  <h3>{e.nombre}</h3>
+                  {e.link && (
+                    <a
+                      href={e.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link-ejercicio"
+                    >
+                      {e.link}
+                    </a>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Botones */}
+            <div className="exercise-buttons">
+              {editing === e.id_ejercicio ? (
+                <>
+                  <button onClick={() => handleEditSave(e.id_ejercicio)} title="Guardar">
+                    <FaSave />
+                  </button>
+                  <button onClick={handleCancelEdit} title="Cancelar">
+                    <HiOutlineX />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => handleEditClick(e)} title="Editar">
+                    <FaEdit />
+                  </button>
+                  <button onClick={() => handleDelete(e.id_ejercicio)} title="Eliminar">
+                    <FaTrash />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         ))}
+
       </div>
     </div>
   );

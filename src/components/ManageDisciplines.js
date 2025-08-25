@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
+import { HiOutlineX } from "react-icons/hi";
 import '../styles/ManageExercises.css'; 
 
 const ManageDisciplines = () => {
@@ -81,8 +82,8 @@ const ManageDisciplines = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h2>Editar/Eliminar Disciplinas</h2>
-      <div className="checkbox-group">
+      <h2>Disciplinas</h2>
+      <div className="info-dis-group">
         {disciplinas.map((d) => (
           <div key={d.id_disciplina} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {editing === d.id_disciplina ? (
@@ -93,8 +94,10 @@ const ManageDisciplines = () => {
                   onChange={e => setEditName(e.target.value)}
                   required
                 />
+                <div className='div-buttons'>
                 <button onClick={() => handleEditSave(d.id_disciplina)} title="Guardar"><FaSave /></button>
-                <button onClick={handleCancelEdit} title="Cancelar">Cancelar</button>
+                <button onClick={handleCancelEdit} title="Cancelar"><HiOutlineX /></button>
+</div>
               </>
             ) : (
               <>

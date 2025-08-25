@@ -120,37 +120,87 @@
 .botonReservar{
     width: 100%;
 }
+.clase-fecha-mobile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fecha-numeros {
+  display: flex;
+  gap: 4px;
+}
 
 @media (max-width: 768px) {
-    .ClassSchedule-container{
-        overflow-x: hidden;
-        width:100%
-    }
-    .ClassSchedule-container-title {
-        font-size: 1.5rem;
-        justify-content: center;
-        align-items: center;
-    }
-    .ClassSchedule-container-title span{
-        padding-left:2px;
-        padding-right:2px;
-    }
-    .Class-Schedule-item {
-        flex-direction: column;
-        align-items: center;
-        display: flex;
-        justify-content:center;
-        width:90%;
-        
-    }
-    .Contenido-Map-Clases1, .Contenido-Map-Clases2 {
-        width: 100%;
-        text-align: center;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-    }
-    .botonReservar {
-        width: 90%;
-    }
+  .ClassSchedule-container {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .ClassSchedule-container-title {
+    font-size: 1.5rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fecha {
+    display: flex;
+    flex-direction: column !important;
+  }
+
+  .clase-fecha-mobile {
+    flex-direction: column; /* Día arriba, números abajo */
+    text-align: center;
+  }
+
+  .fecha-numeros {
+    flex-direction: row; /* Los números siguen en fila */
+    justify-content: center;
+  }
+
+  .ClassSchedule-container-title span {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .Class-Schedule-item {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .Contenido-Map-Clases1 {
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* --- Transición del acordeón --- */
+  .Contenido-Map-Clases2 {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: scaleY(0.9);
+    transition: all 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 2rem; /* padding horizontal fijo */
+  }
+
+  .Class-Schedule-item.expanded .Contenido-Map-Clases2 {
+    max-height: 300px;   /* valor suficientemente grande */
+    opacity: 1;
+    transform: scaleY(1);
+    padding: 0.5rem 2rem;
+  }
+
+  .botonReservar {
+    width: 90%;
+  }
 }

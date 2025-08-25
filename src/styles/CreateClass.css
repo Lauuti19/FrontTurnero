@@ -5,26 +5,48 @@
   margin: 0 auto;
   color: #292927;
 }
+.CreateClassContainer h1{
+  color: black !important;
+  border-bottom: solid 1px black;
+  max-width:600px;
+  width:100%;
+  text-align:center !important;
+  margin:0 auto;
+  display:flex;
+  font-family: 'Brigends';
+  font-weight: lighter;
+  letter-spacing: 0.05rem;
+  padding:20px 0px;
 
+}
 .create-class-container h1,
 .create-class-container h2 {
-  font-size: 2rem;
   margin-bottom: 1.5rem;
   color: #18181b;
   text-align: center;
 }
 
 .form-group-class {
-  background-color: #ececf0;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background-color: white;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  width: 100%;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  padding:20px 10px;
+  gap: 1.2rem;
 }
-
+.form-group-class input, .form-group-class textarea{
+  background-color: #3f3f46;
+  color: white;
+}
 .form-group-class label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: bolder;
+  font-size: 1.17em;
   color: #27272a;
 }
 
@@ -32,7 +54,7 @@
 .form-group-class select,
 .form-group-class textarea {
   width: 100%;
-  padding: 0.8rem;
+  padding: 15px 0px;
   margin-bottom: 1.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -54,17 +76,24 @@
   font-size: 1rem;
   width: 100%;
 }
-
+.plans-list{
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+}
 .plan-item {
   background-color: white;
-  padding: 1.5rem;
+  padding: 20px 10px;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin: 20px 0px;
+  width:100%;
+  max-width:600px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .plan-item h3 {
-  margin-top: 0;
+  margin:0px;
   color: #27272a;
 }
 
@@ -92,10 +121,8 @@
 }
 
 .checkbox-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+   display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas */
 }
 .checkbox-group div label{
   display: flex !important;
@@ -103,14 +130,14 @@
   justify-content: center!important;
   color:white;
   height: auto;
-  
+}
+.div-disciplinas{
+  width:250px !important;
+  height:40px;
 }
 .checkbox-group input {
   width: auto;
-  margin-right: 0.5rem;
-  margin-bottom: 0;
   height: 20px;
-  background-color: red;
 }
 
 .date-picker {
@@ -151,18 +178,53 @@
   color: #18181b;
   text-align: center;
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .CreateClassContainer h1,
+.CreateClassContainer h2 {
+  font-size:20px !important;
+  width:100% !important;
+}
   .form-group-class{
-    padding: 10px !important;
+    padding: 10px 0px;
     box-sizing: border-box !important;
+    justify-content:center;
+    align-items:center;
+    display:flex;
+    flex-direction:column;
+    width:90%;
   }
   .form-group-class input,
   .form-group-class select,
   .form-group-class textarea {
-    width: 100% !important;
-    margin-bottom: 1rem !important;
+    width: 90% !important;
+    box-sizing: border-box; 
+    padding: 20px 5px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    appearance: none; 
+  }
+
+  .form-group-class input[type="date"],
+  .form-group-class input[type="time"],
+  .form-group-class input[type="number"] {
+    width: 90% !important;
+    min-height: 2.5rem; 
   }
   .checkbox-group{
     width: 99% !important;
+    display: grid !important;
+    grid-template-columns: repeat(1, 1fr) !important; /* 2 columnas */
+  }
+  input.checkbox-input{
+    width:20px !important;
+    height:10px !important;
+  }
+  .btn-primary{
+    width:90% !important;
+  }
+  .plan-item{
+    width:80%;
   }
 }
