@@ -250,9 +250,20 @@
 
 @media (max-width:768px) {
   /*estilos del perfil*/
-  .mobile-info-container{
-    display:block;
-    min-height: 50vh;
+  .mobile-info-container {
+    display: block;
+    width: 100%;
+    min-height: auto;
+    background-color: #ececf0; /* 👈 mismo fondo que la caja */
+    border-radius: 10px;       /* opcional, para integrarlo */
+    margin-top: 10px;
+    padding: 10px;
+  }
+  .edit-user-title{
+    font-size:22.5px;
+  }
+  #swal2-title{
+    font-size: 20px !important;
   }
   .separador-user{
   display:none !important;
@@ -270,12 +281,13 @@
     width:100%;
     font-family:'Brigends';
     font-size: 15px;
+    color: rgb(29, 28, 28);
   }
   .mobile-options button.active-tab {
   background-color: #fbf106;
   color: rgb(29, 28, 28);
   font-weight: bolder;
-}
+  }
 
   .mobile-options button:hover {
     background-color: #fbf106;
@@ -302,13 +314,25 @@
   .user-profile-box{
     width: 80vw;
     padding:10px 20px;
+    display: flex !important;
+    flex-direction: column !important;
   }
+
   /*estilos de editar*/
-  .user-profile-container {
-    width:100%;
-    padding:0px;
-    margin:0px;
-    box-sizing:content-box;
+   .user-profile-container {
+    display: flex;
+    flex-direction: column; /* 👈 apilar los hijos */
+    
+  }
+
+  .user-profile-box {
+    margin-bottom: 20px; /* separación con el menú mobile */
+  }
+
+  .mobile-info-container {
+    margin: 0px;
+    padding:20px 0px;
+    min-height: auto;     /* que se adapte al contenido */
   }
   .edit-user-box{
     width: 90vw !important;
