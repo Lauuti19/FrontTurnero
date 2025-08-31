@@ -30,6 +30,7 @@ const Sidebar = () => {
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
 
+
        <div className="sb-group">
           <button
             className='OpcionSidebar'
@@ -49,6 +50,7 @@ const Sidebar = () => {
               <Link to="/manager/rutinas"><button className="sb-submenu-item">Rutinas</button></Link>
               <Link to="registrar-cuota"><button className="sb-submenu-item">Cuotas</button></Link>
               <Link to="/manager/ejercicios"><button className="sb-submenu-item">Ejercicios</button></Link>
+
             </div>
           )}
         </div>
@@ -56,6 +58,7 @@ const Sidebar = () => {
 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
         <Link to="/rutinas" className='OpcionSidebar'>Rutinas</Link>
+        <Link to="/Movimientos" className='OpcionSidebar'>Movimientos</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
       </div>
@@ -65,6 +68,8 @@ const Sidebar = () => {
       <div className='OpcionesSidebar'>
         <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
         <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
+        <Link to="/Movimientos" className='OpcionSidebar'>Movimientos</Link>
+
         <Link to="#" className='OpcionSidebar'>Agenda</Link>
 
         <div className="sb-group">

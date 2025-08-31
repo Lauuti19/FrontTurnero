@@ -1,0 +1,179 @@
+/* Contenedor de la sección */
+.cash-section {
+  margin-bottom: 2rem;
+}
+
+/* Contenedor responsive */
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Tabla */
+.cash-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: #18181b;
+}
+
+.cash-table th,
+.cash-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.cash-table thead {
+  background-color: #fbf106;
+  color: #18181b;
+}
+
+.cash-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.cash-table tbody tr:hover {
+  background-color: #e0e0e0;
+}
+.cash-type-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #fff;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.cash-type-badge.ingreso {
+  background-color: #2ecc71; 
+}
+
+.cash-type-badge.egreso {
+  background-color: #e74c3c; 
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cash-table th,
+  .cash-table td {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.tabs button.active {
+  background: #fbf106;
+  color: #18181b;
+}
+
+.date-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.date-filters input,
+.date-filters button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.date-filters button {
+  background: #292927;
+  color: white;
+  cursor: pointer;
+}
+/* ===== Cards (tarjetas) resumen de caja) ===== */
+.cash-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.cash-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.cash-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  border-color: #e6e6e6;
+}
+
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280; /* gris */
+  margin-bottom: 6px;
+}
+
+.card-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .2px;
+  color: #18181b;
+}
+
+.card-sub {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #8b8b8b;
+}
+
+/* Borde de acento por tipo */
+.cash-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0; bottom: 0;
+  width: 5px;
+  border-radius: 14px 0 0 14px;
+}
+
+.card--efectivo::before { background: #22c55e; }  /* verde */
+.card--ingresos::before { background: #16a34a; }  /* verde más oscuro */
+.card--egresos::before  { background: #ef4444; }  /* rojo */
+.card--saldo::before    { background: #fbf106; }  /* tu amarillo de cabecera */
+
+/* Opcional: contenedor de la página si lo usás en el wrapper */
+.cash-page-container {
+  padding: 1rem;
+}
+
+.cash-page-box {
+  background: transparent;
+}
+
+.cash-page-title {
+  margin: 0 0 1rem;
+}
