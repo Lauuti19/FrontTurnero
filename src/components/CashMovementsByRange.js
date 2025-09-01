@@ -8,6 +8,21 @@ const CashMovementsByRange = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  // En CashMovementsToday.js, CashMovementsByRange.js y CashMovementsAll.js
+// Reemplazar los estados de carga y vacío:
+
+    if (loading) return (
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
+        <p>Cargando movimientos...</p>
+      </div>
+    );
+
+    if (error) return (
+      <div className="error-state">
+        <p style={{ color: "#ef4444" }}>{error}</p>
+      </div>
+    );
   const fetchByRange = () => {
     const token = localStorage.getItem("token");
 

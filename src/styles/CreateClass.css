@@ -1,34 +1,35 @@
 /* CreateClass.css */
-.create-class-container {
+.CreateClassContainer {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
   color: #292927;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-.CreateClassContainer h1{
-  color: black !important;
-  border-bottom: solid 1px black;
-  max-width:600px;
-  width:100%;
-  text-align:center !important;
-  margin:0 auto;
-  display:flex;
-  font-family: 'Brigends';
-  font-weight: lighter;
-  letter-spacing: 0.05rem;
-  padding:20px 0px;
 
-}
-.create-class-container h1,
-.create-class-container h2 {
+.CreateClassContainer h1,
+.CreateClassContainer h2 {
   margin-bottom: 1.5rem;
   color: #18181b;
   text-align: center;
 }
 
+#Title-Clases, #Title-Planes {
+  color: black;
+  border-bottom: solid 2px #fbf106;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto 2rem;
+  padding: 10px 0;
+  font-family: 'Brigends', 'Segoe UI', sans-serif;
+  font-weight: lighter;
+  letter-spacing: 0.05rem;
+}
+
 .form-group-class {
   background-color: white;
-  padding: 2rem 3rem;
+  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
   max-width: 600px;
@@ -36,29 +37,37 @@
   margin: 40px auto;
   display: flex;
   flex-direction: column;
-  padding:20px 10px;
   gap: 1.2rem;
 }
-.form-group-class input, .form-group-class textarea{
+
+.form-group-class input, 
+.form-group-class select, 
+.form-group-class textarea {
   background-color: #3f3f46;
   color: white;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 5px;
 }
+
 .form-group-class label {
   display: block;
   font-weight: bolder;
-  font-size: 1.17em;
+  font-size: 1.1em;
   color: #27272a;
+  margin-bottom: 0.5rem;
 }
 
 .form-group-class input,
 .form-group-class select,
 .form-group-class textarea {
   width: 100%;
-  padding: 15px 0px;
+  padding: 15px;
   margin-bottom: 1.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .form-group-class textarea {
@@ -75,94 +84,204 @@
   font-weight: bold;
   font-size: 1rem;
   width: 100%;
+  transition: background-color 0.3s;
 }
-.plans-list{
-  display:flex;
-  flex-direction:column;
+
+.form-group-class button:hover {
+  background-color: #e0d705;
+}
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1.5rem;
 }
+
 .plan-item {
   background-color: white;
-  padding: 20px 10px;
-  border-radius: 6px;
-  margin: 20px 0px;
-  width:100%;
-  max-width:600px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.plan-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
 .plan-item h3 {
-  margin:0px;
+  margin: 0 0 1rem 0;
   color: #27272a;
+  font-size: 1.4rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.5rem;
 }
 
 .plan-item p {
   margin: 0.5rem 0;
   color: #666;
+  line-height: 1.5;
 }
 
-.plan-item button {
-  padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
+.plan-item strong {
+  color: #444;
+}
+
+.edit-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.view-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin: 0 auto;
+  justify-content: flex-end;
+}
+
+.action-buttons button {
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  width:150px;
 }
 
-.plan-item button:first-of-type {
+.btn-edit {
   background-color: #4CAF50;
   color: white;
 }
 
-.plan-item button:last-of-type {
+.btn-edit:hover {
+  background-color: #3e8e41;
+}
+
+.btn-delete {
   background-color: #f44336;
   color: white;
 }
 
-.checkbox-group {
-   display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas */
+.btn-delete:hover {
+  background-color: #d32f2f;
 }
-.checkbox-group div label{
-  display: flex !important;
-  align-items: center!important;
-  justify-content: center!important;
-  color:white;
-  height: auto;
+
+.btn-save {
+  background-color: #2196F3;
+  color: white;
 }
-.div-disciplinas{
-  width:250px !important;
-  height:40px;
+
+.btn-save:hover {
+  background-color: #0b7dda;
 }
-.checkbox-group input {
-  width: auto;
-  height: 20px;
+
+.btn-cancel {
+  background-color: #9e9e9e;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #757575;
 }
 
 .date-picker {
-  padding: 20px 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
 }
 
 .date-picker label {
-  display: block;
-  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
   font-weight: bold;
-  font-size: 2rem;
-  color: #ccc;
+  font-size: 1.2rem;
+  color: #333;
 }
 
 .date-picker input {
-  width: auto;
   padding: 0.8rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  text-align: center;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.checkbox-group div {
+  display: flex;
+  align-items: center;
+  background-color: #3f3f46;
+  padding: 0.8rem;
+  border-radius: 5px;
+}
+
+.checkbox-group div label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin: 0;
+  font-weight: normal;
+  width: 100%;
+}
+
+.checkbox-group input {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.div-disciplinas {
+  width: 250px;
+  height: 40px;
 }
 
 .anotar-usuario-a-clase {
@@ -178,53 +297,81 @@
   color: #18181b;
   text-align: center;
 }
+
+/* Media Queries para Responsive */
 @media (max-width: 768px) {
-  .CreateClassContainer h1,
-.CreateClassContainer h2 {
-  font-size:20px !important;
-  width:100% !important;
-}
-  .form-group-class{
-    padding: 10px 0px;
-    box-sizing: border-box !important;
-    justify-content:center;
-    align-items:center;
-    display:flex;
-    flex-direction:column;
-    width:90%;
+  .CreateClassContainer {
+    padding: 1rem;
   }
+  
+  .CreateClassContainer h1,
+  .CreateClassContainer h2 {
+    font-size: 1.5rem;
+  }
+  
+  #Title-Clases, #Title-Planes {
+    font-size: 1.3rem;
+    max-width: 90%;
+  }
+  
+  .form-group-class {
+    padding: 1.5rem;
+    width: 90%;
+    margin: 20px auto;
+  }
+  
   .form-group-class input,
   .form-group-class select,
   .form-group-class textarea {
-    width: 90% !important;
-    box-sizing: border-box; 
-    padding: 20px 5px;
-    margin-bottom: 1.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 100%;
+    padding: 12px;
+  }
+  
+  .checkbox-group {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
+  .plan-item {
+    width: 90%;
+    padding: 1.2rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+    min-width: 200px;
+    justify-content: center;
+  }
+  
+  .date-picker {
+    width: 90%;
+    padding: 1rem;
+  }
+  
+  .date-picker label {
     font-size: 1rem;
-    appearance: none; 
   }
+}
 
-  .form-group-class input[type="date"],
-  .form-group-class input[type="time"],
-  .form-group-class input[type="number"] {
-    width: 90% !important;
-    min-height: 2.5rem; 
+@media (max-width: 480px) {
+  .CreateClassContainer h1,
+  .CreateClassContainer h2 {
+    font-size: 1.3rem;
   }
-  .checkbox-group{
-    width: 99% !important;
-    display: grid !important;
-    grid-template-columns: repeat(1, 1fr) !important; /* 2 columnas */
+  
+  .form-group-class {
+    padding: 1rem;
   }
-  input.checkbox-input{
-    width:20px !important;
-    height:10px !important;
+  
+  .plan-item h3 {
+    font-size: 1.2rem;
   }
-  .btn-primary{
-    width:90% !important;
-  }
-  .plan-item{
-    width:80%;
+  
+  .date-picker {
+    padding: 0.8rem;
   }
 }

@@ -3,16 +3,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
     transition: background-color 0.6s ease;
 }
+
+.ClassSchedule-container.embedded {
+    background-color: transparent;
+    justify-content: flex-start;
+}
+
 .ClassSchedule-container-box{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 20px;
-    
+    width: 100%;
 }
+
 .ClassSchedule-container-title{
     color: #fbf106;
     font-size: 3rem;
@@ -33,8 +42,9 @@
     justify-content: center;
     gap: 30px;
     margin-top: 20px;
-    
+    width: 100%;
 }
+
 .Class-Schedule-item{
     display: flex;
     background-color: #18181b;
@@ -45,25 +55,35 @@
     margin-bottom: 1.2rem;
     transition: background 0.4s;
 }
+
+.ClassSchedule-container.embedded .Class-Schedule-item {
+    width: 100%;
+    max-width: 500px;
+}
+
 .Contenido-Map-Clases1{
     display: flex;
     gap: 8px;
-    padding: 1rem 2.0rem;
+    padding: 10px 20px;
     align-items: center;
 }
+
 #Horario{
     font-size: 1.8rem;
 }
+
 .Contenido-Map-Clases2{
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: -10px;
-    padding: 0.5rem 2.0rem;
+    padding: 10px 20px;
 }
+
 .Contenido-Map-Clases h3{
     font-size: 15px;
 }
+
 .botonDias{
     background-color: #e9e9e000;
     border: none;
@@ -78,6 +98,7 @@
     margin: 10px 2px;
     cursor: pointer;
 }
+
 .botonReservar{
     background-color: #fbf106;
     font-family: 'Phonk';
@@ -87,28 +108,33 @@
     height: 60px;
     border: none;
 }
+
 .botonReservar:hover{
     background-color: #e5e7eb00;
     color: #fbf106;
     box-shadow: #fbf106 0px 0px 4px;
 }
+
 .botonReservar.no-disponible {
   background: #bdbdbd ;
   color: #494646 !important;
   cursor: not-allowed ;
   pointer-events: none;
 }
+
 .guion-fecha {
-  font-family: 'Courier New', Courier, monospace; /* O la fuente que prefieras */
+  font-family: 'Courier New', Courier, monospace;
   margin: 0 6px;
   font-weight: bold;
   font-size: 1em;
 }
+
 .fecha-numero {
   font-family: 'Phonk';
   font-weight: bold;
   font-size: 1em;
 }
+
 .boton-ver-anotados{
   background-color: transparent;
   border: none;
@@ -117,9 +143,11 @@
   font-size: 2rem;
   color: white;
 }
+
 .botonReservar{
     width: 100%;
 }
+
 .clase-fecha-mobile {
   display: flex;
   align-items: center;
@@ -137,6 +165,10 @@
     width: 100%;
   }
 
+  .ClassSchedule-container.embedded {
+    padding: 0 10px;
+  }
+
   .ClassSchedule-container-title {
     font-size: 1.5rem;
     justify-content: center;
@@ -149,12 +181,12 @@
   }
 
   .clase-fecha-mobile {
-    flex-direction: column; /* Día arriba, números abajo */
+    flex-direction: column;
     text-align: center;
   }
 
   .fecha-numeros {
-    flex-direction: row; /* Los números siguen en fila */
+    flex-direction: row;
     justify-content: center;
   }
 
@@ -173,13 +205,16 @@
     transition: all 0.3s ease;
   }
 
+  .ClassSchedule-container.embedded .Class-Schedule-item {
+    width: 100%;
+  }
+
   .Contenido-Map-Clases1 {
     justify-content: center;
     width: 100%;
     padding: 1rem;
   }
 
-  /* --- Transición del acordeón --- */
   .Contenido-Map-Clases2 {
     max-height: 0;
     overflow: hidden;
@@ -190,11 +225,11 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding: 0 2rem; /* padding horizontal fijo */
+    padding: 0 2rem;
   }
 
   .Class-Schedule-item.expanded .Contenido-Map-Clases2 {
-    max-height: 300px;   /* valor suficientemente grande */
+    max-height: 300px;
     opacity: 1;
     transform: scaleY(1);
     padding: 0.5rem 2rem;

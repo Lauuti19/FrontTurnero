@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
-import '../styles/CreateClass.css';
+import { FaPlusCircle } from 'react-icons/fa';
+import '../styles/CreateClasses.css';
 
 const CreateClass = ({ onClassCreated }) => {
   const [disciplinas, setDisciplinas] = useState([]);
@@ -10,11 +10,16 @@ const CreateClass = ({ onClassCreated }) => {
     hora: '',
     capacidad_max: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchDisciplinas = useCallback(async () => {
-    const res = await fetch(`http://localhost:3001/api/disciplinas`);
-    const data = await res.json();
-    setDisciplinas(data);
+    try {
+      const res = await fetch(`http://localhost:3001/api/disciplinas`);
+      const data = await res.json();
+      setDisciplinas(data);
+    } catch (error) {
+      console.error("Error fetching disciplines:", error);
+    }
   }, []);
 
   useEffect(() => {
@@ -28,6 +33,8 @@ const CreateClass = ({ onClassCreated }) => {
 
   const handleCreateClass = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    
     try {
       const response = await fetch("http://localhost:3001/api/classes/create", {
         method: "POST",
@@ -46,36 +53,87 @@ const CreateClass = ({ onClassCreated }) => {
     } catch (error) {
       console.error("Error:", error);
       alert("Error de conexión con el servidor.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="CreateClassContainer">
-      <form className="form-group-class" onSubmit={handleCreateClass}>
-        <label>Disciplina:</label>
-        <select name="id_disciplina" value={formData.id_disciplina} onChange={handleChange} required>
-          <option value="">Seleccione una disciplina</option>
-          {disciplinas.map((d) => (
-            <option key={d.id_disciplina} value={d.id_disciplina}>
-              {d.disciplina}
-            </option>
-          ))}
-        </select>
-        <label>Día:</label>
-        <select name="id_dia" value={formData.id_dia} onChange={handleChange} required>
-          <option value="">Seleccione un día</option>
-          <option value="1">Lunes</option>
-          <option value="2">Martes</option>
-          <option value="3">Miércoles</option>
-          <option value="4">Jueves</option>
-          <option value="5">Viernes</option>
-          <option value="6">Sábado</option>
-        </select>
-        <label>Hora:</label>
-        <input type="time" name="hora" value={formData.hora} onChange={handleChange} required />
-        <label>Capacidad Máxima:</label>
-        <input type="number" name="capacidad_max" value={formData.capacidad_max} onChange={handleChange} required placeholder='Ej: 20' />
-        <button type="submit">Crear Clase</button>
+    <div className="create-class-container">
+      <h2 className="create-class-title">Crear Nueva Clase</h2>
+      
+      <form className="create-class-form" onSubmit={handleCreateClass}>
+        <div className="form-field">
+          <label htmlFor="id_disciplina">Disciplina:</label>
+          <select 
+            id="id_disciplina"
+            name="id_disciplina" 
+            value={formData.id_disciplina} 
+            onChange={handleChange} 
+            required
+          >
+            <option value="">Seleccione una disciplina</option>
+            {disciplinas.map((d) => (
+              <option key={d.id_disciplina} value={d.id_disciplina}>
+                {d.disciplina}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="id_dia">Día:</label>
+          <select 
+            id="id_dia"
+            name="id_dia" 
+            value={formData.id_dia} 
+            onChange={handleChange} 
+            required
+          >
+            <option value="">Seleccione un día</option>
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="hora">Hora:</label>
+          <input 
+            id="hora"
+            type="time" 
+            name="hora" 
+            value={formData.hora} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="capacidad_max">Capacidad Máxima:</label>
+          <input 
+            id="capacidad_max"
+            type="number" 
+            name="capacidad_max" 
+            value={formData.capacidad_max} 
+            onChange={handleChange} 
+            required 
+            placeholder="Ej: 20" 
+            min="1"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          className="create-class-btn"
+          disabled={isSubmitting}
+        >
+          <FaPlusCircle className="btn-icon" />
+          {isSubmitting ? 'Creando...' : 'Crear Clase'}
+        </button>
       </form>
     </div>
   );

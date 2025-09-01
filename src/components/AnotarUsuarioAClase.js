@@ -9,10 +9,24 @@ const AnotarUsuarioAClase = () => {
 
   return (
     <div className="anotar-usuario-a-clase">
-      <h1>Anotar Usuario a Clase</h1>
+      <h2>Anotar Alumno</h2>
       <div>
         <Buscador onUsuarioSeleccionado={setUsuarioSeleccionado} />
-        <ClassSchedule userId={usuarioSeleccionado?.id_usuario} />
+        
+        {usuarioSeleccionado && (
+          <div className="usuario-info">
+            <p>Seleccionado: <strong>{usuarioSeleccionado.nombre}</strong></p>
+          </div>
+        )}
+        
+        <ClassSchedule 
+          userId={usuarioSeleccionado?.id_usuario}
+          isEmbedded={true}
+          showHeader={false}
+          adminMode={true} // ← Nueva prop para modo administrador
+          customContainerStyle={{ padding: '10px', backgroundColor: 'transparent' }}
+          customItemStyle={{ width: '100%', maxWidth: 'none' }}
+        />
       </div>
     </div>
   );

@@ -6,12 +6,7 @@ import { FaUsers } from 'react-icons/fa';
 import RegisterButton from './RegisterButton';
 import {useNavigate} from 'react-router-dom';
 
-
-//Mapeo de las clases 
-
-
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
 
 const ClassesUser = () => {
   const [currentDate, setCurrentDate] = useState(() => {
@@ -24,11 +19,14 @@ const ClassesUser = () => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [expandedClassId, setExpandedClassId] = useState(null);
   const navigate = useNavigate();
-  
-
 
   const { getUserId } = useAuth();
+
+  const toggleExpand = (id) => {
+    setExpandedClassId(expandedClassId === id ? null : id);
+  };
 
   const openUsersModal = (clase) => {
     setSelectedClass(clase);
@@ -42,62 +40,75 @@ const ClassesUser = () => {
 
   const formatDateForAPI = (date) => date.toISOString().split("T")[0];
 
+  const fetchClasses = async () => {
+    setLoading(true);
+    const formattedDate = formatDateForAPI(currentDate);
+    const userId = getUserId();
+
+    if (!userId) {
+      console.error("No se encontró el id del usuario en localStorage");
+      setClasses([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3001/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`);
+      const data = await res.json();
+      setClasses(data);
+    } catch (error) {
+      console.error('Error al obtener las clases:', error);
+      setClasses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchClasses = async () => {
-      setLoading(true);
-      const formattedDate = formatDateForAPI(currentDate);
-      const userId = getUserId();
-
-      if (!userId) {
-        console.error("No se encontró el id del usuario en localStorage");
-        setClasses([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(`http://localhost:3001/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`);
-        const data = await res.json();
-        setClasses(data);
-      } catch (error) {
-        console.error('Error al obtener las clases:', error);
-        setClasses([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchClasses();
-  }, [currentDate, getUserId]);
+  }, [currentDate, getUserId()]);
 
   const handlePreviousDay = () => {
-  const newDate = new Date(currentDate);
-  do {
-    newDate.setDate(newDate.getDate() - 1);
-  } while (newDate.getDay() === 0); // 0 es domingo
-  setCurrentDate(newDate);
-};
+    const newDate = new Date(currentDate);
+    do {
+      newDate.setDate(newDate.getDate() - 1);
+    } while (newDate.getDay() === 0);
+    setCurrentDate(newDate);
+  };
 
-const handleNextDay = () => {
-  const newDate = new Date(currentDate);
-  do {
-    newDate.setDate(newDate.getDate() + 1);
-  } while (newDate.getDay() === 0); // 0 es para que se saltee el domingod
-  setCurrentDate(newDate);
-};
+  const handleNextDay = () => {
+    const newDate = new Date(currentDate);
+    do {
+      newDate.setDate(newDate.getDate() + 1);
+    } while (newDate.getDay() === 0);
+    setCurrentDate(newDate);
+  };
 
+  // Función para mobile: manejar el click en el botón de ver anotados
+  const handleMobileUsersClick = (e, clase) => {
+    e.stopPropagation();
+    if (window.innerWidth <= 768) {
+      // En mobile: abrir modal directamente
+      openUsersModal(clase);
+    } else {
+      // En desktop: comportamiento normal (expandir)
+      toggleExpand(clase.id_clase);
+    }
+  };
 
   const formattedDay = (
-    <>
-      {daysOfWeek[currentDate.getDay()]}{" "}
-      <span className="fecha-numero">
-        {String(currentDate.getDate()).padStart(2, '0')}
-      </span>
-      <span className="guion-fecha">-</span>
-      <span className="fecha-numero">
-        {String(currentDate.getMonth() + 1).padStart(2, '0')}
-      </span>
-    </>
+    <div className="clase-fecha-mobile">
+      <span className="fecha-dia">{daysOfWeek[currentDate.getDay()]}</span>
+      <div className="fecha-numeros">
+        <span className="fecha-numero">
+          {String(currentDate.getDate()).padStart(2, '0')}
+        </span>
+        <span className="guion-fecha">-</span>
+        <span className="fecha-numero">
+          {String(currentDate.getMonth() + 1).padStart(2, '0')}
+        </span>
+      </div>
+    </div>
   );
 
   return (
@@ -105,7 +116,7 @@ const handleNextDay = () => {
       <div className="ClassSchedule-container-box">
         <div className="ClassSchedule-container-title">
           <button className="botonDias" onClick={handlePreviousDay}>◀</button>
-          <span>{formattedDay}</span>
+          <span className='Fecha'>{formattedDay}</span>
           <button className="botonDias" onClick={handleNextDay}>▶</button>
         </div>
         <div className="Class-Schedule-form">
@@ -115,17 +126,13 @@ const handleNextDay = () => {
             classes.map((clase) => {
               const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
               const ahora = new Date();
-              ahora.setSeconds(0, 0); // Limpiamos milisegundos
+              ahora.setSeconds(0, 0);
 
-              // Creamos un Date de la clase con fecha y hora combinadas
               const [horaClase, minutosClase] = clase.hora.split(":").map(Number);
               const claseDateTime = new Date(currentDate);
               claseDateTime.setHours(horaClase, minutosClase, 0, 0);
 
-              // Restamos diferencia en milisegundos
               const diferenciaEnMinutos = (claseDateTime - ahora) / (1000 * 60);
-
-              // Reglas:
               const esPasada = claseDateTime < ahora;
               const esMuyCerca = diferenciaEnMinutos < 30;
 
@@ -138,43 +145,41 @@ const handleNextDay = () => {
 
               const desactivarRegistro = esPasada || esMuyCerca;
 
-
               return (
                 <div
                   key={clase.id_clase}
-                  className="Class-Schedule-item"
+                  className={`Class-Schedule-item ${expandedClassId === clase.id_clase ? "expanded" : ""}`}
                   style={{
                     background: `linear-gradient(90deg, #fbf106 ${porcentaje}%, #27272a ${porcentaje}%)`
                   }}
+                  onClick={() => toggleExpand(clase.id_clase)}
                 >
                   <div className='Contenido-Map-Clases1'>
                     <h1>{clase.disciplina}</h1>
                     <h1>-</h1>
                     <h1 id='Horario'>{clase.hora}</h1>
                   </div>
-                  <div className='Contenido-Map-Clases2'>
+                  <div className={`Contenido-Map-Clases2 ${expandedClassId === clase.id_clase ? "visible" : ""}`}>
                     <button
                       className="boton-ver-anotados"
                       title="Ver anotados"
-                      onClick={() => openUsersModal(clase)}
+                      onClick={(e) => handleMobileUsersClick(e, clase)}
                     >
                       <FaUsers />
                     </button>
-                    <div  title={esPasada ? "La clase ya terminó" : esMuyCerca ? "Falta menos de 30 minutos" : ""}>
-                      <RegisterButton classname="botonrsv"
+                    <div title={esPasada ? "La clase ya terminó" : esMuyCerca ? "Falta menos de 30 minutos" : ""}>
+                      <RegisterButton 
+                        key={`${clase.id_clase}-${formatDateForAPI(currentDate)}-${getUserId()}`}
                         classId={clase.id_clase}
                         fecha={formatDateForAPI(currentDate)}
                         hora={clase.hora}
                         disciplina={clase.disciplina}
                         userId={getUserId()}
-                        onSuccess={() => navigate(0)}
+                        onSuccess={fetchClasses}
                         disabled={desactivarRegistro}
                         disabledReason={disabledReason}
                       />
-
                     </div>
-
-
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>

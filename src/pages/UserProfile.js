@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BiCreditCard, BiAward, BiCog } from "react-icons/bi";
+import { FaAddressCard, FaMobileAlt } from "react-icons/fa";
+import { GoAlertFill } from "react-icons/go";
 import { FiUser } from "react-icons/fi";
 import '../styles/UserProfile.css';
 import transition from '../transition';
 import { useAuth } from '../AuthContext'; 
-import UserRecords from "../components/UserRecords.js";
+import UserRecords from "../components/UserRecords";
 
 const UserProfile = () => {
   const { getUserId } = useAuth(); 
@@ -13,10 +15,10 @@ const UserProfile = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("personal");
+  
 
   useEffect(() => {
     const id_usuario = getUserId(); 
-
     if (!id_usuario) {
       setError('No se encontró el ID del usuario.');
       setLoading(false);
@@ -32,14 +34,10 @@ const UserProfile = () => {
         setUsuario(data.datos_usuario);
         setCuota(data.cuota || null);
       })
-      .catch(err => {
-        setError(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
   }, [getUserId]);
-
+  
   if (loading) {
     return <div className="user-profile-container"><p>Cargando datos...</p></div>;
   }
@@ -48,107 +46,119 @@ const UserProfile = () => {
     return <div className="user-profile-container"><p>{error}</p></div>;
   }
 
+  // Determinar qué secciones mostrar según el rol
+  const isAdmin = usuario.rol === "Administrador";
+  const isProfesor = usuario.rol === "Profesor";
+  const isAlumno = usuario.rol === "Alumno";
+
   return (
     <div className="user-profile-container">
       <div className="user-profile-box">
-        <h2 className="user-profile-title">Perfil</h2>
-        <p className='user-mail'>{usuario.email}</p>
-        <div className='top-info'>
-          <p className='user-rol'>{usuario.rol}</p>
-          <a href='/editar'><BiCog /></a>
+        <div className="profile-header">
+          <div>
+            <h2 className="user-profile-title">Mi Perfil</h2>
+            <p className="user-mail">{usuario.email}</p>
+          </div>
+          <a href='/editar' className="settings-icon">
+            <BiCog />
+          </a>
         </div>
 
-        {/* Desktop: datos personales y cuota + records */}
-        <div className='separador-user'>
-          <div className="user-form">
-            <h2>Datos Personales</h2>
-            <div className='resto-user-info'>
-              <p><strong>DNI:</strong> {usuario.dni}</p>
-              <p><strong>Celular:</strong> {usuario.celular}</p>
-            </div>
+        <p className="user-rol">{usuario.rol}</p>
 
-            <div style={{ marginTop: '1rem' }}>
-              <h2 style={{ marginBottom: '0.5rem' }}>
-                {cuota ? 'Cuota Activa' : 'Estado de Cuota'}
-              </h2>
+        {/* Desktop */}
+        <div className="profile-content">
+          {/* Datos personales - visible para todos los roles */}
+          <div className="profile-card">
+            <h3>Datos Personales</h3>
+            <div className="Texto-Data"><FaAddressCard/> <strong>DNI:</strong><p> {usuario.dni}</p></div>
+            <div className="Texto-Data"><FaMobileAlt/> <strong>Celular:</strong><p> {usuario.celular}</p></div>
+          </div>
+
+          {/* Cuota - solo visible para alumnos */}
+          {isAlumno && (
+            <div className="profile-card">
+              <h3>{cuota ? 'Cuota Activa' : 'Estado de Cuota'}</h3>
               {cuota ? (
-                <div className='cuota-info'>
+                <>
                   <p><strong>Plan:</strong> {cuota.nombre_plan}</p>
-                  <p><strong>Fecha de Pago:</strong> {cuota.fecha_pago}</p>
-                  <p><strong>Vencimiento:</strong> {cuota.fecha_vencimiento}</p>
-                  <p><strong>Estado de Pago:</strong> {cuota.estado_pago}</p>
-                  <p><strong>Créditos Totales:</strong> {cuota.creditos_total}</p>
-                  <p><strong>Créditos Disponibles:</strong> {cuota.creditos_disponibles}</p>
-                </div>
+                  <p><strong>Pago:</strong> {cuota.fecha_pago}</p>
+                  <p><strong>Vence:</strong> {cuota.fecha_vencimiento}</p>
+                  <p><strong>Estado:</strong> {cuota.estado_pago}</p>
+                  <p><strong>Créditos:</strong> {cuota.creditos_disponibles}/{cuota.creditos_total}</p>
+                </>
               ) : (
-                <div className='cuota-info'>
-                  <p className='cuota-inactiva'>
-                    ⚠ No tiene una cuota activa. Por favor, renueve su plan.
-                  </p>
-                </div>
+                <div className="Texto-Data"><p className="cuota-inactiva"><GoAlertFill /> No tiene una cuota activa</p></div>
               )}
             </div>
-          </div>
+          )}
 
-          <div className='Derecha'>
-            <UserRecords />
-          </div>
+          {/* Records - visible para profesores y alumnos, oculto para admin */}
+          {(isProfesor || isAlumno) && (
+            <div className="profile-card records-card">
+              <UserRecords />
+            </div>
+          )}
         </div>
 
-        {/* Mobile: dentro del mismo box */}
+        {/* Mobile */}
         <div className="mobile-info-container">
           <div className="mobile-options">
-            <button 
-              className={activeTab === "personal" ? "active-tab" : ""} 
+            <button
+              className={activeTab === "personal" ? "active-tab" : ""}
               onClick={() => setActiveTab("personal")}
             >
               <FiUser /> Datos
             </button>
-
-            <button 
-              className={activeTab === "fees" ? "active-tab" : ""} 
-              onClick={() => setActiveTab("fees")}
-            >
-              <BiCreditCard /> Cuotas
-            </button>
-
-            <button 
-              className={activeTab === "records" ? "active-tab" : ""} 
-              onClick={() => setActiveTab("records")}
-            >
-              <BiAward /> Marcas
-            </button>
+            
+            {/* Botón de cuotas solo para alumnos */}
+            {isAlumno && (
+              <button
+                className={activeTab === "fees" ? "active-tab" : ""}
+                onClick={() => setActiveTab("fees")}
+              >
+                <BiCreditCard /> Cuotas
+              </button>
+            )}
+            
+            {/* Botón de records solo para profesores y alumnos */}
+            {(isProfesor || isAlumno) && (
+              <button
+                className={activeTab === "records" ? "active-tab" : ""}
+                onClick={() => setActiveTab("records")}
+              >
+                <BiAward /> Marcas
+              </button>
+            )}
           </div>
 
           <div className="mobile-content">
             {activeTab === "personal" && (
-              <div className="mobile-personal">
-                <h2>Datos Personales</h2>
+              <div className="mobile-card">
+                <h3>Datos Personales</h3>
                 <p><strong>DNI:</strong> {usuario.dni}</p>
                 <p><strong>Celular:</strong> {usuario.celular}</p>
               </div>
             )}
-
-            {activeTab === "fees" && (
-              <div className="mobile-fees">
-                <h2>{cuota ? "Cuota Activa" : "Estado de Cuota"}</h2>
+            
+            {activeTab === "fees" && isAlumno && (
+              <div className="mobile-card">
+                <h3>{cuota ? "Cuota Activa" : "Estado de Cuota"}</h3>
                 {cuota ? (
                   <>
                     <p><strong>Plan:</strong> {cuota.nombre_plan}</p>
-                    <p><strong>Fecha de Pago:</strong> {cuota.fecha_pago}</p>
-                    <p><strong>Vencimiento:</strong> {cuota.fecha_vencimiento}</p>
-                    <p><strong>Estado de Pago:</strong> {cuota.estado_pago}</p>
+                    <p><strong>Pago:</strong> {cuota.fecha_pago}</p>
+                    <p><strong>Vence:</strong> {cuota.fecha_vencimiento}</p>
+                    <p><strong>Estado:</strong> {cuota.estado_pago}</p>
                   </>
                 ) : (
-                  <p className='cuota-inactiva'>
-                    ⚠ No tiene una cuota activa. Por favor, renueve su plan.
-                  </p>
+                  <p className="cuota-inactiva">⚠ No tiene una cuota activa</p>
                 )}
               </div>
             )}
-
-            {activeTab === "records" && (
-              <div className="mobile-records">
+            
+            {activeTab === "records" && (isProfesor || isAlumno) && (
+              <div className="mobile-card">
                 <UserRecords />
               </div>
             )}

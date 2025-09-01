@@ -1,45 +1,83 @@
-.timer-page-container{
-    background-color: #18181b;
-    color:green;
-    margin:0px;
-    padding:20px 0px;
-}
-.timer-content{
-    background-color:white;
-    width:800px;
-    margin:0 auto;
-    
-}
-.timer-content h2{
-    padding:20px 0px;
-    margin:0px;
-}
-.timer-selected{
-    padding:20px 0px;
-}
-.timer-page-controls{
+.timer-page-container {
   display: flex;
-  flex-direction:column;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #18181b !important; 
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.timer-content {
+  background-color: #fff; 
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  color: #18181b;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.timer-page-title {
+  font-size: 2rem;
+  font-family: 'Brigends', sans-serif;
+  text-align: center;
+  color: #18181b;
+  margin-bottom: 1rem;
+}
+
+.timer-page-controls {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  width: 600px;
-  padding: 20px 0px;
-  border-radius: 5px;
-  background-color:#222;
 }
-@media (max-width:768px){
-    .timer-content{
-        width:90vw !important;
-    }
-    .timer-content{
-        width:100%;
-    }
-    .timer-page-controls{
-        width:100%;
-    }
-    .timer-page-controls button{
-        margin: 5px 0px;
-    }
+
+.timer-mode-btn {
+  padding: 0.8rem 1.2rem;
+  background-color: transparent;
+  border: 2px solid #18181b; 
+  border-radius: 8px;
+  color: #18181b;
+  font-weight: bold;
+  font-family: 'Brigends', sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-width: 120px;
+}
+
+.timer-mode-btn:hover {
+  background-color: #18181b;
+  color: #fbf106; 
+}
+
+.timer-mode-btn.active {
+  background-color: #18181b;
+  color: #fbf106;
+}
+
+.timer-selected {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+  .timer-content {
+    padding: 1rem;
+    gap: 1rem;
+    width: 95%; 
+  }
+
+  .timer-page-title {
+    font-size: 1.5rem;
+  }
+
+  .timer-mode-btn {
+    width: 100%;
+    font-size: 1rem;
+  }
 }

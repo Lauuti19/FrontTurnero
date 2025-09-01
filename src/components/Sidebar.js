@@ -57,7 +57,7 @@ const Sidebar = () => {
 
 
         <Link to="/timer" className='OpcionSidebar'>Timer</Link>
-        <Link to="/rutinas" className='OpcionSidebar'>Rutinas</Link>
+        
         <Link to="/Movimientos" className='OpcionSidebar'>Movimientos</Link>
 
         <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>

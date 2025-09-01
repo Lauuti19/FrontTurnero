@@ -37,8 +37,22 @@ const CashMovementsToday = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Cargando movimientos de hoy...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  // En CashMovementsToday.js, CashMovementsByRange.js y CashMovementsAll.js
+// Reemplazar los estados de carga y vacío:
+
+if (loading) return (
+  <div className="loading-state">
+    <div className="loading-spinner"></div>
+    <p>Cargando movimientos...</p>
+  </div>
+);
+
+if (error) return (
+  <div className="error-state">
+    <p style={{ color: "#ef4444" }}>{error}</p>
+  </div>
+);
+
 
   return (
     

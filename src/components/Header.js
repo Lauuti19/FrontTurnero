@@ -15,7 +15,7 @@ const Header = () => {
         const id_usuario = usuario.id_usuario || usuario.id;
         setCreditos(null); // Resetea créditos 
         try {
-          const res = await fetch(`http://localhost:3001/api/payments/info-cuotas?id_usuario=${id_usuario}`);
+          const res = await fetch(`http://localhost:3001/api/payments/active-fees/?id_usuario=${id_usuario}`);
           const data = await res.json();
           // Cambia aquí para usar el campo correcto
           const creditos = data.cuotas?.[0]?.creditos_disponibles_totales ?? 0;

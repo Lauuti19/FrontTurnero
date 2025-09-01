@@ -1,52 +1,156 @@
 .user-profile-container {
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   height: auto !important;
   padding: 0.2rem;
-  background-color:#18181b;
+  background-color: #18181b;
+}
+
+.profile-card {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+.Texto-Data{ 
+  display: flex !important;
+  height:40px;
+  margin:5px 0px;
+  font-size: 18px;
+  gap:5px;
+}
+.Texto-Data p{
+  margin:0px;
+}
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.record-item {
+  background: #f5f5f5;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.record-item:hover {
+  background: #eaeaea;
+}
+
+.record-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #222;
+}
+
+.record-info p {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+.records-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.add-record-btn{
+  background-color: transparent;
+  border: none;
+  font-size: 30px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+.add-record-btn:hover{
+  color:rgb(105, 99, 184);
+}
+.profile-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.settings-icon{
+  margin-top: 50px;
+  font-size: 70px;
+  color:#18181b;
+  transition: color 0.2s ease;
+}
+.settings-icon:hover{
+  color:rgb(66, 65, 65);
+  cursor:pointer;
+}
+.edit-record-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.edit-record-btn:hover {
+  color: #222;
 }
 
 .user-profile-box {
-  background-color:#ececf0;
-  padding: 2rem 3rem ;
+  background-color: #ececf0;
+  padding: 2rem 3rem;
   border-radius: 10px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
   max-width: 800px;
   width: 100%;
-  color: white;
+  color:#18181b;
   margin-bottom: 50px;
-  display:block;
-  height:auto;
+  display: block;
+  height: auto;
+  position: relative;
+  box-sizing: border-box;
 }
-.top-info{
-  display:flex;
-  width:100%;
-  justify-content:space-between;
+
+.top-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
   align-items: center;
-  padding:0px;
-  margin:0px;
+  padding: 0;
+  margin: 0;
 }
-.top-info a{
+
+.top-info a {
   font-size: 50px;
-  color:black;
-  width:50px !important;
-  height:60px !important;
-  
+  color: black;
+  width: 50px !important;
+  height: 60px !important;
 }
-.top-info a:hover{
-  cursor:pointer;
-  color:grey;
+
+.top-info a:hover {
+  cursor: pointer;
+  color: grey;
 }
+
 .user-profile-title {
   font-size: 1.2rem;
   font-family: 'Brigends', sans-serif;
   text-align: start;
   color: rgb(26, 25, 25);
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
-/* El resto de las clases ya no llevan el prefijo register- */
 .user-form {
   display: flex;
   flex-direction: column;
@@ -55,19 +159,22 @@
   width: 70%;
   color: #18181b;
 }
-.user-form h2{
+
+.user-form h2 {
   text-align: start;
   color: #18181b;
-  margin:0px;
+  margin: 0;
 }
-.user-mail{
-  margin-top: 0px;
-  margin-bottom: 0px;
+
+.user-mail {
+  margin-top: 0;
+  margin-bottom: 0;
   font-size: 3rem;
   font-weight: bolder;
   color: #18181b;
 }
-.user-rol{
+
+.user-rol {
   text-transform: uppercase;
   font-weight: bolder;
   color: rgb(51, 49, 49);
@@ -77,43 +184,53 @@
   text-align: center;
   background-color: #fbf106;
 }
+
 .resto-user-info h2 {
   font-size: 1.2rem;
   margin-bottom: 10px;
   color: #292927;
   text-align: start;
 }
-.resto-user-info, .cuota-info{
+
+.resto-user-info,
+.cuota-info {
   padding: 20px;
   line-height: 1.4;
   background: #aca3a3;
   border-radius: 10px;
   color: #292927;
 }
-.cuota-info .cuota-inactiva{
+
+.cuota-info .cuota-inactiva {
   color: rgb(216, 29, 29);
   font-weight: bolder;
 }
+
 .user-form strong {
   color: #292927;
 }
-.separador-user{
+
+.separador-user {
   display: flex;
   gap: 1rem;
 }
-.Derecha{
+
+.Derecha {
   text-align: right;
   width: 30%;
   font-size: 40px;
   font-weight: bolder;
 }
-.Derecha a{
+
+.Derecha a {
   text-decoration: none;
   color: gray;
 }
-.Derecha a:hover{
+
+.Derecha a:hover {
   color: black;
 }
+
 .user-form input {
   width: 100%;
   padding: 8px;
@@ -130,7 +247,7 @@
   font-family: 'Brigends';
   letter-spacing: 0.1rem;
   font-size: 20px;
-  border:solid 1px #fbf106;
+  border: solid 1px #fbf106;
   border-radius: 4px;
   cursor: pointer;
   transition: 0.2s ease-in-out;
@@ -145,48 +262,52 @@
   color: green;
   margin-top: 10px;
 }
-.user-form-edit{
+
+.user-form-edit {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   font-size: 1rem;
 }
-.contenido-record{
+
+.contenido-record {
   background-color: #aca3a3;
   border-radius: 10px;
   text-align: start;
-}
-.records h2{
-  color: #292927;
-  font-size: 1.5rem;
-  margin: 0;
-  text-align: start;
-  padding: 3px 0px;
-}
-.Derecha p{
-  font-size:1rem;
-
-}
-.contenido-record{
   color: #292927;
   font-size: 1.2rem;
   padding: 20px;
   height: 350px;
 }
-.fila-edit{
+
+.records h2 {
+  color: #292927;
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: start;
+  padding: 3px 0;
+}
+
+.Derecha p {
+  font-size: 1rem;
+}
+
+.fila-edit {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
 }
-.bloque-edit{
-  padding:10px 0px;
-  width:200px;
+
+.bloque-edit {
+  padding: 10px 0;
+  width: 200px;
 }
-.bloque-edit input{
-  padding:10px 0px;
-  width:200px !important;
+
+.bloque-edit input {
+  padding: 10px 0;
+  width: 200px !important;
 }
-/* Estilos para EditProfile */
+
 .edit-user-container {
   display: flex;
   justify-content: center;
@@ -218,16 +339,19 @@
   color: white;
   font-weight: lighter;
 }
+
 .edit-user-form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
-.edit-user-form h3{
+
+.edit-user-form h3 {
   font-size: 25px;
-  margin: 0px;
+  margin: 0;
 }
-.botonClave{
+
+.botonClave {
   background-color: transparent;
   border: solid 1px white;
   color: white;
@@ -236,189 +360,170 @@
   font-size: 15px !important;
   font-weight: lighter;
   font-family: 'Brigends';
-  padding: 15px 0px;
+  padding: 15px 0;
   text-align: center;
   transition: 0.2s ease-in-out;
 }
-.botonClave:hover{
+
+.botonClave:hover {
   background-color: white;
   color: #18181b;
 }
-.mobile-info-container{
-  display:none;
+
+.mobile-info-container {
+  display: none;
 }
 
-@media (max-width:768px) {
-  /*estilos del perfil*/
+@media (max-width: 768px) {
   .mobile-info-container {
     display: block;
     width: 100%;
     min-height: auto;
-    background-color: #ececf0; /* 👈 mismo fondo que la caja */
-    border-radius: 10px;       /* opcional, para integrarlo */
+    background-color: #ececf0;
+    border-radius: 10px;
     margin-top: 10px;
     padding: 10px;
   }
-  .edit-user-title{
-    font-size:22.5px;
+
+  .edit-user-title {
+    font-size: 22.5px;
   }
-  #swal2-title{
+
+  #swal2-title {
     font-size: 20px !important;
   }
-  .separador-user{
-  display:none !important;
+
+  .separador-user {
+    display: none !important;
   }
-  .mobile-options{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-around;
-    padding:10px 0px;
+
+  .mobile-options {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 0;
   }
-  .mobile-options button{
+
+  .mobile-options button {
     background-color: transparent;
-    border:solid 2px #fbf106;
-    width:100%;
-    font-family:'Brigends';
+    border: solid 2px #fbf106;
+    width: 100%;
+    font-family: 'Brigends';
     font-size: 15px;
     color: rgb(29, 28, 28);
   }
+
   .mobile-options button.active-tab {
-  background-color: #fbf106;
-  color: rgb(29, 28, 28);
-  font-weight: bolder;
+    background-color: #fbf106;
+    color: rgb(29, 28, 28);
+    font-weight: bolder;
   }
 
   .mobile-options button:hover {
     background-color: #fbf106;
     color: rgb(29, 28, 28);
   }
-  .mobile-personal h2, .mobile-fees h2, .mobile-records h2{
-    padding:0px;
-    margin:0px;
-    color:grey;
+
+  .mobile-personal h2,
+  .mobile-fees h2,
+  .mobile-records h2 {
+    padding: 0;
+    margin: 0;
+    color: grey;
   }
-  .mobile-personal, .mobile-fees, .mobile-records{
-    background-color:#222;
-    padding:20px 10px;
+
+  .mobile-personal,
+  .mobile-fees,
+  .mobile-records {
+    background-color: #222;
+    padding: 20px 10px;
     border-radius: 5px;
   }
-  .user-mail{
+
+  .user-mail {
     font-size: 25px;
-    max-width:75wv;
+    max-width: 75wv;
     word-break: break-all;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     text-align: start;
   }
-  .user-profile-box{
+
+  .user-profile-box {
     width: 80vw;
-    padding:10px 20px;
+    padding: 10px 20px;
     display: flex !important;
     flex-direction: column !important;
   }
 
-  /*estilos de editar*/
-   .user-profile-container {
+  .user-profile-container {
     display: flex;
-    flex-direction: column; /* 👈 apilar los hijos */
-    
+    flex-direction: column;
   }
 
   .user-profile-box {
-    margin-bottom: 20px; /* separación con el menú mobile */
+    margin-bottom: 20px;
   }
 
   .mobile-info-container {
-    margin: 0px;
-    padding:20px 0px;
-    min-height: auto;     /* que se adapte al contenido */
+    margin: 0;
+    padding: 20px 0;
+    min-height: auto;
   }
-  .edit-user-box{
+
+  .edit-user-box {
     width: 90vw !important;
     max-width: 450px !important;
-    padding:10px !important;
+    padding: 10px !important;
     display: flex;
     flex-direction: column;
     margin: 0 auto;
   }
-  .fila-edit{
-    display:flex;
-    flex-direction:column;
+
+  .fila-edit {
+    display: flex;
+    flex-direction: column;
   }
-  .bloque-edit{
-    display:flex;
-    justify-content:space-between;
-    padding: 10px 0px;
+
+  .bloque-edit {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
     align-items: center;
-    width:100%
+    width: 100%;
   }
-  .botonClave{
-    width:100%;
-    padding:20px 0px;
+
+  .botonClave {
+    width: 100%;
+    padding: 20px 0;
     margin-bottom: 20px !important;
   }
-  .botonGuardarPerfil{
+
+  .botonGuardarPerfil {
     font-size: 20px;
   }
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(3px); 
+/* En tu CSS global */
+.swal2-popup {
+  font-family: inherit;
+  border-radius: 12px !important;
 }
 
-.modal {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-  color: #18181b;
-  position: relative;
-  animation: fadeIn 0.3s ease-in-out;
+.swal2-confirm {
+  background-color: #fbf106 !important;
+  color: #18181b !important;
+  font-weight: bold !important;
 }
-
-.modal h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-  text-align: center;
-}
-
-.modal form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.modal button {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.modal button[type="submit"] {
-  background: #fbf106;
-  font-weight: bold;
-}
-
-.modal button[type="button"] {
-  background: #ccc;
-}
-
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.55) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
+

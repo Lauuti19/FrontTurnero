@@ -1,39 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import '../styles/RegisterButton.css';
 import Swal from 'sweetalert2';
 
-const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled, disabledReason }) => {
+const RegisterButton = ({ 
+  classId, 
+  fecha, 
+  hora, 
+  disciplina, 
+  onSuccess, 
+  disabled, 
+  disabledReason,
+  userId 
+}) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const userId = usuario?.id;
-    console.log('Usuario completo:', usuario);
-  console.log('userId:', userId);
-
-  useEffect(() => {
-    const checkRegistration = async () => {
-      try {
-        const res = await fetch(`http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`);
+  // Función para verificar el registro - useCallback con dependencias correctas
+  const checkRegistration = useCallback(async () => {
+    try {
+      if (userId && classId && fecha) {
+        setLoading(true);
+        const res = await fetch(
+          `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+        );
+        if (!res.ok) throw new Error('Error en la respuesta del servidor');
+        
         const data = await res.json();
-        setIsRegistered(data.some(usuario => usuario.id === userId));
-      } catch (err) {
-        console.error("Error al verificar registro:", err);
-      } finally {
-        setLoading(false);
+        console.log('Datos de verificación:', data); // Para debug
+        // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
+        setIsRegistered(data.some(usuario => usuario.id_usuario === userId));
       }
-    };
-    checkRegistration();
+    } catch (err) {
+      console.error("Error al verificar registro:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [classId, fecha, userId]);
 
-  // Unificamos estilos de Swal en un mixin
+  // Verificar registro al montar y cuando cambien las dependencias IMPORTANTES
+  useEffect(() => {
+    checkRegistration();
+  }, [classId, fecha, userId, checkRegistration]); // ← Agregar checkRegistration como dependencia
+
   const modal = Swal.mixin({
     buttonsStyling: false,
     allowOutsideClick: true,
     allowEscapeKey: true,
     backdrop: true,
     customClass: {
-      popup: 'mi-popup',          // base
+      popup: 'mi-popup',
       title: 'mi-titulo',
       htmlContainer: 'mi-html',
       confirmButton: 'mi-boton-confirmar',
@@ -42,6 +57,16 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
   });
 
   const handleRegister = async () => {
+    if (!userId) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        html: 'No se ha seleccionado un usuario válido.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+  
     const result = await modal.fire({
       title: '<span class="simbolo">¿</span>Confirmar inscripción<span class="simbolo">?</span>',
       html: `<div class="textos-alert">
@@ -54,6 +79,7 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
       cancelButtonText: 'Cancelar',
       reverseButtons: true,
     });
+    
     if (!result.isConfirmed) return;
 
     try {
@@ -62,8 +88,6 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, classId, fecha }),
       });
-      console.log('Los parametros que viajan son: ',userId, classId, fecha )
-      console.log('userId:', userId);
       
       const text = await res.text();
       if (!res.ok) throw new Error(text || 'No se pudo registrar');
@@ -74,22 +98,24 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
         html: 'Te anotaste correctamente.',
       });
 
-      setIsRegistered(true);
-      onSuccess?.();
+      // Forzar una verificación manual después de la acción
+      setLoading(true);
+      const checkRes = await fetch(
+        `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+      );
+      const checkData = await checkRes.json();
+      // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
+      setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
+      setLoading(false);
+      
+      onSuccess?.(); // Notificar al componente padre
     } catch (err) {
-      // Modal de error CONSISTENTE y centrado
+      setLoading(false);
       await Swal.fire({
         icon: 'error',
         title: 'Algo no funcionó',
         html: 'Intentá nuevamente en unos minutos.',
-        confirmButtonText: 'OK',
-        buttonsStyling: false,
-        customClass: {
-          popup: 'mi-popup mi-popup-error',
-          title: 'mi-titulo',
-          htmlContainer: 'mi-html',
-          confirmButton: 'mi-boton-confirmar'
-        }
+        confirmButtonText: 'OK'
       });
       console.log(err);
     }
@@ -103,9 +129,8 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
       showCancelButton: true,
       confirmButtonText: 'Sí, Desanotarse',
       cancelButtonText: 'Volver',
-      // si querés un look distinto para warning:
-      customClass: { popup: 'mi-popup mi-popup-warning' }
     });
+    
     if (!result.isConfirmed) return;
 
     try {
@@ -120,15 +145,29 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
         throw new Error(errorData.message || 'No se pudo cancelar');
       }
 
-      await modal.fire({ icon: 'success', title: 'Inscripción cancelada', html: '' });
-      setIsRegistered(false);
-      onSuccess?.();
+      await modal.fire({ 
+        icon: 'success', 
+        title: 'Inscripción cancelada', 
+        html: '' 
+      });
+      
+      // Forzar una verificación manual después de la acción
+      setLoading(true);
+      const checkRes = await fetch(
+        `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+      );
+      const checkData = await checkRes.json();
+      // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
+      setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
+      setLoading(false);
+      
+      onSuccess?.(); // Notificar al componente padre
     } catch (err) {
+      setLoading(false);
       await modal.fire({
         icon: 'error',
         title: 'Error',
         html: err.message,
-        customClass: { popup: 'mi-popup mi-popup-error' }
       });
     }
   };
@@ -139,6 +178,14 @@ const RegisterButton = ({ classId, fecha, hora, disciplina, onSuccess, disabled,
     return (
       <button className="botonReservar botonDesactivado" disabled title={disabledReason}>
         <h3>{disabledReason || "No disponible"}</h3>
+      </button>
+    );
+  }
+
+  if (!userId) {
+    return (
+      <button className="botonReservar botonDesactivado" disabled title="Seleccione un usuario primero">
+        <h3>Seleccione usuario</h3>
       </button>
     );
   }

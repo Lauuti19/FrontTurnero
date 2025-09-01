@@ -168,5 +168,8 @@ button.swal2-confirm.mi-boton-confirmar {
     background-color: #dc3545 !important;
     color: #fff !important;
   }
+  .botonReservar{
+    min-width: 250px;
+  }
 
 }
