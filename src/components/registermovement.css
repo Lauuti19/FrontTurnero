@@ -285,3 +285,22 @@
             width: 100%;
           }
         }
+        .checkbox-paid {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-paid input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #22c55e; /* verde para combinar con ingresos */
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.checkbox-paid .checkbox-label {
+  font-weight: 600;
+  color: #18181b;
+  cursor: pointer;
+}

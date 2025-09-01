@@ -1,13 +1,15 @@
-// src/components/RegisterMovementModal.js
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../AuthContext"; 
 import "./registermovement.css";
 
 const RegisterMovementModal = ({ onClose, onSuccess }) => {
+  const { getUserId } = useAuth();
   const [products, setProducts] = useState([]);
   const [type, setType] = useState("Ingreso");
   const [paymentMethod, setPaymentMethod] = useState("Efectivo");
   const [concept, setConcept] = useState("");
   const [details, setDetails] = useState([{ id_producto: "", cantidad: 1 }]);
+  const [paid, setPaid] = useState(true); // ahora booleano, se enviará como 0 o 1
   const [isLoading, setIsLoading] = useState(false);
 
   // Obtener productos al montar
@@ -42,13 +44,15 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
     e.preventDefault();
     setIsLoading(true);
     const token = localStorage.getItem("token");
+    const user_id = getUserId(); // ID directo desde AuthContext
 
     const payload = {
       type,
       payment_method: paymentMethod,
       concept,
-      user_id: 6, // ⚠️ aquí podrías obtener el id del usuario logueado si lo guardas
+      user_id,
       details,
+      paid: paid ? 1 : 0, // lo convertimos a 1 o 0
     };
 
     fetch("http://localhost:3001/api/cash-movements/register", {
@@ -64,7 +68,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
         return res.json();
       })
       .then(() => {
-        onSuccess(); // refrescar lista en padre
+        onSuccess(); 
         onClose();
       })
       .catch((err) => alert(err.message))
@@ -125,6 +129,17 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
               required
               className="form-input"
             />
+          </div>
+
+          <div className="form-group checkbox-paid">
+            <label>
+              <input
+                type="checkbox"
+                checked={paid}
+                onChange={(e) => setPaid(e.target.checked)}
+              />
+              <span className="checkbox-label">Pagado</span>
+            </label>
           </div>
 
           <div className="products-section">
