@@ -4,42 +4,91 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
+  align-items: center;
+  z-index: 1000;
 }
 
-.modal-box {
-  background: #fbf106;
-  padding: 20px;
-  border-radius: 8px;
-  width: 300px;
-  max-height: 80%;
+.modal-users-box {
+  background: linear-gradient(135deg, #cba911 0%, #d5fc25 100%) ;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
   overflow-y: auto;
+  position: relative;
+  border: 1px solid #fbf106;
+  box-shadow: 0 0 20px rgba(251, 241, 6, 0.3);
 }
 
 .cerrar-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: none;
-  font-size: 18px;
-  float: right;
+  color: black;
+  font-size: 1.5rem;
   cursor: pointer;
+  padding: 5px 10px;
 }
-.modal-box, h2{
-    color: #4e4e46;
-    font-size: 1.4rem;
-    font-weight: lighter;
-    text-align: center;
-    margin-top: 40px;
-    font-family: 'Brigends';
-}
-.modal-box, li{
-    color: #0d0d0c;
-        font-size: 1rem;
 
-    gap: 30px;
-    text-align: left;
-    
+.modal-users-box h2 {
+  color: black;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-family: 'Brigends', sans-serif;
+  text-transform: uppercase;
+}
+
+.attendees-list-modal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.user-badge-modal {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #0c0c0c 0%, #3a3b3d 100%);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.user-badge-modal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.user-icon-modal {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.user-name-modal {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .modal-box {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .user-badge-modal {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .attendees-list-modal {
+    gap: 8px;
+  }
 }

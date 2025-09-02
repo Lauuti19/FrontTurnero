@@ -1,39 +1,18 @@
 // SearchRoutines.js
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
+import Buscador from './Buscador'; // Importar el componente Buscador
 
 const SearchRoutines = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [userRoutines, setUserRoutines] = useState({});
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [videoUrl, setVideoUrl] = useState(null);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (searchTerm.length > 2) {
-                searchUsers();
-            }
-        }, 300);
-        
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    const searchUsers = async () => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/usuarios/buscar?nombre=${searchTerm}`);
-            const data = await response.json();
-            setSearchResults(data);
-        } catch (error) {
-            console.error('Error buscando usuarios:', error);
-            setMessage('Error al buscar usuarios');
-        }
-    };
-
     const fetchUserRoutines = async (userId) => {
         setLoading(true);
+        setMessage('');
         try {
             const response = await fetch(`http://localhost:3001/api/routines/user/${userId}`);
             const data = await response.json();
@@ -61,8 +40,14 @@ const SearchRoutines = () => {
     };
 
     const handleUserSelect = (user) => {
-        setSelectedUser(user);
-        fetchUserRoutines(user.id_usuario);
+        if (user) {
+            setSelectedUser(user);
+            fetchUserRoutines(user.id_usuario);
+        } else {
+            setSelectedUser(null);
+            setUserRoutines({});
+            setMessage('');
+        }
     };
 
     const openVideoModal = (url) => {
@@ -79,32 +64,16 @@ const SearchRoutines = () => {
             
             <div className="search-section">
                 <div className="search-box">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                    <Buscador 
+                        onUsuarioSeleccionado={handleUserSelect}
                         placeholder="Buscar usuario por nombre"
                     />
                 </div>
-                
-                {searchResults.length > 0 && (
-                    <div className="search-results">
-                        {searchResults.map(user => (
-                            <div 
-                                key={user.id_usuario} 
-                                className={`user-result ${selectedUser?.id_usuario === user.id_usuario ? 'selected' : ''}`}
-                                onClick={() => handleUserSelect(user)}
-                            >
-                                {user.nombre} {user.apellido}
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
 
             {selectedUser && (
                 <div className="user-routines-section">
-                    <h3>Rutinas de {selectedUser.nombre} {selectedUser.apellido}</h3>
+                    <h3>Rutinas de {selectedUser.nombre} {selectedUser.apellido || ''}</h3>
                     
                     {loading ? (
                         <p>Cargando rutinas...</p>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
@@ -9,6 +10,7 @@ import transition from '../transition'
 const LoginPage = () => {
   const { login } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -24,9 +26,13 @@ const LoginPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async () => {
     console.log(process.env.REACT_APP_API_URL)
-console.log(formData.email, 'Email', formData.password, 'Password');  
+    console.log(formData.email, 'Email', formData.password, 'Password');  
     if (isRegistering) {
       try {
         const response = await fetch("http://localhost:3001/api/auth/register", {
@@ -57,39 +63,19 @@ console.log(formData.email, 'Email', formData.password, 'Password');
           })
         });
 
-        // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-        //  method: "POST",
-        //  headers: { "Content-Type": "application/json" },
-        //  body: JSON.stringify({
-        //    email: formData.email,
-        //    password: formData.password
-        //    
-        //  })
-        //  });
-
-
         const data = await response.json();
 
         if (response.ok) {
           localStorage.setItem("token", data.token);
 
-          //const perfilRes = await fetch("http://localhost:3001/api/auth/perfil", {
-          //  headers: {
-          //    Authorization: `Bearer ${data.token}`
-          //  }
-          //});
           const perfilRes = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/perfil`, {
             headers: {
               Authorization: `Bearer ${data.token}`
             }
           });
 
-
           const perfilData = await perfilRes.json();
-
-
           login(perfilData.usuario);
-
 
           const id_rol = perfilData.usuario.id_rol;
           const id_estado = perfilData.usuario.id_estado;
@@ -129,7 +115,6 @@ console.log(formData.email, 'Email', formData.password, 'Password');
         <div className="form-content">
           <h2 className="TituloLogin">{isRegistering ? "Registrarse" : "Iniciar Sesión"}</h2>
           
-          
           {isRegistering && (
             <input
               type="text"
@@ -167,13 +152,18 @@ console.log(formData.email, 'Email', formData.password, 'Password');
             </>
           )}
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <span className="password-toggle" onClick={togglePasswordVisibility}>
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </span>
+          </div>
           
           <button className="btn primary" onClick={handleSubmit}>
             {isRegistering ? "Crear Cuenta" : "Ingresar"}

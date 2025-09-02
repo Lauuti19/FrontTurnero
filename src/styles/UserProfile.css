@@ -7,12 +7,18 @@
   background-color: #18181b;
 }
 
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
 .profile-card {
   background: #fff;
   padding: 1.2rem;
   border-radius: 12px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   width: 100%;
@@ -23,6 +29,7 @@
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
+
 .Texto-Data{ 
   display: flex !important;
   height:40px;
@@ -30,9 +37,11 @@
   font-size: 18px;
   gap:5px;
 }
+
 .Texto-Data p{
   margin:0px;
 }
+
 .records-list {
   display: flex;
   flex-direction: column;
@@ -64,11 +73,13 @@
   color: #555;
   font-size: 0.9rem;
 }
+
 .records-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .add-record-btn{
   background-color: transparent;
   border: none;
@@ -76,24 +87,29 @@
   text-align: center;
   transition: color 0.3s ease;
 }
+
 .add-record-btn:hover{
   color:rgb(105, 99, 184);
 }
+
 .profile-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .settings-icon{
   margin-top: 50px;
   font-size: 70px;
   color:#18181b;
   transition: color 0.2s ease;
 }
+
 .settings-icon:hover{
   color:rgb(66, 65, 65);
   cursor:pointer;
 }
+
 .edit-record-btn {
   background: transparent;
   border: none;
@@ -370,141 +386,6 @@
   color: #18181b;
 }
 
-.mobile-info-container {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-info-container {
-    display: block;
-    width: 100%;
-    min-height: auto;
-    background-color: #ececf0;
-    border-radius: 10px;
-    margin-top: 10px;
-    padding: 10px;
-  }
-
-  .edit-user-title {
-    font-size: 22.5px;
-  }
-
-  #swal2-title {
-    font-size: 20px !important;
-  }
-
-  .separador-user {
-    display: none !important;
-  }
-
-  .mobile-options {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 10px 0;
-  }
-
-  .mobile-options button {
-    background-color: transparent;
-    border: solid 2px #fbf106;
-    width: 100%;
-    font-family: 'Brigends';
-    font-size: 15px;
-    color: rgb(29, 28, 28);
-  }
-
-  .mobile-options button.active-tab {
-    background-color: #fbf106;
-    color: rgb(29, 28, 28);
-    font-weight: bolder;
-  }
-
-  .mobile-options button:hover {
-    background-color: #fbf106;
-    color: rgb(29, 28, 28);
-  }
-
-  .mobile-personal h2,
-  .mobile-fees h2,
-  .mobile-records h2 {
-    padding: 0;
-    margin: 0;
-    color: grey;
-  }
-
-  .mobile-personal,
-  .mobile-fees,
-  .mobile-records {
-    background-color: #222;
-    padding: 20px 10px;
-    border-radius: 5px;
-  }
-
-  .user-mail {
-    font-size: 25px;
-    max-width: 75wv;
-    word-break: break-all;
-    margin-top: 0;
-    margin-bottom: 0;
-    text-align: start;
-  }
-
-  .user-profile-box {
-    width: 80vw;
-    padding: 10px 20px;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .user-profile-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .user-profile-box {
-    margin-bottom: 20px;
-  }
-
-  .mobile-info-container {
-    margin: 0;
-    padding: 20px 0;
-    min-height: auto;
-  }
-
-  .edit-user-box {
-    width: 90vw !important;
-    max-width: 450px !important;
-    padding: 10px !important;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-  }
-
-  .fila-edit {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .bloque-edit {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    align-items: center;
-    width: 100%;
-  }
-
-  .botonClave {
-    width: 100%;
-    padding: 20px 0;
-    margin-bottom: 20px !important;
-  }
-
-  .botonGuardarPerfil {
-    font-size: 20px;
-  }
-}
-
 /* En tu CSS global */
 .swal2-popup {
   font-family: inherit;
@@ -516,6 +397,7 @@
   color: #18181b !important;
   font-weight: bold !important;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -526,4 +408,3 @@
     transform: scale(1) translateY(0);
   }
 }
-

@@ -1,6 +1,7 @@
 // src/pages/CashMovementsPage.js
 import React, { useState } from "react";
 import "../styles/CashMovements.css";
+import { FaCashRegister } from "react-icons/fa";
 import CashMovementsToday from "../components/CashMovementsToday";
 import CashMovementsByRange from "../components/CashMovementsByRange";
 import CashMovementsAll from "../components/CashMovementsAll";
@@ -15,7 +16,11 @@ const CashMovementsPage = () => {
     <div className="cash-page-container">
       <div className="cash-page-box">
         <div className="cash-page-header">
+          <div className="cash-title">
+          <FaCashRegister id="icon-cash" />
+
           <h1 className="cash-page-title">Movimientos de Caja</h1>
+          </div>
           <button className="btn-add-movement" onClick={() => setShowModal(true)}>
             ＋
           </button>

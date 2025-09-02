@@ -31,7 +31,7 @@ const CreateDiscipline = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h2>Crear disciplina</h2>
+      <h2 id="Title-Planes">Crear Disciplina</h2>
       <form className="form-group-class" onSubmit={handleCreateDiscipline}>
         <label>Nombre:</label>
         <input
@@ -40,8 +40,9 @@ const CreateDiscipline = () => {
           value={formData.name}
           onChange={handleChange}
           required
+          placeholder="Nombre de la disciplina"
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="create-discipline-btn">
           <FaSave /> Crear Disciplina
         </button>
       </form>

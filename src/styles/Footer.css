@@ -5,6 +5,8 @@
     margin: 0 auto;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 999;
 }
 .Contenedor-Footer{
     height: 150px;

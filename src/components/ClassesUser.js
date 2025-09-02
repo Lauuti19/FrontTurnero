@@ -3,6 +3,7 @@ import '../styles/ClassSchedule.css';
 import { useAuth } from "../AuthContext";
 import ClassUsersModal from './ClassUsersModal';
 import { FaUsers } from 'react-icons/fa';
+import { FiUser } from "react-icons/fi";
 import RegisterButton from './RegisterButton';
 import {useNavigate} from 'react-router-dom';
 
@@ -20,11 +21,15 @@ const ClassesUser = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [expandedClassId, setExpandedClassId] = useState(null);
+  const [classAttendees, setClassAttendees] = useState({});
   const navigate = useNavigate();
 
   const { getUserId } = useAuth();
 
-  const toggleExpand = (id) => {
+  const toggleExpand = async (id) => {
+    if (expandedClassId !== id) {
+      await fetchClassAttendees(id);
+    }
     setExpandedClassId(expandedClassId === id ? null : id);
   };
 
@@ -64,6 +69,22 @@ const ClassesUser = () => {
     }
   };
 
+  const fetchClassAttendees = async (classId) => {
+    try {
+      const formattedDate = formatDateForAPI(currentDate);
+      const res = await fetch(`http://localhost:3001/api/classes/attendees?classId=${classId}&fecha=${formattedDate}`);
+      const data = await res.json();
+      
+      // Actualizar el estado con los usuarios de esta clase
+      setClassAttendees(prev => ({
+        ...prev,
+        [classId]: data
+      }));
+    } catch (error) {
+      console.error('Error al obtener los anotados:', error);
+    }
+  };
+
   useEffect(() => {
     fetchClasses();
   }, [currentDate, getUserId()]);
@@ -87,13 +108,14 @@ const ClassesUser = () => {
   // Función para mobile: manejar el click en el botón de ver anotados
   const handleMobileUsersClick = (e, clase) => {
     e.stopPropagation();
-    if (window.innerWidth <= 768) {
-      // En mobile: abrir modal directamente
-      openUsersModal(clase);
-    } else {
-      // En desktop: comportamiento normal (expandir)
-      toggleExpand(clase.id_clase);
-    }
+    openUsersModal(clase);
+  };
+
+  // Función para desktop: manejar el click en el botón de ver anotados
+  const handleDesktopUsersClick = (e, clase) => {
+    e.stopPropagation();
+    toggleExpand(clase.id_clase);
+    openUsersModal(clase);
   };
 
   const formattedDay = (
@@ -160,10 +182,31 @@ const ClassesUser = () => {
                     <h1 id='Horario'>{clase.hora}</h1>
                   </div>
                   <div className={`Contenido-Map-Clases2 ${expandedClassId === clase.id_clase ? "visible" : ""}`}>
+                    {/* Lista de usuarios anotados */}
+                    {expandedClassId === clase.id_clase && classAttendees[clase.id_clase] && (
+                      <div className="attendees-container">
+                        <h4>Anotados:</h4>
+                        <div className="attendees-list">
+                          {classAttendees[clase.id_clase].map((user, index) => (
+                            <div key={index} className="user-badge">
+                              <FiUser className="user-icon" />
+                              <span className="user-name">{user.nombre} {user.apellido}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
                     <button
                       className="boton-ver-anotados"
                       title="Ver anotados"
-                      onClick={(e) => handleMobileUsersClick(e, clase)}
+                      onClick={(e) => {
+                        if (window.innerWidth <= 768) {
+                          handleMobileUsersClick(e, clase);
+                        } else {
+                          handleDesktopUsersClick(e, clase);
+                        }
+                      }}
                     >
                       <FaUsers />
                     </button>

@@ -16,7 +16,8 @@ const RegisterUser = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const response = await fetch("http://localhost:3001/api/auth/register-user", {
         method: "POST",
@@ -52,50 +53,73 @@ const RegisterUser = () => {
       <h2 className="register-user-title">Crear Usuario</h2>
       <div className="register-user-box">
         
-        <form className="register-user-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-          <label>Nombre</label>
-          <input
-            name="nombre"
-            placeholder="John Doe"
-            value={formData.nombre}
-            onChange={handleChange}
-          />
-          <label>Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="Email@example.com"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <label>Dni</label>
-          <input
-            name="dni"
-            placeholder="12123456"
-            value={formData.dni}
-            onChange={handleChange}
-          />
-          <label>Celular</label>
-          <input
-            name="celular"
-            placeholder="2364 123456"
-            value={formData.celular}
-            onChange={handleChange}
-          />
-          <label>Contraseña</label>
-          <input
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <label>Rol</label>
-          <select name="id_rol" value={formData.id_rol} onChange={handleChange}>
-            <option value="1">Administrador</option>
-            <option value="2">Profesor</option>
-            <option value="3">Alumno</option>
-          </select>
+        <form className="register-user-form" onSubmit={handleSubmit}>
+          <div className="form-field">
+            <label>Nombre</label>
+            <input
+              name="nombre"
+              placeholder="John Doe"
+              value={formData.nombre}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Email</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="email@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>DNI</label>
+            <input
+              name="dni"
+              placeholder="12345678"
+              value={formData.dni}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Celular</label>
+            <input
+              name="celular"
+              placeholder="1123456789"
+              value={formData.celular}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Contraseña</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-field">
+            <label>Rol</label>
+            <select name="id_rol" value={formData.id_rol} onChange={handleChange}>
+              <option value="1">Administrador</option>
+              <option value="2">Profesor</option>
+              <option value="3">Alumno</option>
+            </select>
+          </div>
+          
           <button type="submit" className="register-user-btn">Registrar Usuario</button>
         </form>
       </div>

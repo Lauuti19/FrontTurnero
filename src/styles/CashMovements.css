@@ -6,13 +6,17 @@
 .cash-page-box {
   background: transparent;
 }
-
-.cash-page-title {
-  margin: 0 0 2rem;
-  color: #18181b;
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-align: center;
+.cash-title{
+  display: flex;
+  gap: 10px;
+  padding: 20px 0px;
+  margin: 0 auto;
+}
+#icon-cash{
+  font-size: 50px;
+}
+.cash-page-title{
+  font-size: 30px;
 }
 .cash-page-header {
   display: flex;
@@ -442,6 +446,9 @@
   
   .cash-table {
     font-size: 0.85rem;
+  }
+  #icon-cash{
+    font-size: 40px;
   }
   
   .cash-table th,

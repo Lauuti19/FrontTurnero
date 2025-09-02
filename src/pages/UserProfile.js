@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { BiCreditCard, BiAward, BiCog } from "react-icons/bi";
+import { BiCog } from "react-icons/bi";
 import { FaAddressCard, FaMobileAlt } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
-import { FiUser } from "react-icons/fi";
 import '../styles/UserProfile.css';
 import transition from '../transition';
 import { useAuth } from '../AuthContext'; 
@@ -14,8 +13,6 @@ const UserProfile = () => {
   const [cuota, setCuota] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("personal");
-  
 
   useEffect(() => {
     const id_usuario = getUserId(); 
@@ -66,7 +63,6 @@ const UserProfile = () => {
 
         <p className="user-rol">{usuario.rol}</p>
 
-        {/* Desktop */}
         <div className="profile-content">
           {/* Datos personales - visible para todos los roles */}
           <div className="profile-card">
@@ -99,70 +95,6 @@ const UserProfile = () => {
               <UserRecords />
             </div>
           )}
-        </div>
-
-        {/* Mobile */}
-        <div className="mobile-info-container">
-          <div className="mobile-options">
-            <button
-              className={activeTab === "personal" ? "active-tab" : ""}
-              onClick={() => setActiveTab("personal")}
-            >
-              <FiUser /> Datos
-            </button>
-            
-            {/* Botón de cuotas solo para alumnos */}
-            {isAlumno && (
-              <button
-                className={activeTab === "fees" ? "active-tab" : ""}
-                onClick={() => setActiveTab("fees")}
-              >
-                <BiCreditCard /> Cuotas
-              </button>
-            )}
-            
-            {/* Botón de records solo para profesores y alumnos */}
-            {(isProfesor || isAlumno) && (
-              <button
-                className={activeTab === "records" ? "active-tab" : ""}
-                onClick={() => setActiveTab("records")}
-              >
-                <BiAward /> Marcas
-              </button>
-            )}
-          </div>
-
-          <div className="mobile-content">
-            {activeTab === "personal" && (
-              <div className="mobile-card">
-                <h3>Datos Personales</h3>
-                <p><strong>DNI:</strong> {usuario.dni}</p>
-                <p><strong>Celular:</strong> {usuario.celular}</p>
-              </div>
-            )}
-            
-            {activeTab === "fees" && isAlumno && (
-              <div className="mobile-card">
-                <h3>{cuota ? "Cuota Activa" : "Estado de Cuota"}</h3>
-                {cuota ? (
-                  <>
-                    <p><strong>Plan:</strong> {cuota.nombre_plan}</p>
-                    <p><strong>Pago:</strong> {cuota.fecha_pago}</p>
-                    <p><strong>Vence:</strong> {cuota.fecha_vencimiento}</p>
-                    <p><strong>Estado:</strong> {cuota.estado_pago}</p>
-                  </>
-                ) : (
-                  <p className="cuota-inactiva">⚠ No tiene una cuota activa</p>
-                )}
-              </div>
-            )}
-            
-            {activeTab === "records" && (isProfesor || isAlumno) && (
-              <div className="mobile-card">
-                <UserRecords />
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

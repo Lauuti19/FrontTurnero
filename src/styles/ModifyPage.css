@@ -64,7 +64,17 @@
   font-family: Arial, sans-serif; /* contenido normal más legible */
   color: #ddd;
 }
-
+.search-routines-container h2, .create-routine-container h2{
+  color:black;
+  font-size: 24px;
+  font-family: 'Brigends';
+  border-bottom: solid 1px black;
+  padding: 20px 0px;
+  text-align: start;
+}
+.routine-header{
+  color:black;
+}
 /* Responsive */
 @media (max-width: 768px) {
 

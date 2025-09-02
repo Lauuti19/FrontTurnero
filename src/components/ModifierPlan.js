@@ -60,7 +60,7 @@ const CreatePlan = () => {
 
   return (
     <div className="CreateClassContainer">
-      <h2>Crear Plan</h2>
+      <h2 id="Title-Planes">Crear Plan</h2>
       <form className="form-group-class" onSubmit={handleCreatePlan}>
         <label>Nombre:</label>
         <input
@@ -70,6 +70,7 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
+        
         <label>Descripción:</label>
         <textarea
           name="description"
@@ -77,6 +78,7 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
+        
         <label>Monto:</label>
         <input
           type="number"
@@ -86,6 +88,7 @@ const CreatePlan = () => {
           required
           placeholder="Ej: 999.99"
         />
+        
         <label>Créditos Totales:</label>
         <input
           type="number"
@@ -94,26 +97,27 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
+        
         <label>Disciplinas:</label>
         <div className="checkbox-group">
           {disciplinas.map((d) => (
-            <div key={d.id_disciplina} className="div-disciplinas">
-              <label>
-                
+            <div key={d.id_disciplina} className="checkbox-item">
+              <input
+                type="checkbox"
+                id={`discipline-${d.id_disciplina}`}
+                value={d.id_disciplina}
+                checked={formData.disciplines.includes(d.id_disciplina)}
+                onChange={handleDisciplineChange}
+                className="checkbox-input"
+              />
+              <label htmlFor={`discipline-${d.id_disciplina}`} className="checkbox-label">
                 {d.disciplina}
               </label>
-              <input
-                  type="checkbox"
-                  value={d.id_disciplina}
-                  checked={formData.disciplines.includes(d.id_disciplina)}
-                  onChange={handleDisciplineChange}
-                  className="checkbox-input"
-                />
-              
             </div>
           ))}
         </div>
-        <button type="submit">Crear Plan</button>
+        
+        <button type="submit" className="create-plan-btn">Crear Plan</button>
       </form>
     </div>
   );

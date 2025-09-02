@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/ClassUserModal.css'; 
-
+import '../styles/ClassUserModal.css';
+import { FiUser } from "react-icons/fi";
 
 const ClassUsersModal = ({ classId, fecha, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -10,7 +10,6 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        
         const token = localStorage.getItem('token');
         const res = await fetch(
           `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
@@ -34,17 +33,20 @@ const ClassUsersModal = ({ classId, fecha, onClose }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-box">
+      <div className="modal-users-box">
         <button className="cerrar-modal" onClick={onClose}>X</button>
         <h2>Anotados en la clase</h2>
         {loading ? (
           <p>Cargando...</p>
         ) : users.length > 0 ? (
-          <ul>
+          <div className="attendees-list-modal">
             {users.map((user, index) => (
-              <li key={index}>{user.nombre}</li>
+              <div key={index} className="user-badge-modal">
+                <FiUser className="user-icon-modal" />
+                <span className="user-name-modal">{user.nombre} {user.apellido}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p>No hay usuarios anotados.</p>
         )}

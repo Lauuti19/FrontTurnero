@@ -1,0 +1,55 @@
+/* UserRecords.css */
+
+/* Estilos para los modales de SweetAlert */
+.swal-custom-container {
+  text-align: left;
+}
+
+.swal-form-group {
+  margin-bottom: 1rem;
+}
+
+.swal-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.swal-input {
+  width: 100%;
+}
+
+.swal-flex-row {
+  display: flex;
+  width: 100%;
+  min-width: 200px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.swal-flex-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.swal-readonly-input {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Estilos específicos para el modal de edición */
+.edit-reps-input {
+  width: 100%;
+}
+
+.edit-weight-input {
+  width: 100%;
+}
+
+.edit-notes-input {
+  width: 100%;
+}
+#swal-reps, #swal-weight, #swal-notes, #swal-id-ejercicio{
+  margin:0px;
+}

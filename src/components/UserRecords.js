@@ -4,6 +4,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import "../styles/UserRecords.css"; // Importar el archivo CSS
 
 const MySwal = withReactContent(Swal);
 
@@ -32,15 +33,14 @@ const UserRecords = () => {
         return res.json();
       })
       .then(data => {
-        console.log('Data recibida:', data); // Para debugging
+        console.log('Data recibida:', data);
         
-        // El backend devuelve { data: [...] } o directamente el array?
         if (Array.isArray(data)) {
           setRecords(data);
         } else if (data.data && Array.isArray(data.data)) {
           setRecords(data.data);
         } else if (Array.isArray(data[0])) {
-          setRecords(data[0]); // Para el formato de stored procedures
+          setRecords(data[0]);
         } else {
           setError("Formato de respuesta no reconocido");
         }
@@ -53,22 +53,22 @@ const UserRecords = () => {
     MySwal.fire({
       title: '<strong>Nuevo Record</strong>',
       html: `
-        <div style="text-align: left;">
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">ID Ejercicio</label>
-            <input id="swal-id-ejercicio" class="swal2-input" placeholder="ID del ejercicio">
+        <div class="swal-custom-container">
+          <div class="swal-form-group">
+            <label class="swal-label">ID Ejercicio</label>
+            <input id="swal-id-ejercicio" class="swal2-input swal-input" placeholder="ID del ejercicio">
           </div>
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Repeticiones</label>
-            <input id="swal-reps" type="number" class="swal2-input" placeholder="Repeticiones">
+          <div class="swal-form-group">
+            <label class="swal-label">Repeticiones</label>
+            <input id="swal-reps" type="number" class="swal2-input swal-input" placeholder="Repeticiones">
           </div>
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Peso (kg)</label>
-            <input id="swal-weight" type="number" step="0.1" class="swal2-input" placeholder="Peso">
+          <div class="swal-form-group">
+            <label class="swal-label">Peso (kg)</label>
+            <input id="swal-weight" type="number" step="0.1" class="swal2-input swal-input" placeholder="Peso">
           </div>
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Notas (opcional)</label>
-            <input id="swal-notes" class="swal2-input" placeholder="Notas">
+          <div class="swal-form-group">
+            <label class="swal-label">Notas (opcional)</label>
+            <input id="swal-notes" class="swal2-input swal-input" placeholder="Notas">
           </div>
         </div>
       `,
@@ -128,18 +128,20 @@ const UserRecords = () => {
     MySwal.fire({
       title: '<strong>Editar Record</strong>',
       html: `
-        <div style="text-align: left;">
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Repeticiones</label>
-            <input id="swal-reps" type="number" class="swal2-input" value="${record.repeticiones}" placeholder="Repeticiones">
+        <div class="swal-custom-container">
+          <div class="swal-flex-row">
+            <div class="swal-flex-column">
+              <label class="swal-label">Repeticiones</label>
+              <input id="swal-reps" type="number" class="swal2-input edit-reps-input swal-readonly-input" value="${record.repeticiones}" placeholder="Repeticiones" readonly>
+            </div>
+            <div class="swal-flex-column">
+              <label class="swal-label">Nuevo Peso (kg)</label>
+              <input id="swal-weight" type="number" step="0.1" class="swal2-input edit-weight-input" value="${record.peso}" placeholder="Peso">
+            </div>
           </div>
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Nuevo Peso (kg)</label>
-            <input id="swal-weight" type="number" step="0.1" class="swal2-input" value="${record.peso}" placeholder="Peso">
-          </div>
-          <div style="margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Notas (opcional)</label>
-            <input id="swal-notes" class="swal2-input" value="${record.notas || ''}" placeholder="Notas">
+          <div class="swal-form-group">
+            <label class="swal-label">Notas (opcional)</label>
+            <input id="swal-notes" class="swal2-input edit-notes-input" value="${record.notas || ''}" placeholder="Notas">
           </div>
         </div>
       `,
@@ -150,22 +152,20 @@ const UserRecords = () => {
       cancelButtonColor: '#d33',
       focusConfirm: false,
       preConfirm: () => {
-        const reps = Swal.getPopup().querySelector('#swal-reps').value;
         const weight = Swal.getPopup().querySelector('#swal-weight').value;
         const notes = Swal.getPopup().querySelector('#swal-notes').value;
 
-        if (!reps) {
+        if (!record.repeticiones) {
           Swal.showValidationMessage('Las repeticiones son obligatorias');
           return false;
         }
 
-        return { reps, weight, notes };
+        return { reps: record.repeticiones, weight, notes };
       }
     }).then((result) => {
       if (result.isConfirmed) {
         const id_usuario = getUserId();
         
-        // CORRECCIÓN: Ruta sin ID en la URL y body con estructura correcta
         fetch('http://localhost:3001/api/rm/update', {
           method: 'PUT',
           headers: {
@@ -173,7 +173,7 @@ const UserRecords = () => {
           },
           body: JSON.stringify({
             id_usuario: id_usuario,
-            id_ejercicio: record.id_ejercicio, // Usar el ID del record existente
+            id_ejercicio: record.id_ejercicio,
             repeticiones: result.value.reps,
             nuevo_peso: result.value.weight,
             nuevas_notas: result.value.notes || null

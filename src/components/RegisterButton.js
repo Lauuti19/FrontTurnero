@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import '../styles/RegisterButton.css';
 import Swal from 'sweetalert2';
+import { useAuth } from "../AuthContext";
 
 const RegisterButton = ({ 
   classId, 
@@ -14,6 +15,7 @@ const RegisterButton = ({
 }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { actualizarCreditos } = useAuth();
 
   // Función para verificar el registro - useCallback con dependencias correctas
   const checkRegistration = useCallback(async () => {
@@ -40,7 +42,7 @@ const RegisterButton = ({
   // Verificar registro al montar y cuando cambien las dependencias IMPORTANTES
   useEffect(() => {
     checkRegistration();
-  }, [classId, fecha, userId, checkRegistration]); // ← Agregar checkRegistration como dependencia
+  }, [classId, fecha, userId, checkRegistration]);
 
   const modal = Swal.mixin({
     buttonsStyling: false,
@@ -98,6 +100,9 @@ const RegisterButton = ({
         html: 'Te anotaste correctamente.',
       });
 
+      // Actualizar créditos después de registrar
+      await actualizarCreditos();
+      
       // Forzar una verificación manual después de la acción
       setLoading(true);
       const checkRes = await fetch(
@@ -150,6 +155,9 @@ const RegisterButton = ({
         title: 'Inscripción cancelada', 
         html: '' 
       });
+      
+      // Actualizar créditos después de cancelar (si se devuelven)
+      await actualizarCreditos();
       
       // Forzar una verificación manual después de la acción
       setLoading(true);

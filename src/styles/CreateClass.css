@@ -6,17 +6,19 @@
   color: #292927;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 .CreateClassContainer h1,
 .CreateClassContainer h2 {
   margin-bottom: 1.5rem;
-  color: #18181b;
-  text-align: center;
+  color: #18181b !important;
+  border-bottom: solid 1px black;
+  text-align: start;
+  width: 90%;
+  margin: 0px 20px;
 }
 
 #Title-Clases, #Title-Planes {
   color: black;
-  border-bottom: solid 2px #fbf106;
+  border-bottom: solid 1px black;
   max-width: 600px;
   width: 100%;
   text-align: center;

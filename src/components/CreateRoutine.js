@@ -1,12 +1,9 @@
 // CreateRoutine.js
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
-
-
+import Buscador from './Buscador'; // Importar el componente Buscador
 
 const CreateRoutine = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [userRoutines, setUserRoutines] = useState({});
     const [routineName, setRoutineName] = useState('');
@@ -17,29 +14,9 @@ const CreateRoutine = () => {
     const [loading, setLoading] = useState(false);
     const [videoUrl, setVideoUrl] = useState(null);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (searchTerm.length > 2) {
-                searchUsers();
-            }
-        }, 300);
-        
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    const searchUsers = async () => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/usuarios/buscar?nombre=${searchTerm}`);
-            const data = await response.json();
-            setSearchResults(data);
-        } catch (error) {
-            console.error('Error buscando usuarios:', error);
-            setMessage('Error al buscar usuarios');
-        }
-    };
-
     const fetchUserRoutines = async (userId) => {
         setLoading(true);
+        setMessage('');
         try {
             const response = await fetch(`http://localhost:3001/api/routines/user/${userId}`);
             const data = await response.json();
@@ -82,6 +59,22 @@ const CreateRoutine = () => {
         };
         fetchExercises();
     }, []);
+
+    const handleUserSelect = (user) => {
+        if (user) {
+            setSelectedUser(user);
+            fetchUserRoutines(user.id_usuario);
+            // Limpiar formulario cuando se selecciona un nuevo usuario
+            setRoutineName('');
+            setExercises([]);
+        } else {
+            setSelectedUser(null);
+            setUserRoutines({});
+            setRoutineName('');
+            setExercises([]);
+            setMessage('');
+        }
+    };
 
     const addExercise = (day) => {
         setExercises([...exercises, {
@@ -153,30 +146,11 @@ const CreateRoutine = () => {
             
             <div className="search-section">
                 <div className="search-box">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                    <Buscador 
+                        onUsuarioSeleccionado={handleUserSelect}
                         placeholder="Buscar usuario por nombre"
                     />
                 </div>
-                
-                {searchResults.length > 0 && (
-                    <div className="search-results">
-                        {searchResults.map(user => (
-                            <div 
-                                key={user.id_usuario} 
-                                className={`user-result ${selectedUser?.id_usuario === user.id_usuario ? 'selected' : ''}`}
-                                onClick={() => {
-                                    setSelectedUser(user);
-                                    fetchUserRoutines(user.id_usuario);
-                                }}
-                            >
-                                {user.nombre} {user.apellido} 
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
 
             {selectedUser && Object.keys(userRoutines).length > 0 && (
@@ -223,7 +197,7 @@ const CreateRoutine = () => {
                     }</h3>
                     
                     <div className="form-group">
-                        <label>Dia de:</label>
+                        <label>Nombre de la Rutina:</label>
                         <input
                             type="text"
                             value={routineName}
@@ -270,12 +244,14 @@ const CreateRoutine = () => {
                                                 value={exercise.rondas}
                                                 onChange={(e) => updateExercise(globalIndex, 'rondas', parseInt(e.target.value))}
                                                 min="1"
+                                                placeholder="Rondas"
                                             />
                                             
                                             <input
                                                 type="text"
                                                 value={exercise.repeticiones}
                                                 onChange={(e) => updateExercise(globalIndex, 'repeticiones', e.target.value)}
+                                                placeholder="Repeticiones"
                                             />
                                             
                                             <button 
