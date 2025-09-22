@@ -5,25 +5,29 @@ import "./registermovement.css";
 const RegisterMovementModal = ({ onClose, onSuccess }) => {
   const { getUserId } = useAuth();
   const [products, setProducts] = useState([]);
-  const [type, setType] = useState("Ingreso");
-  const [paymentMethod, setPaymentMethod] = useState("Efectivo");
+  const [type, setType] = useState("Ingreso"); // Ingreso | Egreso
+  const [egresoMode, setEgresoMode] = useState("general"); // general | productos
+  const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [concept, setConcept] = useState("");
   const [details, setDetails] = useState([{ id_producto: "", cantidad: 1 }]);
-  const [paid, setPaid] = useState(true); // ahora booleano, se enviará como 0 o 1
+  const [paid, setPaid] = useState(true);
+  const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Obtener productos al montar
+  // Obtener productos al montar (solo si es ingreso o egreso con productos)
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoading(true);
-    fetch("http://localhost:3001/api/products/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setProducts(data.productos || []))
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, []);
+    if (type === "Ingreso" || (type === "Egreso" && egresoMode === "productos")) {
+      const token = localStorage.getItem("token");
+      setIsLoading(true);
+      fetch("http://localhost:3001/api/products/list", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setProducts(data.productos || []))
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    }
+  }, [type, egresoMode]);
 
   const handleDetailChange = (index, field, value) => {
     const newDetails = [...details];
@@ -44,35 +48,67 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
     e.preventDefault();
     setIsLoading(true);
     const token = localStorage.getItem("token");
-    const user_id = getUserId(); // ID directo desde AuthContext
+    const id_usuario = getUserId();
 
-    const payload = {
-      type,
-      payment_method: paymentMethod,
-      concept,
-      user_id,
-      details,
-      paid: paid ? 1 : 0, // lo convertimos a 1 o 0
-    };
+    // 👉 Egreso general sin productos
+    if (type === "Egreso" && egresoMode === "general") {
+      const payload = {
+        metodo_pago: paymentMethod.toLowerCase(), 
+        id_usuario,
+        concepto: concept,
+        monto: parseFloat(amount),
+        pagado: paid ? 1 : 0,
+      };
 
-    fetch("http://localhost:3001/api/cash-movements/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al registrar el movimiento");
-        return res.json();
+      fetch("http://localhost:3001/api/cash-movements/egreso", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       })
-      .then(() => {
-        onSuccess(); 
-        onClose();
+        .then((res) => {
+          if (!res.ok) throw new Error("Error al registrar egreso");
+          return res.json();
+        })
+        .then(() => {
+          onSuccess(); 
+          onClose();
+        })
+        .catch((err) => alert(err.message))
+        .finally(() => setIsLoading(false));
+
+    } else {
+      // 👉 Ingreso o Egreso con productos
+      const payload = {
+        type,
+        payment_method: paymentMethod,
+        concept,
+        user_id: id_usuario,
+        details,
+        paid: paid ? 1 : 0,
+      };
+
+      fetch("http://localhost:3001/api/cash-movements/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       })
-      .catch((err) => alert(err.message))
-      .finally(() => setIsLoading(false));
+        .then((res) => {
+          if (!res.ok) throw new Error("Error al registrar movimiento");
+          return res.json();
+        })
+        .then(() => {
+          onSuccess(); 
+          onClose();
+        })
+        .catch((err) => alert(err.message))
+        .finally(() => setIsLoading(false));
+    }
   };
 
   return (
@@ -112,9 +148,9 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="form-select"
               >
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Transferencia">Transferencia</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+                <option value="transferencia">Transferencia</option>
               </select>
             </div>
           </div>
@@ -142,58 +178,92 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
             </label>
           </div>
 
-          <div className="products-section">
-            <div className="section-header">
-              <h3>Productos</h3>
-              <button type="button" className="btn-add-product" onClick={addDetail}>
-                + Agregar producto
-              </button>
+          {/* 👉 Selector de modo cuando es egreso */}
+          {type === "Egreso" && (
+            <div className="form-group">
+              <label>Tipo de egreso</label>
+              <select
+                value={egresoMode}
+                onChange={(e) => setEgresoMode(e.target.value)}
+                className="form-select"
+              >
+                <option value="general">General (ej: alquiler, luz)</option>
+                <option value="productos">Con productos (compra)</option>
+              </select>
             </div>
-            
-            {details.map((detail, i) => (
-              <div key={i} className="product-detail-row">
-                <select
-                  value={detail.id_producto}
-                  onChange={(e) =>
-                    handleDetailChange(i, "id_producto", e.target.value)
-                  }
-                  required
-                  className="form-select product-select"
-                >
-                  <option value="">Seleccione un producto</option>
-                  {products.map((prod) => (
-                    <option key={prod.id_producto} value={prod.id_producto}>
-                      {prod.nombre}
-                    </option>
-                  ))}
-                </select>
-                
-                <div className="quantity-control">
-                  <label>Cantidad</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={detail.cantidad}
-                    onChange={(e) =>
-                      handleDetailChange(i, "cantidad", e.target.value)
-                    }
-                    className="quantity-input"
-                  />
-                </div>
-                
-                {details.length > 1 && (
-                  <button
-                    type="button"
-                    className="btn-remove-product"
-                    onClick={() => removeDetail(i)}
-                    title="Eliminar producto"
-                  >
-                    ✖
-                  </button>
-                )}
+          )}
+
+          {/* 👉 Campo monto solo para egresos generales */}
+          {type === "Egreso" && egresoMode === "general" && (
+            <div className="form-group">
+              <label>Monto del egreso</label>
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+                required
+                className="form-input"
+              />
+            </div>
+          )}
+
+          {/* 👉 Sección productos para ingresos o egresos con productos */}
+          {(type === "Ingreso" || (type === "Egreso" && egresoMode === "productos")) && (
+            <div className="products-section">
+              <div className="section-header">
+                <h3>Productos</h3>
+                <button type="button" className="btn-add-product" onClick={addDetail}>
+                  + Agregar producto
+                </button>
               </div>
-            ))}
-          </div>
+              
+              {details.map((detail, i) => (
+                <div key={i} className="product-detail-row">
+                  <select
+                    value={detail.id_producto}
+                    onChange={(e) =>
+                      handleDetailChange(i, "id_producto", e.target.value)
+                    }
+                    required
+                    className="form-select product-select"
+                  >
+                    <option value="">Seleccione un producto</option>
+                    {products.map((prod) => (
+                      <option key={prod.id_producto} value={prod.id_producto}>
+                        {prod.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  <div className="quantity-control">
+                    <label>Cantidad</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={detail.cantidad}
+                      onChange={(e) =>
+                        handleDetailChange(i, "cantidad", e.target.value)
+                      }
+                      className="quantity-input"
+                    />
+                  </div>
+                  
+                  {details.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn-remove-product"
+                      onClick={() => removeDetail(i)}
+                      title="Eliminar producto"
+                    >
+                      ✖
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>

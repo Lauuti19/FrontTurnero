@@ -491,4 +491,142 @@
   .date-filters button {
     padding: 8px 10px;
   }
+}/* ===== Products Manager ===== */
+.products-manager {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
 }
+
+.products-manager h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+/* Formulario */
+.product-form {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.product-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.product-form input:focus {
+  outline: none;
+  border-color: #fbf106;
+  box-shadow: 0 0 0 3px rgba(251, 241, 6, 0.2);
+}
+
+.product-form button {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.product-form button:hover {
+  background: #16a34a;
+}
+
+/* Tabla productos */
+.products-manager table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+  color: #18181b;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.products-manager th {
+  background-color: #fbf106;
+  color: #18181b;
+  font-weight: 700;
+  padding: 12px;
+  text-align: left;
+}
+
+.products-manager td {
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.products-manager tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.products-manager tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Botones acciones */
+.products-manager td button {
+  margin-right: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.products-manager td button:first-of-type {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.products-manager td button:first-of-type:hover {
+  background: #2563eb;
+}
+
+.products-manager td button:last-of-type {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.products-manager td button:last-of-type:hover {
+  background: #c0392b;
+}
+.header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-products {
+  background: #18181b;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-products:hover {
+  background: #3f3f46;
+}
+

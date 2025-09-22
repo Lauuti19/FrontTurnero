@@ -6,6 +6,7 @@ import '../styles/UserProfile.css';
 import transition from '../transition';
 import { useAuth } from '../AuthContext'; 
 import UserRecords from "../components/UserRecords";
+import CheckInOut from "../components/CheckInOut";
 
 const UserProfile = () => {
   const { getUserId } = useAuth(); 
@@ -34,7 +35,7 @@ const UserProfile = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, [getUserId]);
-  
+
   if (loading) {
     return <div className="user-profile-container"><p>Cargando datos...</p></div>;
   }
@@ -64,14 +65,14 @@ const UserProfile = () => {
         <p className="user-rol">{usuario.rol}</p>
 
         <div className="profile-content">
-          {/* Datos personales - visible para todos los roles */}
+          {/* Datos personales - visible para todos */}
           <div className="profile-card">
             <h3>Datos Personales</h3>
             <div className="Texto-Data"><FaAddressCard/> <strong>DNI:</strong><p> {usuario.dni}</p></div>
             <div className="Texto-Data"><FaMobileAlt/> <strong>Celular:</strong><p> {usuario.celular}</p></div>
           </div>
 
-          {/* Cuota - solo visible para alumnos */}
+          {/* Cuota - solo alumnos */}
           {isAlumno && (
             <div className="profile-card">
               <h3>{cuota ? 'Cuota Activa' : 'Estado de Cuota'}</h3>
@@ -89,10 +90,17 @@ const UserProfile = () => {
             </div>
           )}
 
-          {/* Records - visible para profesores y alumnos, oculto para admin */}
+          {/* Records - profesores y alumnos */}
           {(isProfesor || isAlumno) && (
             <div className="profile-card records-card">
               <UserRecords />
+            </div>
+          )}
+
+          {/* Check-in/out - solo Admin o Profesor */}
+          {(isAdmin || isProfesor) && (
+            <div className="profile-card">
+              <CheckInOut />
             </div>
           )}
         </div>
