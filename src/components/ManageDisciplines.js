@@ -10,7 +10,7 @@ const ManageDisciplines = () => {
   const [editName, setEditName] = useState('');
 
   const fetchDisciplinas = async () => {
-    const res = await fetch('http://localhost:3001/api/disciplinas');
+    const res = await fetch('https://backturnero.onrender.com/api/disciplinas');
     const data = await res.json();
     setDisciplinas(data);
   };
@@ -37,7 +37,7 @@ const ManageDisciplines = () => {
       cancelButtonText: 'Cancelar'
     });
     if (result.isConfirmed) {
-      const res = await fetch('http://localhost:3001/api/disciplinas/update', {
+      const res = await fetch('https://backturnero.onrender.com/api/disciplinas/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplineId: id, name: editName })
@@ -62,7 +62,7 @@ const ManageDisciplines = () => {
       cancelButtonText: 'Cancelar'
     });
     if (result.isConfirmed) {
-      const res = await fetch('http://localhost:3001/api/disciplinas/delete', {
+      const res = await fetch('https://backturnero.onrender.com/api/disciplinas/delete', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplineId: id })

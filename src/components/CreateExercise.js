@@ -10,7 +10,7 @@ const CreateExercise = () => {
   });
 
   const fetchExercises = async () => {
-    const res = await fetch(`http://localhost:3001/api/exercises`);
+    const res = await fetch(`https://backturnero.onrender.com/api/exercises`);
     const data = await res.json();
     setExercises(data);
   };
@@ -26,7 +26,7 @@ const CreateExercise = () => {
 
   const handleCreateExercise = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/exercises/create", {
+      const response = await fetch("https://backturnero.onrender.com/api/exercises/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

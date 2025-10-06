@@ -1,154 +1,205 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import '../styles/Sidebar.css';
 import { useAuth } from "../AuthContext";
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaTimes, FaBars } from 'react-icons/fa';
+
+// Configuración de menús por rol para mejor mantenimiento
+const menuConfig = {
+  1: { // Administrador
+    items: [
+      { path: "/perfil", label: "Perfil" },
+      { path: "/clasesTodos", label: "Clases" },
+      { 
+        label: "Gestión", 
+        submenu: [
+          { path: "/manager/clases", label: "Clases" },
+          { path: "/manager/planes", label: "Planes" },
+          { path: "/manager/disciplinas", label: "Disciplinas" },
+          { path: "/manager/usuarios", label: "Usuarios" },
+          { path: "/manager/rutinas", label: "Rutinas" },
+          { path: "/registrar-cuota", label: "Cuotas" },
+          { path: "/manager/ejercicios", label: "Ejercicios" }
+        ]
+      },
+      { path: "/timer", label: "Timer" },
+      { path: "/Movimientos", label: "Movimientos" }
+    ]
+  },
+  2: { // Profesor
+    items: [
+      { path: "/perfil", label: "Perfil" },
+      { path: "/clasesTodos", label: "Clases" },
+      { path: "/Movimientos", label: "Movimientos" },
+      { path: "#", label: "Agenda" },
+      { 
+        label: "Gestión", 
+        submenu: [
+          { path: "/manager/clases", label: "Clases" },
+          { path: "/manager/planes", label: "Planes" },
+          { path: "/manager/disciplinas", label: "Disciplinas" },
+          { path: "/manager/usuarios", label: "Usuarios" },
+          { path: "/manager/rutinas", label: "Rutinas" },
+          { path: "/registrar-cuota", label: "Cuotas" },
+          { path: "/manager/ejercicios", label: "Ejercicios" }
+        ]
+      },
+      { path: "/timer", label: "Timer" }
+    ]
+  },
+  3: { // Alumno
+    items: [
+      { path: "/perfil", label: "Mi Perfil" },
+      { path: "/clasesUser", label: "Clases" },
+      { path: "#", label: "Progreso" },
+      { path: "/timer", label: "Timer" },
+      { path: "/rutina", label: "Mi Rutina" }
+    ]
+  }
+};
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showGestionSubmenu, setShowGestionSubmenu] = useState(false);
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  const [openSubmenus, setOpenSubmenus] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const { usuario, logout } = useAuth();
 
+  // Cerrar sidebar al cambiar de ruta
   useEffect(() => {
-    setIsOpen(false); 
+    setIsOpen(false);
   }, [location.pathname]);
 
-  if (!usuario) return null; 
+  // Cerrar sidebar al presionar Escape
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
+  const toggleSidebar = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
+
+  const toggleSubmenu = useCallback((menuLabel) => {
+    setOpenSubmenus(prev => ({
+      ...prev,
+      [menuLabel]: !prev[menuLabel]
+    }));
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+    setIsOpen(false);
   };
 
-  let content;
-  if (usuario.id_rol === 1) {
-    content = (
-      <div className='OpcionesSidebar'>
-        <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
-        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
+  if (!usuario) return null;
 
+  const userMenu = menuConfig[usuario.id_rol];
+  if (!userMenu) return null;
 
-       <div className="sb-group">
-          <button
-            className='OpcionSidebar'
-            onClick={() => setShowGestionSubmenu(prev => !prev)}
-            type="button"
-            id="boton-gestion"
-          >
-            Gestión
-            {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
-          </button>
-          {showGestionSubmenu && (
-            <div className={`sb-submenu ${showGestionSubmenu ? 'open' : ''}`}>
-              <Link to="/manager/clases"><button className="sb-submenu-item">Clases</button></Link>
-              <Link to="/manager/planes"><button className="sb-submenu-item">Planes</button></Link>
-              <Link to="/manager/disciplinas"><button className="sb-submenu-item">Disciplinas</button></Link>
-              <Link to="/manager/usuarios"><button className="sb-submenu-item">Usuarios</button></Link>
-              <Link to="/manager/rutinas"><button className="sb-submenu-item">Rutinas</button></Link>
-              <Link to="registrar-cuota"><button className="sb-submenu-item">Cuotas</button></Link>
-              <Link to="/manager/ejercicios"><button className="sb-submenu-item">Ejercicios</button></Link>
+  const renderMenuItems = () => {
+    return userMenu.items.map((item, index) => {
+      if (item.submenu) {
+        return (
+          <div key={item.label} className="sb-group">
+            <button
+              className={`OpcionSidebar ${openSubmenus[item.label] ? 'active' : ''}`}
+              onClick={() => toggleSubmenu(item.label)}
+              type="button"
+              aria-expanded={openSubmenus[item.label]}
+              aria-controls={`submenu-${item.label}`}
+            >
+              {item.label}
+              {openSubmenus[item.label] ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+            </button>
+            {openSubmenus[item.label] && (
+              <div 
+                id={`submenu-${item.label}`}
+                className={`sb-submenu ${openSubmenus[item.label] ? 'open' : ''}`}
+              >
+                {item.submenu.map(subItem => (
+                  <Link 
+                    key={subItem.path} 
+                    to={subItem.path}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <button className="sb-submenu-item">
+                      {subItem.label}
+                    </button>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
 
-            </div>
-          )}
-        </div>
-
-
-        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
-        
-        <Link to="/Movimientos" className='OpcionSidebar'>Movimientos</Link>
-
-        <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
-      </div>
-    );
-  } else if (usuario.id_rol === 2) {
-    content = (
-      <div className='OpcionesSidebar'>
-        <Link to="/perfil" className='OpcionSidebar'>Perfil</Link>
-        <Link to="/clasesTodos" className='OpcionSidebar'>Clases</Link>
-        <Link to="/Movimientos" className='OpcionSidebar'>Movimientos</Link>
-
-        <Link to="#" className='OpcionSidebar'>Agenda</Link>
-
-        <div className="sb-group">
-          <button
-            className='OpcionSidebar'
-            onClick={() => setShowGestionSubmenu(prev => !prev)}
-            type="button"
-          >
-            Gestión
-            {showGestionSubmenu ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
-          </button>
-          {showGestionSubmenu && (
-            <div className={`sb-submenu ${showGestionSubmenu ? 'open' : ''}`}>
-              <Link to="/manager/clases"><button className="sb-submenu-item">Clases</button></Link>
-              <Link to="/manager/planes"><button className="sb-submenu-item">Planes</button></Link>
-              <Link to="/manager/disciplinas"><button className="sb-submenu-item">Disciplinas</button></Link>
-              <Link to="/manager/usuarios"><button className="sb-submenu-item">Usuarios</button></Link>
-              <Link to="/manager/rutinas"><button className="sb-submenu-item">Rutinas</button></Link>
-              <Link to="registrar-cuota"><button className="sb-submenu-item">Cuotas</button></Link>
-              <Link to="/manager/ejercicios"><button className="sb-submenu-item">Ejercicios</button></Link>
-            </div>
-          )}
-        </div>
-
-        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
-        <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
-      </div>
-    );
-  } else if (usuario.id_rol === 3) {
-    content = (
-      <div className='OpcionesSidebar'>
-        <Link to="perfil" className='OpcionSidebar'>Mi Perfil</Link>
-        <Link to="/clasesUser" className='OpcionSidebar'>Clases</Link>
-        <Link to="#" className='OpcionSidebar'>Progreso</Link>
-        <Link to="/timer" className='OpcionSidebar'>Timer</Link>
-        <Link to="/rutina" className='OpcionSidebar'>Mi Rutina</Link>
-
-        <button onClick={handleLogout} className='LogOutBTN'>Cerrar Sesion</button>
-      </div>
-    );
-  }
+      return (
+        <Link 
+          key={item.path} 
+          to={item.path}
+          className='OpcionSidebar'
+          onClick={() => setIsOpen(false)}
+        >
+          {item.label}
+        </Link>
+      );
+    });
+  };
 
   return (
-    <div>
+    <>
       {isOpen && (
         <div
           className="sidebar-overlay"
           onClick={toggleSidebar}
           aria-label="Cerrar menú"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && toggleSidebar()}
         />
       )}
+      
       <button
         onClick={toggleSidebar}
-        className={`toggle-button${isOpen ? " open" : ""}`}
-        style={{
-          left: isOpen ? 260 : 0,
-          transition: 'left 0.3s cubic-bezier(.77,0,.18,1)'
-        }}
+        className={`toggle-button ${isOpen ? "open" : ""}`}
         aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-expanded={isOpen}
       >
-        <span style={{
-          fontSize: "2rem",
-          color: isOpen ? "#fbf106" : "#232526",
-          transition: "color 0.3s, transform 0.3s",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          height: "100%"
-        }}>
-          {isOpen ? "" : "☰"}
-        </span>
+        {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
       </button>
-      <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-        <h2>Opciones</h2>
-        {content}
+      
+      <aside 
+        className={`sidebar ${isOpen ? 'open' : 'closed'}`}
+        aria-hidden={!isOpen}
+      >
+        <div className="sidebar-header">
+          <h2>Opciones</h2>
+        </div>
         
-      </div>
-    </div>
+        <nav className="sidebar-nav" aria-label="Navegación principal">
+          <div className='OpcionesSidebar'>
+            {renderMenuItems()}
+          </div>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button 
+            onClick={handleLogout} 
+            className='LogOutBTN'
+          >
+            Cerrar Sesion
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 

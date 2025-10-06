@@ -35,7 +35,7 @@ const LoginPage = () => {
     console.log(formData.email, 'Email', formData.password, 'Password');  
     if (isRegistering) {
       try {
-        const response = await fetch("http://localhost:3001/api/auth/register", {
+        const response = await fetch("https://backturnero.onrender.com/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
@@ -54,7 +54,7 @@ const LoginPage = () => {
       }
     } else {
       try {
-        const response = await fetch("http://localhost:3001/api/auth/login", {
+        const response = await fetch("https://backturnero.onrender.com/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -66,30 +66,56 @@ const LoginPage = () => {
         const data = await response.json();
 
         if (response.ok) {
+          console.log("Token recibido:", data.token);
+          console.log("Usuario recibido:", data.usuario);
+            
+          // Guarda el token
           localStorage.setItem("token", data.token);
+          const tokenGuardado = localStorage.getItem("token");
+          console.log("Token guardado en localStorage:", tokenGuardado);
 
-          const perfilRes = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/perfil`, {
-            headers: {
-              Authorization: `Bearer ${data.token}`
+          // VERIFICACIÓN DEL TOKEN - prueba el endpoint de perfil
+          try {
+            const perfilRes = await fetch(`https://backturnero.onrender.com/api/auth/perfil`, {
+              headers: {
+                'Authorization': `Bearer ${data.token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (perfilRes.ok) {
+              const perfilData = await perfilRes.json();
+              console.log("Perfil obtenido correctamente:", perfilData);
+              
+              // Usa los datos del PERFIL que son más completos
+              login(perfilData.usuario, data.token);
+            } else {
+              console.warn("No se pudo obtener el perfil, usando datos del login");
+              // Si falla el perfil, usa los datos del login
+              login(data.usuario, data.token);
             }
-          });
+          } catch (perfilError) {
+            console.error("Error obteniendo perfil:", perfilError);
+            // Si hay error, usa los datos del login
+            login(data.usuario, data.token);
+          }
 
-          const perfilData = await perfilRes.json();
-          login(perfilData.usuario);
+          // Navegación basada en los datos del usuario
+          const usuarioFinal = data.usuario; // o perfilData.usuario si se obtuvo
+          const id_rol = usuarioFinal.id_rol;
+          const id_estado = usuarioFinal.id_estado;
 
-          const id_rol = perfilData.usuario.id_rol;
-          const id_estado = perfilData.usuario.id_estado;
+          console.log("Navegando con:", { id_rol, id_estado });
 
-          if (id_estado === 1 && id_rol === 1) {
-            navigate("/perfil");
-          } else if (id_estado === 1 && id_rol === 2) {
-            navigate("/perfil");
-          } else if (id_estado === 1 && id_rol === 3) {
+          if (id_estado === 1) {
+            // Usuario activo - va al perfil sin importar el rol
             navigate("/perfil");
           } else if (id_estado === 2 || id_estado === 3) {
+            // Usuario inactivo o suspendido
             navigate("/estado");
           } else {
-            alert("Rol desconocido");
+            alert("Estado de usuario desconocido");
+            navigate("/");
           }
 
         } else {

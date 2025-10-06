@@ -9,7 +9,7 @@ const CashMovementsAll = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:3001/api/cash-movements/all", {
+    fetch("https://backturnero.onrender.com/api/cash-movements/all", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

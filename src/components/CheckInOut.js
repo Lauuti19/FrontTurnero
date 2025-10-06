@@ -15,7 +15,7 @@ export default function CheckInOut() {
 
   const refresh = () => {
     setLoading(true);
-    fetch(`http://localhost:3001/api/workhours/check-status-dia?id_usuario=${id_usuario}&fecha=${fechaHoy}`)
+    fetch(`https://backturnero.onrender.com/api/workhours/check-status-dia?id_usuario=${id_usuario}&fecha=${fechaHoy}`)
       .then(r => r.json())
       .then(d => setAccion(d?.accion || 'CHECK_IN'))
       .catch(e => setErr(e.message))
@@ -30,7 +30,7 @@ export default function CheckInOut() {
       : 'checkout';
 
     try {
-      await fetch(`http://localhost:3001/api/workhours/${endpoint}`, {
+      await fetch(`https://backturnero.onrender.com/api/workhours/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ id_usuario, fecha, hora })

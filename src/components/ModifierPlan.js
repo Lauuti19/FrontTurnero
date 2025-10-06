@@ -12,7 +12,7 @@ const CreatePlan = () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/disciplinas')
+    fetch('https://backturnero.onrender.com/api/disciplinas')
       .then(res => res.json())
       .then(data => setDisciplinas(data));
   }, []);
@@ -35,7 +35,7 @@ const CreatePlan = () => {
   const handleCreatePlan = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/api/planes/create", {
+      const response = await fetch("https://backturnero.onrender.com/api/planes/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

@@ -10,7 +10,7 @@ const ManageExercises = () => {
   const [editForm, setEditForm] = useState({ name: '', link: '' });
 
   const fetchExercises = async () => {
-    const res = await fetch('http://localhost:3001/api/exercises');
+    const res = await fetch('https://backturnero.onrender.com/api/exercises');
     const data = await res.json();
     setExercises(data);
   };
@@ -29,7 +29,7 @@ const ManageExercises = () => {
       cancelButtonText: 'Cancelar'
     });
     if (result.isConfirmed) {
-      const res = await fetch('http://localhost:3001/api/exercises/delete', {
+      const res = await fetch('https://backturnero.onrender.com/api/exercises/delete', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
@@ -66,7 +66,7 @@ const ManageExercises = () => {
       cancelButtonText: 'Cancelar'
     });
     if (result.isConfirmed) {
-      const res = await fetch('http://localhost:3001/api/exercises/update', {
+      const res = await fetch('https://backturnero.onrender.com/api/exercises/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, name: editForm.name, link: editForm.link })

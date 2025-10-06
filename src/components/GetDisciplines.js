@@ -5,7 +5,7 @@ const ViewDisciplines = () => {
   const [disciplinas, setDisciplinas] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/disciplinas')
+    fetch('https://backturnero.onrender.com/api/disciplinas')
       .then(res => res.json())
       .then(data => setDisciplinas(data));
   }, []);

@@ -8,7 +8,7 @@ const ManagePlans = () => {
   const [editedPlan, setEditedPlan] = useState({});
 
   const fetchPlanes = async () => {
-    const res = await fetch(`http://localhost:3001/api/planes`);
+    const res = await fetch(`https://backturnero.onrender.com/api/planes`);
     const data = await res.json();
     setPlanes(data.planes);
   };
@@ -29,7 +29,7 @@ const ManagePlans = () => {
 
   const handleSaveEdit = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/planes/update`, {
+      const response = await fetch(`https://backturnero.onrender.com/api/planes/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -57,7 +57,7 @@ const ManagePlans = () => {
     if (!confirm) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/planes/delete`, {
+      const response = await fetch(`https://backturnero.onrender.com/api/planes/delete`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ planId: id })

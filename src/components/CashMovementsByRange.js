@@ -35,7 +35,7 @@ const CashMovementsByRange = () => {
     setError(null);
 
     fetch(
-      `http://localhost:3001/api/cash-movements/by-date-range?start_date=${startDate}&end_date=${endDate}`,
+      `https://backturnero.onrender.com/api/cash-movements/by-date-range?start_date=${startDate}&end_date=${endDate}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }

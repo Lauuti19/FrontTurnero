@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import '../styles/CreateClasses.css';
+import { useAuth } from '../AuthContext'; // Importar el AuthContext
 
 const CreateClass = ({ onClassCreated }) => {
   const [disciplinas, setDisciplinas] = useState([]);
@@ -11,16 +12,46 @@ const CreateClass = ({ onClassCreated }) => {
     capacidad_max: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { getToken } = useAuth(); // Obtener la función getToken
 
   const fetchDisciplinas = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/disciplinas`);
+      const token = getToken(); // Obtener el token
+      if (!token) {
+        console.error("No hay token disponible");
+        return;
+      }
+
+      const res = await fetch(`https://backturnero.onrender.com/api/disciplinas`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      }
+      
       const data = await res.json();
-      setDisciplinas(data);
+      
+      // Asegurarse de que data sea un array
+      let disciplinasArray = [];
+      
+      if (Array.isArray(data)) {
+        disciplinasArray = data;
+      } else if (data.disciplinas && Array.isArray(data.disciplinas)) {
+        disciplinasArray = data.disciplinas;
+      } else if (data.data && Array.isArray(data.data)) {
+        disciplinasArray = data.data;
+      }
+      
+      setDisciplinas(disciplinasArray);
     } catch (error) {
       console.error("Error fetching disciplines:", error);
+      setDisciplinas([]); // Siempre mantener como array
     }
-  }, []);
+  }, [getToken]); // Agregar getToken como dependencia
 
   useEffect(() => {
     fetchDisciplinas();
@@ -36,9 +67,18 @@ const CreateClass = ({ onClassCreated }) => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("http://localhost:3001/api/classes/create", {
+      const token = getToken(); // Obtener token para la creación de clase
+      if (!token) {
+        alert("No hay token de autenticación disponible");
+        return;
+      }
+
+      const response = await fetch("https://backturnero.onrender.com/api/classes/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(formData)
       });
 
@@ -73,11 +113,16 @@ const CreateClass = ({ onClassCreated }) => {
             required
           >
             <option value="">Seleccione una disciplina</option>
-            {disciplinas.map((d) => (
-              <option key={d.id_disciplina} value={d.id_disciplina}>
-                {d.disciplina}
-              </option>
-            ))}
+            {/* Verificación segura y uso de propiedades correctas */}
+            {disciplinas.length > 0 ? (
+              disciplinas.map((d) => (
+                <option key={d.id_disciplina || d.id} value={d.id_disciplina || d.id}>
+                  {d.nombre || d.disciplina || d.name} {/* Probar diferentes nombres de propiedad */}
+                </option>
+              ))
+            ) : (
+              <option disabled>No hay disciplinas disponibles</option>
+            )}
           </select>
         </div>
 

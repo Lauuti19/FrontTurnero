@@ -5,7 +5,7 @@ const ViewPlans = () => {
   const [planes, setPlanes] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/planes')
+    fetch('https://backturnero.onrender.com/api/planes')
       .then(res => res.json())
       .then(data => setPlanes(data.planes));
   }, []);

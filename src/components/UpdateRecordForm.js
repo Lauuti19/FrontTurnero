@@ -18,7 +18,7 @@ const UpdateRecordForm = ({ record, onClose, onSuccess }) => {
       nuevas_notas: nuevasNotas
     };
 
-    fetch("http://localhost:3001/api/rm/update", {
+    fetch("https://backturnero.onrender.com/api/rm/update", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedRecord)

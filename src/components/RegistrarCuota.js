@@ -14,7 +14,7 @@ const RegistrarCuota = () => {
   // Buscar usuarios
   useEffect(() => {
     if (nombreUsuario.length >= 1) {
-      fetch(`http://localhost:3001/api/usuarios/buscar?nombre=${nombreUsuario}`)
+      fetch(`https://backturnero.onrender.com/api/usuarios/buscar?nombre=${nombreUsuario}`)
         .then(res => res.json())
         .then(data => {
           setUsuarios(Array.isArray(data) ? data : data.usuarios || []);
@@ -28,7 +28,7 @@ const RegistrarCuota = () => {
 
   // Obtener planes
   useEffect(() => {
-    fetch('http://localhost:3001/api/planes')
+    fetch('https://backturnero.onrender.com/api/planes')
       .then(res => res.json())
       .then(data => setPlanes(data.planes || []));
   }, []);
@@ -46,7 +46,7 @@ const RegistrarCuota = () => {
       return;
     }
 
-    await fetch('http://localhost:3001/api/payments/register-fee', {
+    await fetch('https://backturnero.onrender.com/api/payments/register-fee', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

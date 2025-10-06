@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 const EmomTimer = () => {
   const [duration, setDuration] = useState(5);
   const [seconds, setSeconds] = useState(0);
-  const [minuteMark, setMinuteMark] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const audioRef = useRef(null);
 
@@ -13,8 +12,8 @@ const EmomTimer = () => {
       interval = setInterval(() => {
         setSeconds(prev => {
           const next = prev + 1;
+          // Reproducir sonido cada minuto completo
           if (next % 60 === 0) {
-            setMinuteMark(m => m + 1);
             audioRef.current.play();
           }
           return next;
@@ -26,7 +25,6 @@ const EmomTimer = () => {
 
   const toggle = () => {
     setSeconds(0);
-    setMinuteMark(0);
     setIsRunning(prev => !prev);
   };
 

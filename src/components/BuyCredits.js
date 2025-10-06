@@ -6,7 +6,7 @@ const BuyCredits = () => {
 
   useEffect(() => {
     const fetchPlanes = async () => {
-      const res = await fetch('http://localhost:3001/api/planes');
+      const res = await fetch('https://backturnero.onrender.com/api/planes');
       const data = await res.json();
       setPlanes(data.planes); // <-- usa la propiedad correcta
     };
@@ -16,7 +16,7 @@ const BuyCredits = () => {
   const handleComprar = async (plan) => {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const id_usuario = usuario?.id_usuario || usuario?.id;
-    await fetch('http://localhost:3001/api/cuotas/comprar', {
+    await fetch('https://backturnero.onrender.com/api/cuotas/comprar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

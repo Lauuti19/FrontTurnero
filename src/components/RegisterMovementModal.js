@@ -19,7 +19,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
     if (type === "Ingreso" || (type === "Egreso" && egresoMode === "productos")) {
       const token = localStorage.getItem("token");
       setIsLoading(true);
-      fetch("http://localhost:3001/api/products/list", {
+      fetch("https://backturnero.onrender.com/api/products/list", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -60,7 +60,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
         pagado: paid ? 1 : 0,
       };
 
-      fetch("http://localhost:3001/api/cash-movements/egreso", {
+      fetch("https://backturnero.onrender.com/api/cash-movements/egreso", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +90,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
         paid: paid ? 1 : 0,
       };
 
-      fetch("http://localhost:3001/api/cash-movements/register", {
+      fetch("https://backturnero.onrender.com/api/cash-movements/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

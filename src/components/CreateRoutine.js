@@ -18,7 +18,7 @@ const CreateRoutine = () => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await fetch(`http://localhost:3001/api/routines/user/${userId}`);
+            const response = await fetch(`https://backturnero.onrender.com/api/routines/user/${userId}`);
             const data = await response.json();
             
             if (data.length > 0) {
@@ -50,7 +50,7 @@ const CreateRoutine = () => {
     useEffect(() => {
         const fetchExercises = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/exercises');
+                const response = await fetch('https://backturnero.onrender.com/api/exercises');
                 const data = await response.json();
                 setAvailableExercises(data);
             } catch (error) {
@@ -103,7 +103,7 @@ const CreateRoutine = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3001/api/routines/create', {
+            const response = await fetch('https://backturnero.onrender.com/api/routines/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

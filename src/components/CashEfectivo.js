@@ -13,7 +13,7 @@ const CashEfectivo = () => {
       return;
     }
 
-    fetch("http://localhost:3001/api/cash-movements/summary/efectivo", {
+    fetch("https://backturnero.onrender.com/api/cash-movements/summary/efectivo", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

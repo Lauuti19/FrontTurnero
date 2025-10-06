@@ -12,7 +12,7 @@ const CreateDiscipline = () => {
   const handleCreateDiscipline = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/api/disciplinas/create", {
+      const response = await fetch("https://backturnero.onrender.com/api/disciplinas/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

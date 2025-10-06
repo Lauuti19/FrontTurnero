@@ -11,25 +11,44 @@ const RegisterButton = ({
   onSuccess, 
   disabled, 
   disabledReason,
-  userId 
+  userId,
+  getToken // Nueva prop para recibir getToken
 }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { actualizarCreditos } = useAuth();
+  const { actualizarCreditos, getToken: authGetToken } = useAuth();
 
-  // Función para verificar el registro - useCallback con dependencias correctas
+  // Función para obtener el token (usa la prop o del contexto)
+  const obtenerToken = () => {
+    return getToken ? getToken() : authGetToken();
+  };
+
+  // Función para verificar el registro
   const checkRegistration = useCallback(async () => {
     try {
       if (userId && classId && fecha) {
         setLoading(true);
+        const token = obtenerToken();
+        if (!token) {
+          console.error("No hay token disponible");
+          setLoading(false);
+          return;
+        }
+
         const res = await fetch(
-          `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+          `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
         );
+        
         if (!res.ok) throw new Error('Error en la respuesta del servidor');
         
         const data = await res.json();
-        console.log('Datos de verificación:', data); // Para debug
-        // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
+        console.log('Datos de verificación:', data);
         setIsRegistered(data.some(usuario => usuario.id_usuario === userId));
       }
     } catch (err) {
@@ -37,9 +56,9 @@ const RegisterButton = ({
     } finally {
       setLoading(false);
     }
-  }, [classId, fecha, userId]);
+  }, [classId, fecha, userId, obtenerToken]);
 
-  // Verificar registro al montar y cuando cambien las dependencias IMPORTANTES
+  // Verificar registro al montar y cuando cambien las dependencias
   useEffect(() => {
     checkRegistration();
   }, [classId, fecha, userId, checkRegistration]);
@@ -68,6 +87,17 @@ const RegisterButton = ({
       });
       return;
     }
+
+    const token = obtenerToken();
+    if (!token) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        html: 'No hay token de autenticación disponible.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
   
     const result = await modal.fire({
       title: '<span class="simbolo">¿</span>Confirmar inscripción<span class="simbolo">?</span>',
@@ -85,9 +115,12 @@ const RegisterButton = ({
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:3001/api/classes/register', {
+      const res = await fetch('https://backturnero.onrender.com/api/classes/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ userId, classId, fecha }),
       });
       
@@ -106,14 +139,19 @@ const RegisterButton = ({
       // Forzar una verificación manual después de la acción
       setLoading(true);
       const checkRes = await fetch(
-        `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+        `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const checkData = await checkRes.json();
-      // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
       setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
       setLoading(false);
       
-      onSuccess?.(); // Notificar al componente padre
+      onSuccess?.();
     } catch (err) {
       setLoading(false);
       await Swal.fire({
@@ -127,6 +165,17 @@ const RegisterButton = ({
   };
 
   const handleCancel = async () => {
+    const token = obtenerToken();
+    if (!token) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        html: 'No hay token de autenticación disponible.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
     const result = await modal.fire({
       title: '<span class="simbolo">¿</span>Cancelar inscripción<span class="simbolo">?</span>',
       html: `¿Querés cancelar tu inscripción a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?`,
@@ -139,9 +188,12 @@ const RegisterButton = ({
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:3001/api/classes/unregister', {
+      const res = await fetch('https://backturnero.onrender.com/api/classes/unregister', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ userId, classId, fecha }),
       });
 
@@ -156,20 +208,25 @@ const RegisterButton = ({
         html: '' 
       });
       
-      // Actualizar créditos después de cancelar (si se devuelven)
+      // Actualizar créditos después de cancelar
       await actualizarCreditos();
       
       // Forzar una verificación manual después de la acción
       setLoading(true);
       const checkRes = await fetch(
-        `http://localhost:3001/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`
+        `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const checkData = await checkRes.json();
-      // CORRECCIÓN: cambiar usuario.id por usuario.id_usuario
       setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
       setLoading(false);
       
-      onSuccess?.(); // Notificar al componente padre
+      onSuccess?.();
     } catch (err) {
       setLoading(false);
       await modal.fire({

@@ -22,7 +22,7 @@ const EditProfile = () => {
       setLoading(false);
       return;
     }
-    fetch(`http://localhost:3001/api/usuarios/${id_usuario}`)
+    fetch(`https://backturnero.onrender.com/api/usuarios/${id_usuario}`)
       .then(res => {
         if (!res.ok) throw new Error('Error al obtener los datos del usuario.');
         return res.json();
@@ -44,7 +44,7 @@ const EditProfile = () => {
     e.preventDefault();
     const id_usuario = getUserId();
     try {
-      const res = await fetch(`http://localhost:3001/api/usuarios/update`, {
+      const res = await fetch(`https://backturnero.onrender.com/api/usuarios/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, id_usuario })
@@ -84,7 +84,7 @@ const EditProfile = () => {
             return false;
           }
           try {
-            const res = await fetch('http://localhost:3001/api/auth/login', {
+            const res = await fetch('https://backturnero.onrender.com/api/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: formData.email, password: oldPassword })
@@ -105,7 +105,7 @@ const EditProfile = () => {
         const { newPassword } = result.value;
         try {
           const id_usuario = getUserId();
-          const res = await fetch('http://localhost:3001/api/auth/update-password', {
+          const res = await fetch('https://backturnero.onrender.com/api/auth/update-password', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id_usuario, nuevaPassword: newPassword })

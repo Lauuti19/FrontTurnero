@@ -25,7 +25,7 @@ const CashMovementsToday = () => {
       console.error("Error al decodificar el token", err);
     }
 
-    fetch("http://localhost:3001/api/cash-movements/today", {
+    fetch("https://backturnero.onrender.com/api/cash-movements/today", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

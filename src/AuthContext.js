@@ -6,8 +6,61 @@ export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
   const [creditos, setCreditos] = useState(null);
 
+  // Función para obtener el token (definida primero)
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
+
+  // Función para obtener créditos
+  const fetchCreditos = async (id_usuario) => {
+    if (!id_usuario) return;
+    
+    try {
+      const token = getToken(); // Ahora getToken está definida
+      if (!token) {
+        console.error("No hay token disponible");
+        return;
+      }
+
+      // Intenta con el endpoint de payments
+      const res = await fetch(`https://backturnero.onrender.com/api/payments/active-fees`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        
+        let creditosDisponibles = 0;
+        
+        if (data.cuotas && data.cuotas.length > 0) {
+          creditosDisponibles = data.cuotas[0].creditos_disponibles || 0;
+        } else if (data.creditos_disponibles) {
+          creditosDisponibles = data.creditos_disponibles;
+        } else if (data.cuota && data.cuota.creditos_disponibles) {
+          creditosDisponibles = data.cuota.creditos_disponibles;
+        }
+        
+        setCreditos(creditosDisponibles);
+        return creditosDisponibles;
+      } else {
+        console.warn("No se pudieron obtener créditos, usando valor por defecto");
+        setCreditos(0);
+        return 0;
+      }
+    } catch (error) {
+      console.error('Error fetching créditos:', error);
+      setCreditos(0);
+      return 0;
+    }
+  };
+
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
+    const tokenGuardado = localStorage.getItem("token");
+    
     if (usuarioGuardado) {
       const usuarioData = JSON.parse(usuarioGuardado);
       setUsuario(usuarioData);
@@ -18,38 +71,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Función para obtener créditos
-  const fetchCreditos = async (id_usuario) => {
-    if (!id_usuario) return;
-    
-    try {
-      const res = await fetch(`http://localhost:3001/api/payments/active-fees/?id_usuario=${id_usuario}`);
-      
-      if (!res.ok) {
-        throw new Error('Error al obtener créditos');
-      }
-      
-      const data = await res.json();
-      
-      let creditosDisponibles = 0;
-      
-      if (data.cuotas && data.cuotas.length > 0) {
-        creditosDisponibles = data.cuotas[0].creditos_disponibles || 0;
-      } else if (data.creditos_disponibles) {
-        creditosDisponibles = data.creditos_disponibles;
-      } else if (data.cuota && data.cuota.creditos_disponibles) {
-        creditosDisponibles = data.cuota.creditos_disponibles;
-      }
-      
-      setCreditos(creditosDisponibles);
-      return creditosDisponibles;
-    } catch (error) {
-      console.error('Error fetching créditos:', error);
-      setCreditos(0);
-      return 0;
-    }
-  };
-
   // Función para actualizar créditos manualmente
   const actualizarCreditos = async () => {
     if (usuario?.id_usuario || usuario?.id) {
@@ -58,8 +79,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (usuarioData) => {
+  const login = (usuarioData, token) => {
     localStorage.setItem("usuario", JSON.stringify(usuarioData));
+    localStorage.setItem("token", token);
     setUsuario(usuarioData);
     // Cargar créditos al hacer login
     fetchCreditos(usuarioData.id_usuario || usuarioData.id);
@@ -81,12 +103,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para verificar si el usuario está autenticado
+  const isAuthenticated = () => {
+    return !!getToken();
+  };
+
   return (
     <AuthContext.Provider value={{ 
       usuario, 
       login, 
       logout, 
       getUserId, 
+      getToken, // Añade esta función
+      isAuthenticated, // Opcional: útil para verificar autenticación
       creditos, 
       actualizarCreditos 
     }}>

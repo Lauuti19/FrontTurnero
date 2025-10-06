@@ -21,7 +21,7 @@ const UserRoutines = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:3001/api/routines/user/${userId}`);
+        const response = await fetch(`https://backturnero.onrender.com/api/routines/user/${userId}`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || 'Error al obtener las rutinas');
 

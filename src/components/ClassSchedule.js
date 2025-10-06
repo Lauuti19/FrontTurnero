@@ -3,6 +3,7 @@ import '../styles/ClassSchedule.css';
 import ClassUsersModal from '../components/ClassUsersModal.js';
 import { FaUsers } from 'react-icons/fa';
 import RegisterButton from '../components/RegisterButton'; 
+import { useAuth } from '../AuthContext'; // Importar el AuthContext
 
 const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -12,7 +13,6 @@ const ClassSchedule = ({
   showHeader = true,
   customContainerStyle = {},
   customItemStyle = {},
-  // Nueva prop para modo administrador
   adminMode = false 
 }) => {
   const [currentDate, setCurrentDate] = useState(() => {
@@ -25,6 +25,7 @@ const ClassSchedule = ({
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const { getToken } = useAuth(); // Obtener la función getToken
 
   const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
   const userId = propUserId !== null && propUserId !== undefined 
@@ -55,18 +56,35 @@ const ClassSchedule = ({
     const fetchClasses = async () => {
       setLoading(true);
       const formattedDate = formatDateForAPI(currentDate);
+      const token = getToken();
       
+      if (!token) {
+        console.error("No hay token disponible");
+        setLoading(false);
+        return;
+      }
+
       let url;
       if (adminMode && userId) {
         // Modo admin: cargar clases específicas del usuario seleccionado
-        url = `http://localhost:3001/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`;
+        url = `https://backturnero.onrender.com/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`;
       } else {
         // Modo normal: cargar todas las clases
-        url = `http://localhost:3001/api/classes/all?fecha=${formattedDate}`;
+        url = `https://backturnero.onrender.com/api/classes/all?fecha=${formattedDate}`;
       }
 
       try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+        
         const data = await res.json();
         
         // Formatear las horas para quitar segundos
@@ -85,9 +103,8 @@ const ClassSchedule = ({
     };
 
     fetchClasses();
-  }, [currentDate, userId, adminMode]); // Agregar adminMode y userId como dependencias
+  }, [currentDate, userId, adminMode, getToken]); // Agregar getToken como dependencia
 
-  // Resto del código sin cambios...
   const handlePreviousDay = () => {
     const newDate = new Date(currentDate);
     newDate.setDate(currentDate.getDate() - 1);
@@ -172,6 +189,7 @@ const ClassSchedule = ({
                       onSuccess={() => {
                         console.log('Inscripción exitosa');
                       }}
+                      getToken={getToken} // Pasar getToken a RegisterButton
                     />
                     <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
@@ -189,6 +207,7 @@ const ClassSchedule = ({
           classId={selectedClass.id_clase}
           fecha={formatDateForAPI(currentDate)}
           onClose={closeUsersModal}
+          getToken={getToken} // Pasar getToken a ClassUsersModal
         />
       )}
     </div>
