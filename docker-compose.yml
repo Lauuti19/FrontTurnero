@@ -9,14 +9,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
       - /app/node_modules
     networks:
       - turnero-network
-    restart: always
+    restart: unless-stopped
     environment:
       - CHOKIDAR_USEPOLLING=true
 
 networks:
   turnero-network:
     external: true
+    name: turnero-network  
