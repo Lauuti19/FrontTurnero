@@ -10,7 +10,7 @@ const NewRecordForm = ({ onClose, onSuccess }) => {
   const [notas, setNotas] = useState("");
 
   useEffect(() => {
-    fetch("https://backturnero.onrender.com/api/exercises")
+    fetch("https://backturnero-vvk6.onrender.com/api/exercises")
       .then(res => res.json())
       .then(data => setEjercicios(data))
       .catch(err => console.error("Error fetching exercises:", err));
@@ -27,7 +27,7 @@ const NewRecordForm = ({ onClose, onSuccess }) => {
       notas
     };
 
-    fetch("https://backturnero.onrender.com/api/rm", {
+    fetch("https://backturnero-vvk6.onrender.com/api/rm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newRecord)

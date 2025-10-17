@@ -1,109 +1,399 @@
-.registrar-cuota {
-  background-color: #18181b;
-  padding: 40px;
+/* ======== Contenedor general ======== */
+.registrar-cuota-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #f5f6fa;
   min-height: 100vh;
 }
 
-.registrar-cuota-container {
-  background-color: #27272a;
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+/* ======== Caja principal ======== */
+.registrar-cuota-box {
+  background-color: #ffffff;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   max-width: 500px;
   width: 100%;
-  color: white;
-  margin: 40px auto;
+  transition: all 0.3s ease;
+}
+
+.registrar-cuota-box:hover {
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ======== Título y descripción ======== */
+.registrar-cuota-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.registrar-cuota-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* ======== Formulario ======== */
+.registrar-cuota-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-icon {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+/* ======== Búsqueda de usuarios ======== */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 0.25rem;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.suggestion-item:hover {
+  background: #f8fafc;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.user-icon {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.user-email {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* ======== Usuario seleccionado ======== */
+.selected-user {
+  margin-top: -0.5rem;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+}
+
+.user-badge .user-icon {
+  color: #3b82f6;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* ======== Campos de formulario ======== */
+.form-field select {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.form-field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+.form-field select:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ======== Checkbox personalizado ======== */
+.checkbox-field {
+  margin: 0.5rem 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  padding: 0.5rem 0;
+}
+
+.checkbox-input {
+  display: none;
+}
+
+.checkmark {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.checkbox-input:checked + .checkmark {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.checkbox-input:checked + .checkmark + .check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.check-icon {
+  color: white;
+  font-size: 0.7rem;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease;
+  position: absolute;
+}
+
+.checkbox-text {
+  font-size: 0.95rem;
+}
+
+/* ======== Botón de envío ======== */
+.submit-btn {
+  margin-top: 1rem;
+  background-color: #18181b;
+  color: #fbf106;
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: 'Brigends', sans-serif;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #fbf106;
+  color: black;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.submit-btn:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ======== Resumen de cuota ======== */
+.fee-summary {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.fee-summary h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
   text-align: center;
 }
 
-.registrar-cuota h2 {
-  margin-bottom: 1.5em;
-  color: white;
-  font-size: 2rem;
-  font-family: 'Brigends';
-  font-weight: lighter;
-  letter-spacing: 0.05rem;
-}
-
-.registrar-cuota-container form {
+.summary-details {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 0.75rem;
 }
 
-.registrar-cuota-container label {
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: white;
-  text-align: left;
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.registrar-cuota-container input,
-.registrar-cuota-container select {
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  background-color: #3f3f46;
-  color: white;
-}
-.input-buscar-user{
-  width: 95%;
-}
-.registrar-cuota-container input:focus,
-.registrar-cuota-container select:focus {
-  outline: 2px solid #fbf106;
+.summary-item:last-child {
+  border-bottom: none;
 }
 
-.registrar-cuota-container button[type="submit"] {
-  margin-top: 1rem;
-  background-color: #fbf106;
-  color: #1f1d1b;
-  font-family: 'Phonk';
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.summary-label {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.9rem;
 }
 
-.registrar-cuota-container button[type="submit"]:hover {
-  background-color: #e6db04;
+.summary-value {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.9rem;
 }
 
-/* Sugerencias */
-.suggestions-list {
-  display: block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 38px;
-  overflow: visible;
-  background: #27272a;
-  border: 1px solid #ddd;
-  border-radius: 0 0 6px 6px;
-  z-index: 10;
-  max-height: 140px;
-  overflow-y: auto;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  color: white;
+.summary-value.paid {
+  color: #059669;
 }
 
-.suggestions-list li {
-  padding: 8px 12px;
-  cursor: pointer;
-  color: white;
+.summary-value.pending {
+  color: #dc2626;
 }
 
+/* ======== Responsive ======== */
+@media (max-width: 680px) {
+  .registrar-cuota-container {
+    padding: 1rem;
+  }
 
-.suggestions-list li:hover {
-  background: #3f3f46;
+  .registrar-cuota-box {
+    padding: 2rem 1.5rem;
+  }
+
+  .registrar-cuota-title {
+    font-size: 1.6rem;
+  }
+
+  .registrar-cuota-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .registrar-cuota-form {
+    gap: 1.2rem;
+  }
+
+  .form-field input,
+  .form-field select {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .submit-btn {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .registrar-cuota-container {
+    padding: 0.5rem;
+  }
+
+  .registrar-cuota-box {
+    padding: 1.5rem 1rem;
+  }
+
+  .registrar-cuota-title {
+    font-size: 1.4rem;
+  }
+
+  .suggestion-item {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .user-badge {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .fee-summary {
+    padding: 1rem;
+  }
 }

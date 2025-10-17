@@ -1,0 +1,76 @@
+.buscador-container {
+  position: relative;
+  width: 100%;
+  margin: 1rem 0;
+  font-family: 'inter', sans-serif;
+}
+
+/* 🔍 Input principal */
+.buscador-input {
+  background: #1e1e1e;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+.buscador-input:focus {
+  border-color: #f04a3e;
+  box-shadow: 0 0 4px rgba(240, 74, 62, 0.4);
+}
+
+.buscador-suggestions {
+  background: #b6b6b656;
+  border-color: #444;
+  border-radius: 5px;
+}
+
+.buscador-suggestion-item:hover {
+  background: #f04a3e;
+  color: #fff;
+}
+.buscador-suggestion-item::marker{
+    color: black;
+}
+
+/* ⏳ Indicador de carga */
+.buscador-loading {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #444;
+  font-family: 'Inter', sans-serif;
+  font-weight: lighter;
+}
+
+/* 🧍 Ítem individual */
+.buscador-suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.buscador-suggestion-item:hover {
+  background: #1e1e1e;
+  color: white;
+  border-radius: 5px;
+}
+
+/* 🧾 Nombre dentro del ítem */
+.buscador-suggestion-name {
+  font-size: 15px;
+}
+
+/* ⚠️ No results */
+.buscador-no-results {
+  position: absolute;
+  width: 100%;
+  top: 105%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px 0px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}

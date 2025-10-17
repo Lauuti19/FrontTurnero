@@ -5,7 +5,7 @@ const ViewExercises = () => {
   const [exercises, setExercises] = useState([]);
 
    const fetchExercises = async () => {
-      const res = await fetch(`https://backturnero.onrender.com/api/exercises`);
+      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/exercises`);
       const data = await res.json();
       setExercises(data);
     };

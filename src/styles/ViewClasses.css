@@ -1,0 +1,375 @@
+/* ======== Contenedor general ======== */
+.view-classes-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #f5f6fa;
+  min-height: 100vh;
+}
+
+/* ======== Caja principal ======== */
+.view-classes-box {
+  background-color: #ffffff;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.view-classes-box:hover {
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ======== Título y descripción ======== */
+.view-classes-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.view-classes-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* ======== Filtro de fecha ======== */
+.date-filter {
+  margin-bottom: 2rem;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.date-field label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-input {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.25s ease;
+}
+
+.date-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+/* ======== Lista de clases ======== */
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.class-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.class-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+}
+
+/* ======== Vista de clase ======== */
+.class-view .class-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.class-view .class-header h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  flex: 1;
+}
+
+.class-day {
+  background: #3b82f6;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.class-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ======== Edición de clase ======== */
+.class-edit {
+  padding: 0.5rem 0;
+}
+
+.class-edit h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.class-edit .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.class-edit .form-field label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.class-edit .form-field input,
+.class-edit .form-field select {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.25s ease;
+}
+
+.class-edit .form-field input:focus,
+.class-edit .form-field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ======== Botones de acción ======== */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn-save {
+  background-color: #15803d;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #166534;
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+/* ======== Estados vacíos y mensajes ======== */
+.no-classes {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 2px dashed #e2e8f0;
+}
+
+.no-classes p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+}
+
+.warning-message {
+  background: #fef3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.75rem;
+  color: #856404;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.warning-message p {
+  margin: 0 0 0.5rem 0;
+}
+
+.retry-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #c82333;
+}
+
+/* ======== Responsive ======== */
+@media (max-width: 768px) {
+  .view-classes-container {
+    padding: 1rem;
+  }
+
+  .view-classes-box {
+    padding: 2rem 1.5rem;
+  }
+
+  .view-classes-title {
+    font-size: 1.6rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .class-view .class-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .action-buttons {
+    justify-content: stretch;
+  }
+
+  .btn-edit,
+  .btn-delete,
+  .btn-save,
+  .btn-cancel {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-classes-container {
+    padding: 0.5rem;
+  }
+
+  .view-classes-box {
+    padding: 1.5rem 1rem;
+  }
+
+  .view-classes-title {
+    font-size: 1.4rem;
+  }
+
+  .class-card {
+    padding: 1rem;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}

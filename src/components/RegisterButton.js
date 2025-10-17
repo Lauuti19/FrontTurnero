@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import '../styles/RegisterButton.css';
+import { classService } from '../services/classService';
 import Swal from 'sweetalert2';
 import { useAuth } from "../AuthContext";
+import '../styles/RegisterButton.css';
 
 const RegisterButton = ({ 
   classId, 
@@ -12,7 +13,7 @@ const RegisterButton = ({
   disabled, 
   disabledReason,
   userId,
-  getToken // Nueva prop para recibir getToken
+  getToken
 }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ const RegisterButton = ({
     return getToken ? getToken() : authGetToken();
   };
 
-  // Función para verificar el registro
+  // Función para verificar el registro usando el service
   const checkRegistration = useCallback(async () => {
     try {
       if (userId && classId && fecha) {
@@ -35,24 +36,54 @@ const RegisterButton = ({
           return;
         }
 
-        const res = await fetch(
-          `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+        console.log('Verificando registro con:', { classId, userId, fecha });
+        
+        // Intentar verificación directa primero
+        try {
+          const result = await classService.checkUserRegistration(token, classId, userId, fecha);
+          console.log('Resultado de verificación:', result);
+          setIsRegistered(result.isRegistered);
+        } catch (primaryError) {
+          console.error("Error en verificación primaria:", primaryError);
+          
+          // Fallback: usar el método original de fetch directo
+          console.log('Usando método de verificación alternativo...');
+          const res = await fetch(
+            `https://backturnero-vvk6.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
             }
+          );
+          
+          if (res.ok) {
+            const data = await res.json();
+            console.log('Datos de verificación alternativa:', data);
+            
+            // Procesar la respuesta según el formato que devuelve tu backend
+            let usersArray = data;
+            if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+              usersArray = data[0]; // Si viene en formato [ [array] ]
+            }
+            
+            const registered = Array.isArray(usersArray) 
+              ? usersArray.some(usuario => usuario.id_usuario == userId)
+              : false;
+              
+            console.log('Resultado verificación alternativa:', registered);
+            setIsRegistered(registered);
+          } else {
+            console.error('Error en verificación alternativa:', res.status);
+            setIsRegistered(false);
           }
-        );
-        
-        if (!res.ok) throw new Error('Error en la respuesta del servidor');
-        
-        const data = await res.json();
-        console.log('Datos de verificación:', data);
-        setIsRegistered(data.some(usuario => usuario.id_usuario === userId));
+        }
       }
     } catch (err) {
-      console.error("Error al verificar registro:", err);
+      console.error("Error general al verificar registro:", err);
+      // En caso de cualquier error, asumimos que no está registrado
+      setIsRegistered(false);
     } finally {
       setLoading(false);
     }
@@ -115,7 +146,10 @@ const RegisterButton = ({
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch('https://backturnero.onrender.com/api/classes/register', {
+      setLoading(true);
+      
+      // Usar fetch directo para evitar problemas con el service
+      const res = await fetch('https://backturnero-vvk6.onrender.com/api/classes/register', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -136,24 +170,11 @@ const RegisterButton = ({
       // Actualizar créditos después de registrar
       await actualizarCreditos();
       
-      // Forzar una verificación manual después de la acción
-      setLoading(true);
-      const checkRes = await fetch(
-        `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      const checkData = await checkRes.json();
-      setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
-      setLoading(false);
+      // Actualizar estado de registro
+      setIsRegistered(true);
       
       onSuccess?.();
     } catch (err) {
-      setLoading(false);
       await Swal.fire({
         icon: 'error',
         title: 'Algo no funcionó',
@@ -161,6 +182,8 @@ const RegisterButton = ({
         confirmButtonText: 'OK'
       });
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -188,7 +211,10 @@ const RegisterButton = ({
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch('https://backturnero.onrender.com/api/classes/unregister', {
+      setLoading(true);
+      
+      // Usar fetch directo para evitar problemas con el service
+      const res = await fetch('https://backturnero-vvk6.onrender.com/api/classes/unregister', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -211,29 +237,18 @@ const RegisterButton = ({
       // Actualizar créditos después de cancelar
       await actualizarCreditos();
       
-      // Forzar una verificación manual después de la acción
-      setLoading(true);
-      const checkRes = await fetch(
-        `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      const checkData = await checkRes.json();
-      setIsRegistered(checkData.some(usuario => usuario.id_usuario === userId));
-      setLoading(false);
+      // Actualizar estado de registro
+      setIsRegistered(false);
       
       onSuccess?.();
     } catch (err) {
-      setLoading(false);
       await modal.fire({
         icon: 'error',
         title: 'Error',
         html: err.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -259,8 +274,9 @@ const RegisterButton = ({
     <button
       className={`botonReservar ${isRegistered ? 'botonCancelar' : 'botonAnotarse'}`}
       onClick={isRegistered ? handleCancel : handleRegister}
+      disabled={loading}
     >
-      <h3>{isRegistered ? 'Desanotarse' : 'Anotarse'}</h3>
+      <h3>{loading ? 'Procesando...' : isRegistered ? 'Desanotarse' : 'Anotarse'}</h3>
     </button>
   );
 };

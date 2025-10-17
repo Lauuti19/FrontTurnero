@@ -13,7 +13,7 @@ const CashSummaryToday = () => {
       return;
     }
 
-    fetch("https://backturnero.onrender.com/api/cash-movements/summary/today", {
+    fetch("https://backturnero-vvk6.onrender.com/api/cash-movements/summary/today", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

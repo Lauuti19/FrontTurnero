@@ -1,0 +1,68 @@
+/* styles/TabManager.css */
+.tab-manager-container {
+    padding: 2rem;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.tab-manager-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.tab-manager-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-family: 'Phonk', sans-serif;
+}
+
+.tab-manager-tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 1rem;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.tab-manager-btn {
+    padding: 20px 40px;
+    border: none;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Brigends', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #666;
+    width: auto;
+}
+
+.tab-manager-btn:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.tab-manager-btn.active {
+    background: #fbf106;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(251, 241, 6, 0.3);
+}
+
+.tab-manager-content {
+    min-height: 400px;
+}
+
+@media (max-width: 680px) {
+    .tab-manager-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

@@ -8,7 +8,7 @@ const RegisterUser = () => {
     nombre: "",
     dni: "",
     celular: "",
-    id_rol: "1", 
+    id_rol: "1",
   });
 
   const handleChange = (e) => {
@@ -19,14 +19,17 @@ const RegisterUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://backturnero.onrender.com/api/auth/register-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        },
-        body: JSON.stringify(formData)
-      });
+      const response = await fetch(
+        "https://backturnero-vvk6.onrender.com/api/auth/register-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -37,7 +40,7 @@ const RegisterUser = () => {
           nombre: "",
           dni: "",
           celular: "",
-          id_rol: "1"
+          id_rol: "1",
         });
       } else {
         alert(data.message || "Error al registrar el usuario");
@@ -50,9 +53,12 @@ const RegisterUser = () => {
 
   return (
     <div className="register-user-container">
-      <h2 className="register-user-title">Crear Usuario</h2>
       <div className="register-user-box">
-        
+        <h2 className="register-user-title">Registrar Usuario</h2>
+        <p className="register-user-subtitle">
+          Completa la información del nuevo usuario para agregarlo al sistema.
+        </p>
+
         <form className="register-user-form" onSubmit={handleSubmit}>
           <div className="form-field">
             <label>Nombre</label>
@@ -64,7 +70,7 @@ const RegisterUser = () => {
               required
             />
           </div>
-          
+
           <div className="form-field">
             <label>Email</label>
             <input
@@ -76,7 +82,7 @@ const RegisterUser = () => {
               required
             />
           </div>
-          
+
           <div className="form-field">
             <label>DNI</label>
             <input
@@ -87,7 +93,7 @@ const RegisterUser = () => {
               required
             />
           </div>
-          
+
           <div className="form-field">
             <label>Celular</label>
             <input
@@ -98,7 +104,7 @@ const RegisterUser = () => {
               required
             />
           </div>
-          
+
           <div className="form-field">
             <label>Contraseña</label>
             <input
@@ -110,7 +116,7 @@ const RegisterUser = () => {
               required
             />
           </div>
-          
+
           <div className="form-field">
             <label>Rol</label>
             <select name="id_rol" value={formData.id_rol} onChange={handleChange}>
@@ -119,8 +125,10 @@ const RegisterUser = () => {
               <option value="3">Alumno</option>
             </select>
           </div>
-          
-          <button type="submit" className="register-user-btn">Registrar Usuario</button>
+
+          <button type="submit" className="register-user-btn">
+            Crear usuario
+          </button>
         </form>
       </div>
     </div>

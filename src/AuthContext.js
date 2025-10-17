@@ -5,8 +5,9 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
   const [creditos, setCreditos] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
 
-  // Función para obtener el token (definida primero)
+  // Función para obtener el token
   const getToken = () => {
     return localStorage.getItem('token');
   };
@@ -16,14 +17,13 @@ export const AuthProvider = ({ children }) => {
     if (!id_usuario) return;
     
     try {
-      const token = getToken(); // Ahora getToken está definida
+      const token = getToken();
       if (!token) {
         console.error("No hay token disponible");
         return;
       }
 
-      // Intenta con el endpoint de payments
-      const res = await fetch(`https://backturnero.onrender.com/api/payments/active-fees`, {
+      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/payments/active-fees?id_usuario=${id_usuario}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         setCreditos(creditosDisponibles);
         return creditosDisponibles;
       } else {
-        console.warn("No se pudieron obtener créditos, usando valor por defecto");
+        console.warn(`No se pudieron obtener créditos. Status: ${res.status}`);
         setCreditos(0);
         return 0;
       }
@@ -57,18 +57,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Cargar estado inicial desde localStorage
   useEffect(() => {
-    const usuarioGuardado = localStorage.getItem("usuario");
-    const tokenGuardado = localStorage.getItem("token");
-    
-    if (usuarioGuardado) {
-      const usuarioData = JSON.parse(usuarioGuardado);
-      setUsuario(usuarioData);
-      // Cargar créditos al iniciar si hay usuario
-      if (usuarioData) {
-        fetchCreditos(usuarioData.id_usuario || usuarioData.id);
+    const cargarEstadoInicial = async () => {
+      try {
+        const usuarioGuardado = localStorage.getItem("usuario");
+        const tokenGuardado = localStorage.getItem("token");
+        
+        console.log("Cargando estado inicial...");
+        console.log("Usuario en localStorage:", usuarioGuardado);
+        console.log("Token en localStorage:", tokenGuardado);
+        
+        if (usuarioGuardado && tokenGuardado) {
+          const usuarioData = JSON.parse(usuarioGuardado);
+          console.log("Usuario cargado:", usuarioData);
+          
+          setUsuario(usuarioData);
+          
+          // Cargar créditos si hay usuario
+          if (usuarioData) {
+            const id = usuarioData.id_usuario || usuarioData.id;
+            await fetchCreditos(id);
+          }
+        } else {
+          console.log("No hay sesión guardada");
+        }
+      } catch (error) {
+        console.error("Error cargando estado inicial:", error);
+      } finally {
+        setLoading(false); // Importante: marcar como no loading
       }
-    }
+    };
+
+    cargarEstadoInicial();
   }, []);
 
   // Función para actualizar créditos manualmente
@@ -83,8 +104,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("usuario", JSON.stringify(usuarioData));
     localStorage.setItem("token", token);
     setUsuario(usuarioData);
-    // Cargar créditos al hacer login
-    fetchCreditos(usuarioData.id_usuario || usuarioData.id);
+    const id = usuarioData.id_usuario || usuarioData.id;
+    fetchCreditos(id);
   };
 
   const logout = () => {
@@ -103,7 +124,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función para verificar si el usuario está autenticado
   const isAuthenticated = () => {
     return !!getToken();
   };
@@ -114,10 +134,11 @@ export const AuthProvider = ({ children }) => {
       login, 
       logout, 
       getUserId, 
-      getToken, // Añade esta función
-      isAuthenticated, // Opcional: útil para verificar autenticación
+      getToken,
+      isAuthenticated,
       creditos, 
-      actualizarCreditos 
+      actualizarCreditos,
+      loading // Exportar estado de carga
     }}>
       {children}
     </AuthContext.Provider>

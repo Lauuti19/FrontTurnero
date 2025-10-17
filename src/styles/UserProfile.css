@@ -28,6 +28,12 @@
   letter-spacing: 0.1rem;
   font-weight: lighter;
 }
+.loading-container p {
+  font-family: 'Brigends', sans-serif;
+  font-size: 1rem;
+  color: gray;
+  animation: pulse 0.6s ease-in-out infinite alternate;
+}
 .loader {
     position: relative;
     width:  48px;
@@ -454,5 +460,186 @@
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+  
+}
+/* ======== Skeleton Loading Styles ======== */
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.skeleton-user-info {
+  flex: 1;
+}
+
+.skeleton-text {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f1f5f9 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite;
+  border-radius: 4px;
+  color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-title {
+  height: 28px;
+  width: 120px;
+  margin-bottom: 8px;
+}
+
+.skeleton-email {
+  height: 16px;
+  width: 180px;
+  margin-bottom: 6px;
+}
+
+.skeleton-name {
+  height: 20px;
+  width: 150px;
+}
+
+.skeleton-settings-icon {
+  width: 32px;
+  height: 32px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  animation: skeleton-shimmer 2s infinite;
+}
+
+.skeleton-role {
+  height: 20px;
+  width: 100px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  animation: skeleton-shimmer 2s infinite;
+}
+
+.skeleton-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.skeleton-card-title {
+  height: 24px;
+  width: 140px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-data-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-icon {
+  width: 16px;
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  animation: skeleton-shimmer 2s infinite;
+}
+
+.skeleton-data-text {
+  height: 16px;
+  width: 120px;
+}
+
+.skeleton-cuota-text {
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.skeleton-records {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-record-item {
+  height: 60px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  animation: skeleton-shimmer 2s infinite;
+}
+
+.skeleton-checkin {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.skeleton-button {
+  height: 44px;
+  flex: 1;
+  background: #e5e7eb;
+  border-radius: 8px;
+  animation: skeleton-shimmer 2s infinite;
+}
+
+/* Asegurar que los skeleton cards tengan el mismo estilo que las cards reales */
+.profile-card.skeleton-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive para skeleton */
+@media (max-width: 768px) {
+  .skeleton-checkin {
+    flex-direction: column;
+  }
+  
+  .skeleton-title {
+    width: 100px;
+  }
+  
+  .skeleton-email {
+    width: 150px;
+  }
+  
+  .skeleton-name {
+    width: 120px;
+  }
+}
+
+/* Mejorar la apariencia del esqueleto en modo oscuro si es necesario */
+@media (prefers-color-scheme: dark) {
+  .skeleton-text,
+  .skeleton-settings-icon,
+  .skeleton-role,
+  .skeleton-icon,
+  .skeleton-record-item,
+  .skeleton-button {
+    background: #f8fafc;
+  }
+  
+  .skeleton-card {
+    background: #f8fafc;
+    border-color:#e2e8f0;
   }
 }

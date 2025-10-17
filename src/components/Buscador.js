@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import '../styles/Buscador.css';
 import { useAuth } from '../AuthContext'; // Importar el AuthContext
 
 const Buscador = ({ onUsuarioSeleccionado }) => {
@@ -8,9 +9,14 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState('');
     const [loading, setLoading] = useState(false);
     const suggestionsRef = useRef(null);
+    const ignoreNextSearch = useRef(false);
     const { getToken } = useAuth(); // Obtener la función getToken
-    
+
     useEffect(() => {
+        if (ignoreNextSearch.current) {
+            ignoreNextSearch.current = false;
+            return; 
+            }
         if (nombreUsuario.length >= 1) {
             setLoading(true);
             const token = getToken();
@@ -21,7 +27,7 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
                 return;
             }
 
-            fetch(`https://backturnero.onrender.com/api/usuarios/buscar?nombre=${nombreUsuario}`, {
+            fetch(`https://backturnero-vvk6.onrender.com/api/usuarios/buscar?nombre=${nombreUsuario}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -66,6 +72,7 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
     }, []);
 
     const handleUsuarioClick = (usuario) => {
+        ignoreNextSearch.current = true; 
         setUsuarioSeleccionado(usuario.nombre);
         setNombreUsuario(usuario.nombre);
         setShowSuggestions(false);
@@ -73,43 +80,43 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
     };
 
     return (
-        <div style={{ position: 'relative' }} ref={suggestionsRef}>
+        <div className="buscador-container" ref={suggestionsRef}>
             <input
                 name="nombre_usuario"
                 value={nombreUsuario}
                 onChange={e => {
-                    setNombreUsuario(e.target.value);
-                    setUsuarioSeleccionado('');
-                    onUsuarioSeleccionado(null); // Limpiar selección al escribir
+                setNombreUsuario(e.target.value);
+                onUsuarioSeleccionado(null);
                 }}
                 onFocus={() => nombreUsuario.length >= 1 && setShowSuggestions(true)}
-                placeholder="Nombre de usuario"
-                required
+                placeholder="Buscar usuario..."
                 autoComplete="off"
-                className='input-buscar-user'
+                className="buscador-input"
             />
-            
-            {loading && (
-                <div className="loading-suggestions">Buscando...</div>
-            )}
-            
+
+            {loading && <div className="buscador-loading">Buscando...</div>}
+
             {showSuggestions && usuarios.length > 0 && (
-                <ul className="suggestions-list">
-                    {usuarios.map(u => (
-                        <li
-                            key={u.id_usuario}
-                            onClick={() => handleUsuarioClick(u)} // Pasar el objeto completo
-                        >
-                            {u.nombre} {u.apellido && `- ${u.apellido}`} {/* Mostrar más info */}
-                        </li>
-                    ))}
+                <ul className="buscador-suggestions">
+                {usuarios.map(u => (
+                    <li
+                    key={u.id_usuario}
+                    onClick={() => handleUsuarioClick(u)}
+                    className="buscador-suggestion-item"
+                    >
+                    <span className="buscador-suggestion-name">
+                        {u.nombre} {u.apellido && `- ${u.apellido}`}
+                    </span>
+                    </li>
+                ))}
                 </ul>
             )}
 
-            {showSuggestions && !loading && usuarios.length === 0 && nombreUsuario.length >= 1 && (
-                <div className="no-results">No se encontraron usuarios</div>
+            {showSuggestions && !loading && usuarios.length === 0 && (
+                <div className="buscador-no-results">No se encontraron usuarios</div>
             )}
-        </div>
+            </div>
+
     );
 }
 

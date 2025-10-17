@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 const hoyISO = () => new Date().toISOString().slice(0,10);
 
 export default function CheckInOut() {
-  const { getUserId } = useAuth();
+  const { getUserId, getToken } = useAuth(); // Agregar getToken
   const [accion, setAccion] = useState('CHECK_IN');
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
@@ -15,26 +15,63 @@ export default function CheckInOut() {
 
   const refresh = () => {
     setLoading(true);
-    fetch(`https://backturnero.onrender.com/api/workhours/check-status-dia?id_usuario=${id_usuario}&fecha=${fechaHoy}`)
-      .then(r => r.json())
+    const token = getToken();
+    
+    if (!token) {
+      setErr('No hay token disponible');
+      setLoading(false);
+      return;
+    }
+
+    fetch(`https://backturnero-vvk6.onrender.com/api/workhours/check-status-dia?id_usuario=${id_usuario}&fecha=${fechaHoy}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(r => {
+        if (!r.ok) {
+          throw new Error(`Error ${r.status}: ${r.statusText}`);
+        }
+        return r.json();
+      })
       .then(d => setAccion(d?.accion || 'CHECK_IN'))
       .catch(e => setErr(e.message))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { refresh(); }, []); 
+  useEffect(() => { 
+    if (id_usuario) {
+      refresh(); 
+    }
+  }, [id_usuario]); 
 
   const registrar = async (tipo, fecha, hora) => {
+    const token = getToken();
+    if (!token) {
+      setErr('No hay token disponible');
+      return;
+    }
+
     const endpoint = tipo === 'CHECK_IN'
       ? 'checkin'
       : 'checkout';
 
     try {
-      await fetch(`https://backturnero.onrender.com/api/workhours/${endpoint}`, {
+      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/workhours/${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ id_usuario, fecha, hora })
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || `Error ${res.status}`);
+      }
+
       refresh();
       Swal.fire('¡Éxito!', `${tipo === 'CHECK_IN' ? 'Check-in' : 'Check-out'} registrado.`, 'success');
     } catch (e) {
@@ -96,6 +133,9 @@ export default function CheckInOut() {
         <button className="botonGuardarPerfil" onClick={() => confirmarAccion('CHECK_OUT')}>
           Marcar Check-out
         </button>
+      )}
+      {accion !== 'CHECK_IN' && accion !== 'CHECK_OUT' && (
+        <p>Estado: {accion}</p>
       )}
     </div>
   );

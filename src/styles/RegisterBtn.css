@@ -1,0 +1,50 @@
+/* RegisterButton.css */
+.register-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-register {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.btn-register:hover:not(:disabled) {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.btn-register.registered {
+  background: #dc2626;
+}
+
+.btn-register.registered:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.btn-register:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-register.loading {
+  background: #6b7280;
+  cursor: wait;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.75rem;
+  text-align: center;
+  max-width: 150px;
+}

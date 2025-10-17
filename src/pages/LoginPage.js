@@ -31,11 +31,10 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(process.env.REACT_APP_API_URL)
     console.log(formData.email, 'Email', formData.password, 'Password');  
     if (isRegistering) {
       try {
-        const response = await fetch("https://backturnero.onrender.com/api/auth/register", {
+        const response = await fetch("https://backturnero-vvk6.onrender.com/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
@@ -54,7 +53,7 @@ const LoginPage = () => {
       }
     } else {
       try {
-        const response = await fetch("https://backturnero.onrender.com/api/auth/login", {
+        const response = await fetch("https://backturnero-vvk6.onrender.com/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -66,17 +65,14 @@ const LoginPage = () => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log("Token recibido:", data.token);
-          console.log("Usuario recibido:", data.usuario);
             
           // Guarda el token
           localStorage.setItem("token", data.token);
           const tokenGuardado = localStorage.getItem("token");
-          console.log("Token guardado en localStorage:", tokenGuardado);
 
           // VERIFICACIÓN DEL TOKEN - prueba el endpoint de perfil
           try {
-            const perfilRes = await fetch(`https://backturnero.onrender.com/api/auth/perfil`, {
+            const perfilRes = await fetch(`https://backturnero-vvk6.onrender.com/api/auth/perfil`, {
               headers: {
                 'Authorization': `Bearer ${data.token}`,
                 'Content-Type': 'application/json'

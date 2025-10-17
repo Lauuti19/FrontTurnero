@@ -58,7 +58,7 @@ const ClassesUser = () => {
     }
 
     try {
-      const res = await fetch(`https://backturnero.onrender.com/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`);
+      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`);
       const data = await res.json();
       setClasses(data);
     } catch (error) {
@@ -72,7 +72,7 @@ const ClassesUser = () => {
   const fetchClassAttendees = async (classId) => {
     try {
       const formattedDate = formatDateForAPI(currentDate);
-      const res = await fetch(`https://backturnero.onrender.com/api/classes/attendees?classId=${classId}&fecha=${formattedDate}`);
+      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/classes/attendees?classId=${classId}&fecha=${formattedDate}`);
       const data = await res.json();
       
       // Actualizar el estado con los usuarios de esta clase

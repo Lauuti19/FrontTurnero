@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from 'react';
+import { FaEdit, FaTrash, FaSave, FaDumbbell, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
-import { HiOutlineX } from "react-icons/hi";
-import '../styles/ManageExercises.css'; 
+import { disciplinaService } from '../services/disciplinaService';
+import { useAuth } from '../AuthContext';
+import '../styles/ManageDisciplines.css';
 
 const ManageDisciplines = () => {
+  const { getToken } = useAuth();
   const [disciplinas, setDisciplinas] = useState([]);
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchDisciplinas = async () => {
-    const res = await fetch('https://backturnero.onrender.com/api/disciplinas');
-    const data = await res.json();
-    setDisciplinas(data);
+    try {
+      setLoading(true);
+      const token = getToken();
+      
+      if (!token) {
+        throw new Error('No hay token de autenticación disponible');
+      }
+
+      const data = await disciplinaService.getDisciplinas(token);
+      setDisciplinas(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error cargando disciplinas:', err);
+      setError(err.message || 'Error al cargar las disciplinas');
+      setDisciplinas([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -21,33 +40,56 @@ const ManageDisciplines = () => {
 
   const handleEditClick = (disciplina) => {
     setEditing(disciplina.id_disciplina);
-    setEditName(disciplina.disciplina);
+    setEditName(disciplina.disciplina || disciplina.nombre || '');
   };
 
   const handleEditSave = async (id) => {
-    if (!editName) {
-      Swal.fire('Error', 'El nombre es obligatorio.', 'error');
+    if (!editName.trim()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Nombre requerido',
+        text: 'El nombre de la disciplina es obligatorio.',
+      });
       return;
     }
+
     const result = await Swal.fire({
       title: '¿Guardar cambios?',
+      text: 'Se actualizará el nombre de la disciplina.',
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar'
     });
+
     if (result.isConfirmed) {
-      const res = await fetch('https://backturnero.onrender.com/api/disciplinas/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ disciplineId: id, name: editName })
-      });
-      if (res.ok) {
-        Swal.fire('Actualizado', 'La disciplina fue actualizada.', 'success');
+      try {
+        const token = getToken();
+        
+        if (!token) {
+          throw new Error('No hay token de autenticación disponible');
+        }
+
+        await disciplinaService.updateDisciplina(token, id, {
+          name: editName.trim()
+        });
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Disciplina actualizada',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
         setEditing(null);
-        fetchDisciplinas();
-      } else {
-        Swal.fire('Error', 'No se pudo actualizar la disciplina.', 'error');
+        await fetchDisciplinas();
+      } catch (error) {
+        console.error('Error actualizando disciplina:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'No se pudo actualizar la disciplina'
+        });
       }
     }
   };
@@ -55,61 +97,177 @@ const ManageDisciplines = () => {
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
-      text: 'Esta acción eliminará la disciplina lógicamente.',
+      text: 'Esta acción eliminará la disciplina del sistema.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     });
+
     if (result.isConfirmed) {
-      const res = await fetch('https://backturnero.onrender.com/api/disciplinas/delete', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ disciplineId: id })
-      });
-      if (res.ok) {
-        Swal.fire('Eliminado', 'La disciplina fue eliminada.', 'success');
-        fetchDisciplinas();
-      } else {
-        Swal.fire('Error', 'No se pudo eliminar la disciplina.', 'error');
+      try {
+        const token = getToken();
+        
+        if (!token) {
+          throw new Error('No hay token de autenticación disponible');
+        }
+
+        await disciplinaService.deleteDisciplina(token, id);
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Disciplina eliminada',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+        await fetchDisciplinas();
+      } catch (error) {
+        console.error('Error eliminando disciplina:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'No se pudo eliminar la disciplina'
+        });
       }
     }
   };
 
   const handleCancelEdit = () => {
     setEditing(null);
+    setEditName('');
   };
 
-  return (
-    <div className="CreateClassContainer">
-      <h2>Disciplinas</h2>
-      <div className="info-dis-group">
-        {disciplinas.map((d) => (
-          <div key={d.id_disciplina} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {editing === d.id_disciplina ? (
-              <>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={e => setEditName(e.target.value)}
-                  required
-                />
-                <div className='div-buttons'>
-                <button onClick={() => handleEditSave(d.id_disciplina)} title="Guardar"><FaSave /></button>
-                <button onClick={handleCancelEdit} title="Cancelar"><HiOutlineX /></button>
-</div>
-              </>
-            ) : (
-              <>
-                <h3 style={{ margin: 0 }}>{d.disciplina}</h3>
-                <div className='div-buttons'>
-                <button onClick={() => handleEditClick(d)} title="Editar"><FaEdit /></button>
-                <button onClick={() => handleDelete(d.id_disciplina)} title="Eliminar"><FaTrash /></button>
-                </div>
-              </>
-            )}
+  const getDisciplinaNombre = (disciplina) => {
+    return disciplina.disciplina || disciplina.nombre || 'Sin nombre';
+  };
+
+  //if (loading) {
+  //  return (
+  //    <div className="manage-disciplines-container">
+  //      <div className="manage-disciplines-box">
+  //        <div className="loading-container">
+  //          <p>Cargando disciplinas...</p>
+  //        </div>
+  //      </div>
+  //    </div>
+  //  );
+  //}
+
+  if (error && disciplinas.length === 0) {
+    return (
+      <div className="manage-disciplines-container">
+        <div className="manage-disciplines-box">
+          <div className="error-message">
+            <h2>Disciplinas</h2>
+            <p>{error}</p>
+            <button onClick={fetchDisciplinas} className="retry-btn">
+              Reintentar
+            </button>
           </div>
-        ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="manage-disciplines-container">
+      <div className="manage-disciplines-box">
+        <h2 className="manage-disciplines-title">Gestión de Disciplinas</h2>
+        <p className="manage-disciplines-subtitle">
+          Administra las disciplinas disponibles en el sistema. Edita o elimina según sea necesario.
+        </p>
+
+        {error && (
+          <div className="warning-message">
+            <p>⚠️ {error}</p>
+          </div>
+        )}
+
+        <div className="disciplines-list">
+          {disciplinas.length === 0 ? (
+            <div className="no-disciplines">
+              <p>No hay disciplinas disponibles</p>
+            </div>
+          ) : (
+            disciplinas.map((disciplina) => (
+              <div key={disciplina.id_disciplina} className="discipline-card">
+                {editing === disciplina.id_disciplina ? (
+                  <div className="discipline-edit">
+                    <div className="edit-header">
+                      <FaDumbbell className="edit-icon" />
+                      <span>Editando disciplina</span>
+                    </div>
+                    
+                    <div className="edit-form">
+                      <div className="form-field">
+                        <label>Nombre de la disciplina</label>
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          placeholder="Nombre de la disciplina"
+                          required
+                          autoFocus
+                        />
+                      </div>
+                    </div>
+
+                    <div className="action-buttons">
+                      <button 
+                        className="btn-save" 
+                        onClick={() => handleEditSave(disciplina.id_disciplina)}
+                        disabled={!editName.trim()}
+                      >
+                        <FaSave /> Guardar
+                      </button>
+                      <button className="btn-cancel" onClick={handleCancelEdit}>
+                        <FaTimes /> Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="discipline-view">
+                    <div className="discipline-header">
+                      <div className="discipline-info">
+                        <FaDumbbell className="discipline-icon" />
+                        <h3>{getDisciplinaNombre(disciplina)}</h3>
+                      </div>
+                      <div className="discipline-actions">
+                        <button 
+                          className="btn-edit" 
+                          onClick={() => handleEditClick(disciplina)}
+                          title="Editar disciplina"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button 
+                          className="btn-delete" 
+                          onClick={() => handleDelete(disciplina.id_disciplina)}
+                          title="Eliminar disciplina"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="discipline-meta">
+                      {disciplina.activo !== undefined && (
+                        <span className={`status ${disciplina.activo ? 'active' : 'inactive'}`}>
+                          {disciplina.activo ? 'Activa' : 'Inactiva'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="disciplines-stats">
+          <p>Total de disciplinas: <strong>{disciplinas.length}</strong></p>
+        </div>
       </div>
     </div>
   );

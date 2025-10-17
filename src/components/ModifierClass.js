@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
+import Swal from 'sweetalert2';
+import { useAuth } from '../AuthContext';
+import { classService } from '../services/classService';
+import { disciplinaService } from '../services/disciplinaService';
 import '../styles/CreateClasses.css';
-import { useAuth } from '../AuthContext'; // Importar el AuthContext
 
 const CreateClass = ({ onClassCreated }) => {
   const [disciplinas, setDisciplinas] = useState([]);
@@ -12,46 +15,30 @@ const CreateClass = ({ onClassCreated }) => {
     capacidad_max: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { getToken } = useAuth(); // Obtener la función getToken
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { getToken } = useAuth();
 
   const fetchDisciplinas = useCallback(async () => {
     try {
-      const token = getToken(); // Obtener el token
+      setLoading(true);
+      const token = getToken();
+      
       if (!token) {
-        console.error("No hay token disponible");
-        return;
+        throw new Error('No hay token de autenticación disponible');
       }
 
-      const res = await fetch(`https://backturnero.onrender.com/api/disciplinas`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: ${res.statusText}`);
-      }
-      
-      const data = await res.json();
-      
-      // Asegurarse de que data sea un array
-      let disciplinasArray = [];
-      
-      if (Array.isArray(data)) {
-        disciplinasArray = data;
-      } else if (data.disciplinas && Array.isArray(data.disciplinas)) {
-        disciplinasArray = data.disciplinas;
-      } else if (data.data && Array.isArray(data.data)) {
-        disciplinasArray = data.data;
-      }
-      
-      setDisciplinas(disciplinasArray);
-    } catch (error) {
-      console.error("Error fetching disciplines:", error);
-      setDisciplinas([]); // Siempre mantener como array
+      const data = await disciplinaService.getDisciplinas(token);
+      setDisciplinas(data);
+      setError(null);
+    } catch (err) {
+      console.error("Error cargando disciplinas:", err);
+      setError(err.message || 'Error al cargar las disciplinas');
+      setDisciplinas([]);
+    } finally {
+      setLoading(false);
     }
-  }, [getToken]); // Agregar getToken como dependencia
+  }, [getToken]);
 
   useEffect(() => {
     fetchDisciplinas();
@@ -59,127 +46,167 @@ const CreateClass = ({ onClassCreated }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: name === 'capacidad_max' || name === 'id_dia' || name === 'id_disciplina' 
+        ? Number(value) 
+        : value 
+    }));
   };
 
   const handleCreateClass = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
+    if (!formData.id_disciplina || !formData.id_dia || !formData.hora || !formData.capacidad_max) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: 'Todos los campos son obligatorios.',
+      });
+      return;
+    }
+
     try {
-      const token = getToken(); // Obtener token para la creación de clase
+      setIsSubmitting(true);
+      const token = getToken();
+      
       if (!token) {
-        alert("No hay token de autenticación disponible");
-        return;
+        throw new Error('No hay token de autenticación disponible');
       }
 
-      const response = await fetch("https://backturnero.onrender.com/api/classes/create", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
+      await classService.createClass(token, formData);
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Clase creada exitosamente',
+        showConfirmButton: false,
+        timer: 1500
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        alert("Clase creada exitosamente");
-        setFormData({ id_disciplina: '', id_dia: '', hora: '', capacidad_max: '' });
-        if (onClassCreated) onClassCreated();
-      } else {
-        alert(data.message || "Error al crear la clase");
-      }
+      setFormData({ 
+        id_disciplina: '', 
+        id_dia: '', 
+        hora: '', 
+        capacidad_max: '' 
+      });
+      
+      if (onClassCreated) onClassCreated();
+      
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error de conexión con el servidor.");
+      console.error("Error creando clase:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || "Error al crear la clase"
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const getDisciplinaNombre = (disciplina) => {
+    return disciplina.nombre || disciplina.disciplina || disciplina.name || 'Sin nombre';
+  };
+
+  const isFormValid = formData.id_disciplina && formData.id_dia && formData.hora && formData.capacidad_max;
+
   return (
     <div className="create-class-container">
-      <h2 className="create-class-title">Crear Nueva Clase</h2>
-      
-      <form className="create-class-form" onSubmit={handleCreateClass}>
-        <div className="form-field">
-          <label htmlFor="id_disciplina">Disciplina:</label>
-          <select 
-            id="id_disciplina"
-            name="id_disciplina" 
-            value={formData.id_disciplina} 
-            onChange={handleChange} 
-            required
-          >
-            <option value="">Seleccione una disciplina</option>
-            {/* Verificación segura y uso de propiedades correctas */}
-            {disciplinas.length > 0 ? (
-              disciplinas.map((d) => (
-                <option key={d.id_disciplina || d.id} value={d.id_disciplina || d.id}>
-                  {d.nombre || d.disciplina || d.name} {/* Probar diferentes nombres de propiedad */}
+      <div className="create-class-box">
+        <h2 className="create-class-title">Crear Nueva Clase</h2>
+        <p className="create-class-subtitle">
+          Completa la información para crear una nueva clase en el sistema.
+        </p>
+
+        {error && (
+          <div className="warning-message">
+            <p>⚠️ {error}</p>
+            <button onClick={fetchDisciplinas} className="retry-btn">
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        <form className="create-class-form" onSubmit={handleCreateClass}>
+          <div className="form-field">
+            <label>Disciplina</label>
+            <select 
+              name="id_disciplina" 
+              value={formData.id_disciplina} 
+              onChange={handleChange} 
+              required
+              disabled={loading || isSubmitting}
+            >
+              <option value="">Seleccione una disciplina</option>
+              {disciplinas.length > 0 ? (
+                disciplinas.map((disciplina) => (
+                  <option key={disciplina.id_disciplina || disciplina.id} value={disciplina.id_disciplina || disciplina.id}>
+                    {getDisciplinaNombre(disciplina)}
+                  </option>
+                ))
+              ) : (
+                <option disabled>
+                  {loading ? 'Cargando disciplinas...' : 'No hay disciplinas disponibles'}
                 </option>
-              ))
-            ) : (
-              <option disabled>No hay disciplinas disponibles</option>
-            )}
-          </select>
-        </div>
+              )}
+            </select>
+          </div>
 
-        <div className="form-field">
-          <label htmlFor="id_dia">Día:</label>
-          <select 
-            id="id_dia"
-            name="id_dia" 
-            value={formData.id_dia} 
-            onChange={handleChange} 
-            required
+          <div className="form-field">
+            <label>Día de la semana</label>
+            <select 
+              name="id_dia" 
+              value={formData.id_dia} 
+              onChange={handleChange} 
+              required
+              disabled={isSubmitting}
+            >
+              <option value="">Seleccione un día</option>
+              <option value="1">Lunes</option>
+              <option value="2">Martes</option>
+              <option value="3">Miércoles</option>
+              <option value="4">Jueves</option>
+              <option value="5">Viernes</option>
+              <option value="6">Sábado</option>
+            </select>
+          </div>
+
+          <div className="form-field">
+            <label>Hora de la clase</label>
+            <input 
+              type="time" 
+              name="hora" 
+              value={formData.hora} 
+              onChange={handleChange} 
+              required 
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="form-field">
+            <label>Capacidad máxima</label>
+            <input 
+              type="number" 
+              name="capacidad_max" 
+              value={formData.capacidad_max} 
+              onChange={handleChange} 
+              required 
+              placeholder="Ej: 20" 
+              min="1"
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="create-class-btn"
+            disabled={isSubmitting || loading || !isFormValid}
           >
-            <option value="">Seleccione un día</option>
-            <option value="1">Lunes</option>
-            <option value="2">Martes</option>
-            <option value="3">Miércoles</option>
-            <option value="4">Jueves</option>
-            <option value="5">Viernes</option>
-            <option value="6">Sábado</option>
-          </select>
-        </div>
-
-        <div className="form-field">
-          <label htmlFor="hora">Hora:</label>
-          <input 
-            id="hora"
-            type="time" 
-            name="hora" 
-            value={formData.hora} 
-            onChange={handleChange} 
-            required 
-          />
-        </div>
-
-        <div className="form-field">
-          <label htmlFor="capacidad_max">Capacidad Máxima:</label>
-          <input 
-            id="capacidad_max"
-            type="number" 
-            name="capacidad_max" 
-            value={formData.capacidad_max} 
-            onChange={handleChange} 
-            required 
-            placeholder="Ej: 20" 
-            min="1"
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          className="create-class-btn"
-          disabled={isSubmitting}
-        >
-          <FaPlusCircle className="btn-icon" />
-          {isSubmitting ? 'Creando...' : 'Crear Clase'}
-        </button>
-      </form>
+            <FaPlusCircle className="btn-icon" />
+            {isSubmitting ? 'Creando clase...' : 'Crear Clase'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

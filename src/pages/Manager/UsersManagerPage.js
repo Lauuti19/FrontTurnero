@@ -1,33 +1,35 @@
-import React, { useState } from 'react';
+// pages/Manager/UsersManagerPage.js
+import React from 'react';
+import TabManager from '../../components/TabManager';
+import { useTabManager } from '../../components/useTabManager';
+import { usersTabConfig } from '../../components/managerConfigs';
 import RegisterPage from "../RegisterPage";
-import '../../styles/ModifyPage.css';
+import UpdatePassword from '../../components/UpdatePassword';
 
-const ClassesManagerPage = () => {
-    const [activeTab, setActiveTab] = useState('create');
+const UsersManagerPage = () => {
+    const { activeTab, setActiveTab } = useTabManager('create');
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'create':
+                return <RegisterPage />;
+            case 'view':
+                return <UpdatePassword />;
+            default:
+                return null;
+        }
+    };
 
     return (
-        <div className="routine-manager-page">
-            <h1>Gestión de Usuarios</h1>
-            <div className="tabs">
-                <button
-                    className={activeTab === 'create' ? 'active' : ''}
-                    onClick={() => setActiveTab('create')}
-                >
-                    Registrar un usuario
-                </button>
-                <button
-                    className={activeTab === 'view' ? 'active' : ''}
-                    onClick={() => setActiveTab('view')}
-                >
-                    Actualizar contraseña de usuario
-                </button>
-            </div>
-            <div className="tab-content">
-                {activeTab === 'create' && <RegisterPage />}
-                {activeTab === 'view' && <RegisterPage />}
-            </div>
-        </div>
+        <TabManager
+            title={usersTabConfig.title}
+            tabs={usersTabConfig.tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+        >
+            {renderContent()}
+        </TabManager>
     );
 };
 
-export default ClassesManagerPage;
+export default UsersManagerPage;

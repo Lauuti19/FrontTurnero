@@ -1,34 +1,35 @@
-import React, { useState } from 'react';
+// pages/Manager/ExercisesManagerPage.js
+import React from 'react';
+import TabManager from '../../components/TabManager';
+import { useTabManager } from '../../components/useTabManager';
+import { disciplinesTabConfig } from '../../components/managerConfigs';
 import CreateDisciplines from "../../components/CreateDisciplines";
 import ManageDisciplines from "../../components/ManageDisciplines";
-import '../../styles/ModifyPage.css';
 
-const ClassesManagerPage = () => {
-    const [activeTab, setActiveTab] = useState('create');
+const ExercisesManagerPage = () => {
+    const { activeTab, setActiveTab } = useTabManager('create');
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'create':
+                return <CreateDisciplines />;
+            case 'view':
+                return <ManageDisciplines />;
+            default:
+                return null;
+        }
+    };
 
     return (
-        <div className="routine-manager-page">
-            <h1>Gestión de Disciplinas</h1>
-            <div className="tabs">
-                <button
-                    className={activeTab === 'create' ? 'active' : ''}
-                    onClick={() => setActiveTab('create')}
-                >
-                    Crear Disciplina
-                </button>
-                <button
-                    className={activeTab === 'view' ? 'active' : ''}
-                    onClick={() => setActiveTab('view')}
-                >
-                    Modificar/Ver Disciplinas
-                </button>
-            </div>
-            <div className="tab-content">
-                {activeTab === 'create' && <CreateDisciplines />}
-                {activeTab === 'view' && <ManageDisciplines />}
-            </div>
-        </div>
+        <TabManager
+            title={disciplinesTabConfig.title}
+            tabs={disciplinesTabConfig.tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+        >
+            {renderContent()}
+        </TabManager>
     );
 };
 
-export default ClassesManagerPage;
+export default ExercisesManagerPage;

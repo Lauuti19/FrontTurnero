@@ -1,44 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/ClassUserModal.css';
 import { FiUser } from "react-icons/fi";
-import { useAuth } from '../AuthContext'; // Importar el AuthContext
+import { useAuth } from '../AuthContext';
+import { classService } from '../services/classService'; // Importar el service
 
 const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { getToken: authGetToken } = useAuth(); // Obtener getToken del contexto
+  const [error, setError] = useState(null);
+  const { getToken: authGetToken } = useAuth();
+
+  // Función unificada para obtener token
+  const obtenerToken = () => {
+    return getToken ? getToken() : authGetToken();
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
+      setError(null);
       try {
-        // Usar getToken pasado como prop o del contexto
-        const token = getToken ? getToken() : authGetToken();
+        const token = obtenerToken();
         if (!token) {
-          console.error("No hay token disponible");
-          setLoading(false);
-          return;
+          throw new Error("No hay token disponible");
         }
 
-        const res = await fetch(
-          `https://backturnero.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-        
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        
-        const data = await res.json();
+        // Usar el service en lugar de fetch directo
+        const data = await classService.getClassUsers(token, classId, fecha);
         setUsers(data);
-        console.log('Usuarios obtenidos:', data);
       } catch (err) {
         console.error('Error al obtener los usuarios anotados:', err);
+        setError(err.message);
         setUsers([]);
       } finally {
         setLoading(false);
@@ -48,15 +40,24 @@ const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
     if (classId && fecha) {
       fetchUsers();
     }
-  }, [classId, fecha, getToken, authGetToken]);
+  }, [classId, fecha, obtenerToken]); 
 
   return (
     <div className="modal-overlay">
       <div className="modal-users-box">
         <button className="cerrar-modal" onClick={onClose}>X</button>
         <h2>Anotados en la clase</h2>
+        
+        {error && (
+          <div className="error-message">
+            <p>⚠️ {error}</p>
+          </div>
+        )}
+
         {loading ? (
-          <p>Cargando...</p>
+          <div className="loading-container">
+            <p>Cargando usuarios...</p>
+          </div>
         ) : users.length > 0 ? (
           <div className="attendees-list-modal">
             {users.map((user, index) => (
@@ -67,7 +68,7 @@ const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
             ))}
           </div>
         ) : (
-          <p>No hay usuarios anotados.</p>
+          !error && <p>No hay usuarios anotados.</p>
         )}
       </div>
     </div>

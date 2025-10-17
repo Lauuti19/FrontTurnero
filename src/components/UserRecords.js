@@ -27,7 +27,7 @@ const UserRecords = () => {
       return;
     }
 
-    fetch(`https://backturnero.onrender.com/api/rm/user/${id_usuario}`)
+    fetch(`https://backturnero-vvk6.onrender.com/api/rm/user/${id_usuario}`)
       .then(res => {
         if (!res.ok) throw new Error("Error al obtener records del usuario.");
         return res.json();
@@ -95,7 +95,7 @@ const UserRecords = () => {
       if (result.isConfirmed) {
         const id_usuario = getUserId();
         
-        fetch('https://backturnero.onrender.com/api/rm', {
+        fetch('https://backturnero-vvk6.onrender.com/api/rm', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ const UserRecords = () => {
       if (result.isConfirmed) {
         const id_usuario = getUserId();
         
-        fetch('https://backturnero.onrender.com/api/rm/update', {
+        fetch('https://backturnero-vvk6.onrender.com/api/rm/update', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

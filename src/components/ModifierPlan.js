@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/CreateClass.css';
+import { disciplinaService } from '../services/disciplinaService';
+import { planService } from '../services/planService';
+import { useAuth } from '../AuthContext';
 
 const CreatePlan = () => {
+  const { getToken } = useAuth();
   const [disciplinas, setDisciplinas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -12,10 +19,30 @@ const CreatePlan = () => {
   });
 
   useEffect(() => {
-    fetch('https://backturnero.onrender.com/api/disciplinas')
-      .then(res => res.json())
-      .then(data => setDisciplinas(data));
-  }, []);
+    const fetchDisciplinas = async () => {
+      try {
+        setLoading(true);
+        const token = getToken();
+        
+        if (!token) {
+          throw new Error('No hay token de autenticación disponible');
+        }
+
+        // PASA EL TOKEN al servicio
+        const data = await disciplinaService.getDisciplinas(token);
+        setDisciplinas(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error cargando disciplinas:', err);
+        setError(err.message || 'Error al cargar las disciplinas');
+        setDisciplinas([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDisciplinas();
+  }, [getToken]); // Añade getToken como dependencia
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,33 +61,70 @@ const CreatePlan = () => {
 
   const handleCreatePlan = async (e) => {
     e.preventDefault();
+    
+    // Validaciones
+    if (formData.disciplines.length === 0) {
+      alert('Por favor selecciona al menos una disciplina');
+      return;
+    }
+
     try {
-      const response = await fetch("https://backturnero.onrender.com/api/planes/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("✅ Plan creado exitosamente");
-        setFormData({
-          name: '',
-          description: '',
-          price: '',
-          totalCredits: '',
-          disciplines: []
-        });
-      } else {
-        alert(data.message || "Error al crear el plan");
+      setSubmitLoading(true);
+      const token = getToken();
+      
+      if (!token) {
+        throw new Error('No hay token de autenticación disponible');
       }
+
+      // Usar el servicio de planes con autenticación
+      await planService.createPlan(token, formData);
+      
+      alert("✅ Plan creado exitosamente");
+      
+      // Resetear formulario
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        totalCredits: '',
+        disciplines: []
+      });
+      
     } catch (error) {
-      alert("Error de conexión con el servidor.");
+      console.error('Error creando plan:', error);
+      alert(error.message || "Error al crear el plan");
+    } finally {
+      setSubmitLoading(false);
     }
   };
+
+  //if (loading) {
+  //  return (
+  //    <div className="CreateClassContainer">
+  //      <p>Cargando disciplinas...</p>
+  //    </div>
+  //  );
+  //}
+
+  if (error && disciplinas.length === 0) {
+    return (
+      <div className="CreateClassContainer">
+        <p className="error-message">{error}</p>
+        <button onClick={() => window.location.reload()}>Reintentar</button>
+      </div>
+    );
+  }
 
   return (
     <div className="CreateClassContainer">
       <h2 id="Title-Planes">Crear Plan</h2>
+      
+      {error && (
+        <div className="warning-message">
+          <p>⚠️ {error}</p>
+        </div>
+      )}
+
       <form className="form-group-class" onSubmit={handleCreatePlan}>
         <label>Nombre:</label>
         <input
@@ -100,24 +164,34 @@ const CreatePlan = () => {
         
         <label>Disciplinas:</label>
         <div className="checkbox-group">
-          {disciplinas.map((d) => (
-            <div key={d.id_disciplina} className="checkbox-item">
-              <input
-                type="checkbox"
-                id={`discipline-${d.id_disciplina}`}
-                value={d.id_disciplina}
-                checked={formData.disciplines.includes(d.id_disciplina)}
-                onChange={handleDisciplineChange}
-                className="checkbox-input"
-              />
-              <label htmlFor={`discipline-${d.id_disciplina}`} className="checkbox-label">
-                {d.disciplina}
-              </label>
-            </div>
-          ))}
+          {disciplinas.length > 0 ? (
+            disciplinas.map((d) => (
+              <div key={d.id_disciplina} className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id={`discipline-${d.id_disciplina}`}
+                  value={d.id_disciplina}
+                  checked={formData.disciplines.includes(d.id_disciplina)}
+                  onChange={handleDisciplineChange}
+                  className="checkbox-input"
+                />
+                <label htmlFor={`discipline-${d.id_disciplina}`} className="checkbox-label">
+                  {d.disciplina}
+                </label>
+              </div>
+            ))
+          ) : (
+            <p>No hay disciplinas disponibles</p>
+          )}
         </div>
         
-        <button type="submit" className="create-plan-btn">Crear Plan</button>
+        <button 
+          type="submit" 
+          className="create-plan-btn"
+          disabled={submitLoading}
+        >
+          {submitLoading ? 'Creando...' : 'Crear Plan'}
+        </button>
       </form>
     </div>
   );

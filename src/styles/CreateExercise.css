@@ -1,0 +1,313 @@
+/* ======== Contenedor general ======== */
+.create-exercise-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #f5f6fa;
+  min-height: 100vh;
+}
+
+/* ======== Caja del formulario ======== */
+.create-exercise-box {
+  background-color: #ffffff;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.create-exercise-box:hover {
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ======== Título y descripción ======== */
+.create-exercise-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.create-exercise-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* ======== Campos del formulario ======== */
+.create-exercise-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.form-field input {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: all 0.25s ease;
+}
+
+.form-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  outline: none;
+}
+
+.form-field input:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ======== Botón ======== */
+.create-exercise-btn {
+  margin-top: 0.5rem;
+  background-color: #18181b;
+  color: #fbf106;
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: 'Brigends', sans-serif;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.create-exercise-btn:hover:not(:disabled) {
+  background-color: #fbf106;
+  color: black;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+
+.create-exercise-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.create-exercise-btn:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+/* ======== Sección de ejercicios existentes ======== */
+.exercises-section {
+  border-top: 2px solid #e5e7eb;
+  padding-top: 2rem;
+}
+
+.existing-exercises h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.exercise-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.exercise-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.exercise-icon {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.exercise-name {
+  font-weight: 500;
+  color: #374151;
+}
+
+.exercise-link {
+  color: #dc2626;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.exercise-link:hover {
+  background: #fecaca;
+  transform: scale(1.1);
+}
+
+.more-exercises {
+  text-align: center;
+  font-style: italic;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* ======== Estados vacíos y mensajes ======== */
+.no-exercises {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 2px dashed #e2e8f0;
+}
+
+.no-exercises p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.loading-exercises {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.loading-exercises p {
+  margin: 0;
+}
+
+.warning-message {
+  background: #fef3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.75rem;
+  color: #856404;
+  text-align: center;
+}
+
+.warning-message p {
+  margin: 0 0 0.5rem 0;
+}
+
+.retry-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #c82333;
+}
+
+/* ======== Responsive ======== */
+@media (max-width: 680px) {
+  .create-exercise-container {
+    padding: 1rem;
+  }
+
+  .create-exercise-box {
+    padding: 2rem 1.5rem;
+  }
+
+  .create-exercise-title {
+    font-size: 1.6rem;
+  }
+
+  .create-exercise-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .create-exercise-form {
+    gap: 1rem;
+  }
+
+  .form-field input {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .create-exercise-btn {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .exercise-item {
+    padding: 0.7rem 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-exercise-container {
+    padding: 0.5rem;
+  }
+
+  .create-exercise-box {
+    padding: 1.5rem 1rem;
+  }
+
+  .create-exercise-title {
+    font-size: 1.4rem;
+  }
+
+  .exercise-info {
+    gap: 0.5rem;
+  }
+
+  .exercise-name {
+    font-size: 0.9rem;
+  }
+}

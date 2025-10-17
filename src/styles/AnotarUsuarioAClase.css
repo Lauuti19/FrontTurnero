@@ -1,90 +1,69 @@
-/* AnotarUsuarioAClase.css */
 .anotar-usuario-a-clase {
-  padding: 20px;
-  background-color: #f3f0f0;
+  padding: 2rem;
+  background-color: #f8f9fb;
   border-radius: 10px;
-  margin: 20px;
-  max-width: 600px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  max-width: 900px;
+  margin: 2rem auto;
+  transition: all 0.3s ease;
+}
+
+.anotar-usuario-a-clase:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+.anotar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.anotar-titulo {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.anotar-subtitulo {
+  color: #666;
+  font-size: 1rem;
+}
+
+.anotar-contenido {
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  gap: 1.5rem;
 }
-.anotar-usuario-a-clase h2{
-  color: black !important;
-  border-bottom: solid 1px black;
-  max-width:600px;
-  width:100%;
-  text-align:center !important;
-  margin:0 auto;
-  display:flex;
-  font-family: 'Brigends';
-  font-weight: lighter;
-  letter-spacing: 0.05rem;
-  padding:20px 0px;
-  margin: 20px 0px;
+
+.usuario-info-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #007bff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
-.anotar-usuario-a-clase h1 {
-  color: white;
+
+.usuario-info-card h3 {
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.usuario-info-datos p {
+  margin: 0.2rem 0;
+  color: #444;
+}
+
+.selecciona-usuario-message {
   text-align: center;
-  margin-bottom: 20px;
-  font-family: 'Arial';
-  text-transform: uppercase;
-  font-size: 23px;
-}
-.anotar-usuario-a-clase #Horario{
-    font-family: 'Arial';
-    font-weight: bolder;
-    font-size: 23px;
-    text-align: center;
-    text-transform: capitalize;
-}
-.usuario-info {
-  background-color: #2a2a2a;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px 0;
-  text-align: center;
-  border-left: 4px solid #fbf106;
+  background: #f0f4f8;
+  padding: 1.2rem;
+  border-radius: 8px;
+  color: #555;
+  font-style: italic;
+  border: 1px dashed #ccd6dd;
 }
 
-.usuario-info p {
-  margin: 0;
-  color: #fff;
-}
-
-.input-buscar-user {
-  width: 100%;
-  margin: 10px 20px;
-  padding: 10px 0px;
-  border-radius: 5px;
-  border: 1px solid #444;
-  background-color: #333;
-  color: #fff;
-  margin: 0 auto;
-  display: flex;
-}
-
-.suggestions-list {
-  position: absolute;
-  width: 100%;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-top: none;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 1000;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.suggestions-list li {
-  padding: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #333;
-  color: #fff;
-}
-
-.suggestions-list li:hover {
-  background-color: #3a3a3a;
+.class-schedule-wrapper {
+  margin-top: 1rem;
+  border-top: 1px solid #eaeaea;
+  padding-top: 1rem;
 }

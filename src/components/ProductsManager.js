@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-const API_BASE = "https://backturnero.onrender.com/api/products";
+const API_BASE = "https://backturnero-vvk6.onrender.com/api/products";
 
 const ProductsManager = () => {
   const [products, setProducts] = useState([]);
