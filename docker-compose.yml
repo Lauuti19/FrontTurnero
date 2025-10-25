@@ -1,22 +1,19 @@
-version: '3.8'
 
 services:
-  frontend-turnero:
+  frontend:
     build:
       context: .
-      dockerfile: .devcontainer/Dockerfile
-    image: frontend-turnero
+      dockerfile: Dockerfile
+    container_name: turnero-frontend
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0 
     volumes:
       - .:/app
       - /app/node_modules
-    networks:
-      - turnero-network
-    restart: always
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-
-networks:
-  turnero-network:
-    external: true
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
