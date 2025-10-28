@@ -39,8 +39,8 @@ export const classService = {
       console.log('Buscando usuario ID:', userId);
       
       const isRegistered = users.some(usuario => {
-        console.log('Comparando:', usuario.id_usuario, 'con', userId, 'resultado:', usuario.id_usuario == userId);
-        return usuario.id_usuario == userId;
+        console.log('Comparando:', usuario.id_usuario, 'con', userId, 'resultado:', usuario.id_usuario === userId);
+        return usuario.id_usuario === userId;
       });
       
       console.log('Resultado de verificación:', isRegistered);

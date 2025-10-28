@@ -175,6 +175,9 @@
   transition: all 0.3s cubic-bezier(.77,0,.18,1);
   color: #232526;
 }
+.toggle-button:focus-visible{
+  outline: none;
+}
 
 .toggle-button:hover {
   background: #ffe066;
@@ -231,9 +234,10 @@
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {
-    width: 85%;
+    width: 80%;
     border-radius: 0;
     padding: 1.5rem 1rem;
+    max-height: 80%;
   }
 
   .toggle-button {
@@ -244,13 +248,14 @@
 
   .toggle-button.open {
     left: calc(85% - 45px);
-    background: rgba(251, 241, 6, 0.8);
+    background: transparent;
+    border: none !important;
   }
 }
 
 @media (max-width: 480px) {
   .sidebar {
-    width: 90%;
+    width: 80%;
   }
 
   .sidebar h2 {

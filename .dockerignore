@@ -1,3 +1,14 @@
 node_modules
+npm-debug.log
+yarn-error.log
 .git
-.vscode
+.gitignore
+README.md
+.env
+.nyc_output
+coverage
+.docker
+dockerfile
+docker-compose.yml
+dist
+build
