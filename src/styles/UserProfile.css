@@ -153,7 +153,6 @@
 }
 
 .settings-icon{
-  margin-top: 50px;
   font-size: 70px;
   color:#18181b;
   transition: color 0.2s ease;
@@ -321,6 +320,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: 0.2s ease-in-out;
+  font-size: 1.3rem;
 }
 
 .botonGuardarPerfil:hover {
@@ -371,11 +371,13 @@
 .bloque-edit {
   padding: 10px 0;
   width: 200px;
+  box-sizing: content-box;
+  gap: 1.3rem;
 }
 
 .bloque-edit input {
-  padding: 10px 0;
   width: 200px !important;
+  padding: 10px 10px;
 }
 
 .edit-user-container {
@@ -610,6 +612,30 @@
 
 /* Responsive para skeleton */
 @media (max-width: 768px) {
+  .fila-edit{
+    display: flex;
+    flex-direction: column;
+  }
+  .bloque-edit{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: content-box;
+    gap: 1.2rem;
+  }
+  .bloque-edit input{
+    width: 100% !important;
+    padding: 10px 5px;
+  }
+  .botonGuardarPerfil {
+    font-size: 0.8rem;
+  }
+  .user-profile-container{
+    padding: 20px 20px;
+  }
+  .user-profile-box{
+    padding: 10px 20px;
+  }
   .skeleton-checkin {
     flex-direction: column;
   }
@@ -624,6 +650,12 @@
   
   .skeleton-name {
     width: 120px;
+  }
+  .user-mail{
+    font-size: 1.3rem;
+  }
+  .settings-icon{
+    font-size: 3rem;
   }
 }
 
