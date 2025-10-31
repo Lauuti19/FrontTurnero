@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        COMPOSE_FILE = 'docker-compose.yml'
+        IMAGE_NAME = 'frontend-turnero'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo "Clonando repositorio (master)"
+                checkout([$class: 'GitSCM',
+                          branches: [[name: '*/master']],
+                          userRemoteConfigs: [[url: 'https://github.com/Lauuti19/FrontTurnero']]])
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Construyendo imagen Docker del frontend..."
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Stop Previous Containers') {
+            steps {
+                echo "Deteniendo contenedores antiguos..."
+                sh 'docker compose down || true'
+            }
+        }
+
+        stage('Run Frontend') {
+            steps {
+                echo "Levantando frontend..."
+                sh 'docker compose up -d'
+            }
+        }
+
+    }
+
+    post {
+        always {
+            echo "Pipeline finalizada (con éxito o error)."
+        }
+        failure {
+            echo "Hubo un error durante la ejecución."
+        }
+    }
+}

@@ -12,8 +12,12 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WDS_SOCKET_PORT=0 
     volumes:
-      - .:/app
       - /app/node_modules
-    stdin_open: true
-    tty: true
+    networks:
+      - turnero-network
     restart: unless-stopped
+
+networks:
+  turnero-network:
+    external: true
+    name: turnero-network  

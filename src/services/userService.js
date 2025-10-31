@@ -1,3 +1,4 @@
+// services/userService.js
 import { fetchWithAuth } from './api';
 
 export const getUserActiveFees = async (token, userId) => {
@@ -10,6 +11,15 @@ export const getUserActiveFees = async (token, userId) => {
   }
 };
 
+/** Buscar usuarios por nombre (autocomplete) */
+export const searchByName = async (token, nombre = '') => {
+  const q = encodeURIComponent(nombre || '');
+  const data = await fetchWithAuth(`/usuarios/buscar?nombre=${q}`, token);
+  // normalizar a array
+  return Array.isArray(data) ? data : (data.usuarios || []);
+};
+
+/** Perfil + datos de usuario (perfil pisa conflictos) */
 export const getFullUserData = async (token, userId) => {
   console.log('🔄 Obteniendo datos completos del usuario...');
 

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaMoneyBillWave, FaCheck, FaUser } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
+import { userService } from '../services/userService';
+import { planService } from '../services/planService';
+import { paymentService } from '../services/paymentService';
 
 const RegistrarCuota = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -14,27 +17,72 @@ const RegistrarCuota = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Buscar usuarios
-  useEffect(() => {
-    if (nombreUsuario.length >= 1) {
-      fetch(`https://backturnero-vvk6.onrender.com/api/usuarios/buscar?nombre=${nombreUsuario}`)
-        .then(res => res.json())
-        .then(data => {
-          setUsuarios(Array.isArray(data) ? data : data.usuarios || []);
-        });
-      setShowSuggestions(true);
-    } else {
-      setUsuarios([]);
-      setShowSuggestions(false);
-    }
-  }, [nombreUsuario]);
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-  // Obtener planes
+  // Guardrail: si no hay token
   useEffect(() => {
-    fetch('https://backturnero-vvk6.onrender.com/api/planes')
-      .then(res => res.json())
-      .then(data => setPlanes(data.planes || []));
-  }, []);
+    if (!token) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sesión requerida',
+        text: 'Iniciá sesión para operar. No se encontró token.',
+      });
+    }
+  }, [token]);
+
+  // Buscar usuarios (con token)
+  useEffect(() => {
+    let abort = false;
+
+    const run = async () => {
+      if (!token) return;
+      if (nombreUsuario.trim().length < 1) {
+        setUsuarios([]);
+        setShowSuggestions(false);
+        return;
+      }
+      try {
+        const data = await userService.searchByName(token, nombreUsuario.trim());
+        if (abort) return;
+        const list = Array.isArray(data) ? data : (data.usuarios || []);
+        setUsuarios(list);
+        setShowSuggestions(true);
+      } catch (err) {
+        console.error('Buscar usuarios:', err);
+        setUsuarios([]);
+        setShowSuggestions(false);
+      }
+    };
+
+    run();
+    return () => { abort = true; };
+  }, [nombreUsuario, token]);
+
+  // Obtener planes (con token)
+  useEffect(() => {
+    let abort = false;
+
+    const loadPlanes = async () => {
+      if (!token) return;
+      try {
+        const data = await planService.getPlanes(token);
+        if (abort) return;
+        const list = Array.isArray(data) ? data : (data.planes || []);
+        setPlanes(list);
+      } catch (err) {
+        console.error('Obtener planes:', err);
+        setPlanes([]);
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudieron cargar los planes',
+          text: 'Revisá la conexión o tu sesión.',
+        });
+      }
+    };
+
+    loadPlanes();
+    return () => { abort = true; };
+  }, [token]);
 
   const handleUsuarioClick = (usuario) => {
     setUsuarioSeleccionado(usuario);
@@ -44,7 +92,16 @@ const RegistrarCuota = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if (!token) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sesión requerida',
+        text: 'Iniciá sesión para registrar la cuota.',
+      });
+      return;
+    }
+
     if (!usuarioSeleccionado || !idPlan || !metodoPago) {
       Swal.fire({
         icon: 'warning',
@@ -56,42 +113,36 @@ const RegistrarCuota = () => {
 
     try {
       setLoading(true);
-      const response = await fetch('https://backturnero-vvk6.onrender.com/api/payments/register-fee', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_usuario: usuarioSeleccionado.id_usuario,
-          id_plan: idPlan,
-          metodo_pago: metodoPago,
-          pagado: pagado
-        })
-      });
 
-      if (!response.ok) {
-        throw new Error('Error al registrar la cuota');
-      }
+      await paymentService.registerFee(token, {
+        id_usuario: usuarioSeleccionado.id_usuario,
+        id_plan: Number(idPlan),
+        metodo_pago: metodoPago,
+        pagado: Boolean(pagado),
+      });
 
       await Swal.fire({
         icon: 'success',
         title: 'Cuota registrada exitosamente',
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
 
-      // Resetear formulario
+      // Reset
       setNombreUsuario('');
       setUsuarioSeleccionado(null);
       setIdPlan('');
       setMetodoPago('');
       setPagado(false);
       setUsuarios([]);
-      
+      setShowSuggestions(false);
+
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Registrar cuota:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'No se pudo registrar la cuota. Inténtalo de nuevo.',
+        text: (error?.message || 'No se pudo registrar la cuota. Inténtalo de nuevo.'),
       });
     } finally {
       setLoading(false);
@@ -99,7 +150,7 @@ const RegistrarCuota = () => {
   };
 
   const getPlanNombre = (planId) => {
-    const plan = planes.find(p => p.id_plan === parseInt(planId));
+    const plan = planes.find(p => p.id_plan === Number(planId));
     return plan ? plan.nombre : 'Plan no encontrado';
   };
 
@@ -129,6 +180,7 @@ const RegistrarCuota = () => {
                 required
                 autoComplete="off"
                 className="search-input"
+                disabled={!token || loading}
               />
               {showSuggestions && usuarios.length > 0 && (
                 <div className="suggestions-dropdown">
@@ -175,7 +227,7 @@ const RegistrarCuota = () => {
               value={idPlan}
               onChange={(e) => setIdPlan(e.target.value)}
               required
-              disabled={loading}
+              disabled={loading || !token}
             >
               <option value="">Selecciona un plan</option>
               {planes.map((plan) => (
@@ -192,7 +244,7 @@ const RegistrarCuota = () => {
               value={metodoPago}
               onChange={(e) => setMetodoPago(e.target.value)}
               required
-              disabled={loading}
+              disabled={loading || !token}
             >
               <option value="">Selecciona un método</option>
               <option value="efectivo">💵 Efectivo</option>
@@ -206,7 +258,7 @@ const RegistrarCuota = () => {
                 type="checkbox"
                 checked={pagado}
                 onChange={(e) => setPagado(e.target.checked)}
-                disabled={loading}
+                disabled={loading || !token}
                 className="checkbox-input"
               />
               <span className="checkmark"></span>
@@ -215,16 +267,15 @@ const RegistrarCuota = () => {
             </label>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="submit-btn"
-            disabled={loading || !usuarioSeleccionado || !idPlan || !metodoPago}
+            disabled={loading || !usuarioSeleccionado || !idPlan || !metodoPago || !token}
           >
             {loading ? 'Registrando...' : 'Registrar Cuota'}
           </button>
         </form>
 
-        {/* Resumen de la cuota (opcional) */}
         {usuarioSeleccionado && idPlan && (
           <div className="fee-summary">
             <h4>Resumen de la cuota</h4>
