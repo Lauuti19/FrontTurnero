@@ -4,96 +4,65 @@ import Swal from 'sweetalert2';
 import { useAuth } from "../AuthContext";
 import '../styles/RegisterButton.css';
 
-const RegisterButton = ({ 
-  classId, 
-  fecha, 
-  hora, 
-  disciplina, 
-  onSuccess, 
-  disabled, 
+const RegisterButton = ({
+  classId,
+  classType = 'normal',           // 👈 NUEVO: viene "normal" o "especial"
+  specialClassOriginalId,          // 👈 NUEVO: para cuando es especial
+  fecha,
+  hora,
+  disciplina,
+  onSuccess,
+  disabled,
   disabledReason,
   userId,
-  getToken
+  getToken,
 }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
   const { actualizarCreditos, getToken: authGetToken } = useAuth();
 
-  // Función para obtener el token (usa la prop o del contexto)
-  const obtenerToken = () => {
-    return getToken ? getToken() : authGetToken();
-  };
+  // token
+  const obtenerToken = () => (getToken ? getToken() : authGetToken());
 
-  // Función para verificar el registro usando el service
+  // ---------- 1) Chequear si ya está anotado ----------
   const checkRegistration = useCallback(async () => {
-    try {
-      if (userId && classId && fecha) {
-        setLoading(true);
-        const token = obtenerToken();
-        if (!token) {
-          console.error("No hay token disponible");
-          setLoading(false);
-          return;
-        }
+    if (!userId || !classId || !fecha) {
+      setLoading(false);
+      return;
+    }
 
-        console.log('Verificando registro con:', { classId, userId, fecha });
-        
-        // Intentar verificación directa primero
-        try {
-          const result = await classService.checkUserRegistration(token, classId, userId, fecha);
-          console.log('Resultado de verificación:', result);
-          setIsRegistered(result.isRegistered);
-        } catch (primaryError) {
-          console.error("Error en verificación primaria:", primaryError);
-          
-          // Fallback: usar el método original de fetch directo
-          console.log('Usando método de verificación alternativo...');
-          const res = await fetch(
-            `https://backturnero-vvk6.onrender.com/api/classes/users-by-class?classId=${classId}&fecha=${fecha}`,
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            }
-          );
-          
-          if (res.ok) {
-            const data = await res.json();
-            console.log('Datos de verificación alternativa:', data);
-            
-            // Procesar la respuesta según el formato que devuelve tu backend
-            let usersArray = data;
-            if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
-              usersArray = data[0]; // Si viene en formato [ [array] ]
-            }
-            
-            const registered = Array.isArray(usersArray) 
-              ? usersArray.some(usuario => usuario.id_usuario == userId)
-              : false;
-              
-            console.log('Resultado verificación alternativa:', registered);
-            setIsRegistered(registered);
-          } else {
-            console.error('Error en verificación alternativa:', res.status);
-            setIsRegistered(false);
-          }
-        }
+    try {
+      setLoading(true);
+      const token = obtenerToken();
+      if (!token) {
+        console.error("No hay token disponible");
+        setLoading(false);
+        return;
       }
+
+      // 👇 usamos el service nuevo que espera classType
+      const result = await classService.checkUserRegistration(token, {
+        classId,
+        classType,  // "normal" | "especial"
+        userId,
+        fecha,
+      });
+
+      setIsRegistered(!!result.isRegistered);
     } catch (err) {
-      console.error("Error general al verificar registro:", err);
-      // En caso de cualquier error, asumimos que no está registrado
+      console.error("Error al verificar registro:", err);
+      // si falla, lo dejamos como no registrado
       setIsRegistered(false);
     } finally {
       setLoading(false);
     }
-  }, [classId, fecha, userId, obtenerToken]);
+  }, [userId, classId, fecha, classType, obtenerToken]);
 
-  // Verificar registro al montar y cuando cambien las dependencias
   useEffect(() => {
     checkRegistration();
-  }, [classId, fecha, userId, checkRegistration]);
+  }, [checkRegistration]);
 
+  // ---------- SweetAlert base ----------
   const modal = Swal.mixin({
     buttonsStyling: false,
     allowOutsideClick: true,
@@ -108,13 +77,13 @@ const RegisterButton = ({
     }
   });
 
+  // ---------- 2) Registrar ----------
   const handleRegister = async () => {
     if (!userId) {
       await Swal.fire({
         icon: 'error',
         title: 'Error',
         html: 'No se ha seleccionado un usuario válido.',
-        confirmButtonText: 'OK'
       });
       return;
     }
@@ -125,11 +94,10 @@ const RegisterButton = ({
         icon: 'error',
         title: 'Error',
         html: 'No hay token de autenticación disponible.',
-        confirmButtonText: 'OK'
       });
       return;
     }
-  
+
     const result = await modal.fire({
       title: '<span class="simbolo">¿</span>Confirmar inscripción<span class="simbolo">?</span>',
       html: `<div class="textos-alert">
@@ -142,24 +110,31 @@ const RegisterButton = ({
       cancelButtonText: 'Cancelar',
       reverseButtons: true,
     });
-    
+
     if (!result.isConfirmed) return;
 
     try {
       setLoading(true);
-      
-      // Usar fetch directo para evitar problemas con el service
-      const res = await fetch('https://backturnero-vvk6.onrender.com/api/classes/register', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ userId, classId, fecha }),
-      });
-      
-      const text = await res.text();
-      if (!res.ok) throw new Error(text || 'No se pudo registrar');
+
+      // 👇 armamos el body según si es normal o especial
+      let payload;
+      if (classType === 'especial') {
+        // el back quiere specialClassId numérico → usamos id_original que te trae el back
+        payload = {
+          userId,
+          fecha,
+          specialClassId: specialClassOriginalId,  // 👈 clave
+        };
+      } else {
+        payload = {
+          userId,
+          fecha,
+          classId,
+        };
+      }
+
+      // usar service (ya apunta a /classes/register)
+      await classService.registerUserToClass(token, payload);
 
       await modal.fire({
         icon: 'success',
@@ -167,26 +142,24 @@ const RegisterButton = ({
         html: 'Te anotaste correctamente.',
       });
 
-      // Actualizar créditos después de registrar
-      await actualizarCreditos();
-      
-      // Actualizar estado de registro
+      // refrescar créditos
+      await actualizarCreditos?.();
+
       setIsRegistered(true);
-      
       onSuccess?.();
     } catch (err) {
+      console.error(err);
       await Swal.fire({
         icon: 'error',
         title: 'Algo no funcionó',
-        html: 'Intentá nuevamente en unos minutos.',
-        confirmButtonText: 'OK'
+        html: err.message || 'Intentá nuevamente en unos minutos.',
       });
-      console.log(err);
     } finally {
       setLoading(false);
     }
   };
 
+  // ---------- 3) Desanotar ----------
   const handleCancel = async () => {
     const token = obtenerToken();
     if (!token) {
@@ -194,7 +167,6 @@ const RegisterButton = ({
         icon: 'error',
         title: 'Error',
         html: 'No hay token de autenticación disponible.',
-        confirmButtonText: 'OK'
       });
       return;
     }
@@ -207,52 +179,55 @@ const RegisterButton = ({
       confirmButtonText: 'Sí, Desanotarse',
       cancelButtonText: 'Volver',
     });
-    
+
     if (!result.isConfirmed) return;
 
     try {
       setLoading(true);
-      
-      // Usar fetch directo para evitar problemas con el service
-      const res = await fetch('https://backturnero-vvk6.onrender.com/api/classes/unregister', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ userId, classId, fecha }),
-      });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'No se pudo cancelar');
+      // igual que arriba, pero a /classes/unregister
+      let payload;
+      if (classType === 'especial') {
+        payload = {
+          userId,
+          fecha,
+          specialClassId: specialClassOriginalId,
+        };
+      } else {
+        payload = {
+          userId,
+          fecha,
+          classId,
+        };
       }
 
-      await modal.fire({ 
-        icon: 'success', 
-        title: 'Inscripción cancelada', 
-        html: '' 
+      await classService.unregisterUserFromClass(token, payload);
+
+      await modal.fire({
+        icon: 'success',
+        title: 'Inscripción cancelada',
       });
-      
-      // Actualizar créditos después de cancelar
-      await actualizarCreditos();
-      
-      // Actualizar estado de registro
+
+      await actualizarCreditos?.();
+
       setIsRegistered(false);
-      
       onSuccess?.();
     } catch (err) {
+      console.error(err);
       await modal.fire({
         icon: 'error',
         title: 'Error',
-        html: err.message,
+        html: err.message || 'No se pudo cancelar',
       });
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <button className="botonReservar" disabled>Cargando...</button>;
+  // ---------- 4) Render ----------
+  if (loading) {
+    return <button className="botonReservar" disabled>Cargando...</button>;
+  }
 
   if (disabled) {
     return (
