@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaMoneyBillWave, FaCheck, FaUser } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
-import { userService } from '../services/userService';
+import * as userService from '../services/userService';
 import { planService } from '../services/planService';
 import { paymentService } from '../services/paymentService';
 
