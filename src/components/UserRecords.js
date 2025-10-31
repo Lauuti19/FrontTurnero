@@ -4,22 +4,30 @@ import { IoMdAddCircle } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import "../styles/UserRecords.css"; // Importar el archivo CSS
+import "../styles/UserRecords.css";
 
 const MySwal = withReactContent(Swal);
 
-const UserRecords = () => {
+const UserRecords = ({ userData, userId, token }) => {
   const { getUserId } = useAuth();
   const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Usar los records que vienen por props
   useEffect(() => {
-    fetchRecords();
-  }, [getUserId]);
+    if (userData && userData.records) {
+      console.log('Records recibidos por props:', userData.records);
+      setRecords(userData.records);
+      setLoading(false);
+    } else {
+      // Si no vienen por props, intentar cargarlos
+      fetchRecords();
+    }
+  }, [userData]);
 
   const fetchRecords = () => {
-    const id_usuario = getUserId();
+    const id_usuario = userId || getUserId();
 
     if (!id_usuario) {
       setError("No se encontró el ID del usuario.");
@@ -27,6 +35,8 @@ const UserRecords = () => {
       return;
     }
 
+    setLoading(true);
+    
     fetch(`https://backturnero-vvk6.onrender.com/api/rm/user/${id_usuario}`)
       .then(res => {
         if (!res.ok) throw new Error("Error al obtener records del usuario.");
@@ -35,18 +45,57 @@ const UserRecords = () => {
       .then(data => {
         console.log('Data recibida:', data);
         
-        if (Array.isArray(data)) {
-          setRecords(data);
-        } else if (data.data && Array.isArray(data.data)) {
-          setRecords(data.data);
-        } else if (Array.isArray(data[0])) {
-          setRecords(data[0]);
-        } else {
-          setError("Formato de respuesta no reconocido");
+        let recordsData = [];
+        
+        // Procesar los records como lo hace tu servicio
+        for (const key in data) {
+          if (!isNaN(parseInt(key)) && data[key] && typeof data[key] === 'object') {
+            recordsData.push(data[key]);
+          }
         }
+        
+        // Si no hay records en propiedades numéricas, buscar en otras
+        if (recordsData.length === 0) {
+          if (Array.isArray(data)) {
+            recordsData = data;
+          } else if (data.data && Array.isArray(data.data)) {
+            recordsData = data.data;
+          } else if (data.records && Array.isArray(data.records)) {
+            recordsData = data.records;
+          }
+        }
+        
+        setRecords(recordsData);
       })
-      .catch(err => setError(err.message))
+      .catch(err => {
+        console.error('Error fetching records:', err);
+        setError(err.message);
+      })
       .finally(() => setLoading(false));
+  };
+
+  // Skeleton loading para records
+  const renderSkeletonRecords = () => {
+    return (
+      <div className="records-skeleton">
+        <div className="skeleton-records-header">
+          <div className="skeleton-records-title"></div>
+          <div className="skeleton-add-button"></div>
+        </div>
+        <div className="skeleton-records-list">
+          {[1, 2, 3].map((item) => (
+            <div className="skeleton-record-item" key={item}>
+              <div className="skeleton-record-info">
+                <div className="skeleton-record-title"></div>
+                <div className="skeleton-record-data"></div>
+                <div className="skeleton-record-notes"></div>
+              </div>
+              <div className="skeleton-edit-button"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const handleNewRecord = () => {
@@ -78,6 +127,11 @@ const UserRecords = () => {
       confirmButtonColor: '#fbf106',
       cancelButtonColor: '#d33',
       focusConfirm: false,
+      willClose: () => {
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) swalContainer.remove();
+        Swal.close();
+      },
       preConfirm: () => {
         const id_ejercicio = Swal.getPopup().querySelector('#swal-id-ejercicio').value;
         const reps = Swal.getPopup().querySelector('#swal-reps').value;
@@ -93,7 +147,7 @@ const UserRecords = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const id_usuario = getUserId();
+        const id_usuario = userId || getUserId();
         
         fetch('https://backturnero-vvk6.onrender.com/api/rm', {
           method: 'POST',
@@ -112,6 +166,7 @@ const UserRecords = () => {
         .then(data => {
           if (data.success) {
             MySwal.fire('¡Guardado!', 'Tu record se ha guardado correctamente.', 'success');
+            // Recargar los records después de guardar
             fetchRecords();
           } else {
             MySwal.fire('Error', data.error || 'No se pudo guardar el record.', 'error');
@@ -164,7 +219,7 @@ const UserRecords = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const id_usuario = getUserId();
+        const id_usuario = userId || getUserId();
         
         fetch('https://backturnero-vvk6.onrender.com/api/rm/update', {
           method: 'PUT',
@@ -195,8 +250,8 @@ const UserRecords = () => {
     });
   };
 
-  if (loading) return <p>Cargando records...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return renderSkeletonRecords();
+  if (error) return <div className="records-error">{error}</div>;
 
   return (
     <div className="records">
@@ -208,11 +263,15 @@ const UserRecords = () => {
       </div>
 
       {records.length === 0 ? (
-        <p className="no-records">No hay records cargados.</p>
+        <div className="records-empty">
+          <div className="records-empty-icon">🏋️</div>
+          <div className="records-empty-text">No hay records cargados</div>
+          <div className="records-empty-subtext">Agrega tu primer record haciendo clic en el botón +</div>
+        </div>
       ) : (
         <div className="records-list">
-          {records.map((rec) => (
-            <div className="record-item" key={rec.id_ejercicio}>
+          {records.map((rec, index) => (
+            <div className="record-item" key={rec.id_ejercicio || index}>
               <div className="record-info">
                 <h4>{rec.ejercicio}</h4>
                 <p>{rec.repeticiones} rep · {rec.peso}kg</p>

@@ -1,12 +1,12 @@
-
 .user-profile-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: auto !important;
-  padding: 0.2rem;
+  min-height: 100vh;
+  padding: 2rem;
   background-color: #18181b;
 }
+
 .loading-container {
   display: flex;
   justify-content: center;
@@ -20,6 +20,7 @@
   z-index: 9999;
   flex-direction: column;
 }
+
 .loading-container h1 {
   color: white;
   margin-top: 20px;
@@ -28,52 +29,119 @@
   letter-spacing: 0.1rem;
   font-weight: lighter;
 }
+
 .loading-container p {
   font-family: 'Brigends', sans-serif;
   font-size: 1rem;
   color: gray;
   animation: pulse 0.6s ease-in-out infinite alternate;
 }
-.loader {
-    position: relative;
-    width:  48px;
-    height: 48px;
-    background: #fbf106;
-    transform: rotateX(65deg) rotate(45deg);
-    transform: perspective(200px) rotateX(65deg) rotate(45deg); 
-    color: #2c2c2c;
-    animation: layers1 1s linear infinite alternate;
-  }
-  .loader:after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(248, 248, 248, 0.7);
-    animation: layerTr 1s linear infinite alternate;
-  }
 
-  @keyframes layers1 {
-    0% { box-shadow: 0px 0px 0 0px  }
-   90% , 100% { box-shadow: 20px 20px 0 -4px  }
+/* ===== ANIMATIONS ===== */
+@keyframes pulse {
+  0% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
   }
-  @keyframes layerTr {
-    0% { transform:  translate(0, 0) scale(1) }
-    100% {  transform: translate(-25px, -25px) scale(1) }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
-      
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ===== MAIN PROFILE STYLES ===== */
+.user-profile-box {
+  background-color: #ececf0;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  width: 100%;
+  color: #18181b;
+  margin: 2rem 0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.user-profile-title {
+  font-size: 1.8rem;
+  font-family: 'Brigends', sans-serif;
+  color: rgb(26, 25, 25);
+  margin-bottom: 0.5rem;
+}
+
+.user-mail {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #18181b;
+}
+
+.user-name {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.user-rol {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: rgb(51, 49, 49);
+  padding: 0.5rem 1rem;
+  width: fit-content;
+  text-align: center;
+  background-color: #fbf106;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.settings-icon {
+  font-size: 2.5rem;
+  color: #18181b;
+  transition: color 0.3s ease;
+  padding: 0.5rem;
+}
+
+.settings-icon:hover {
+  color: #666;
+  cursor: pointer;
+}
+
+/* ===== PROFILE CONTENT GRID ===== */
 .profile-content {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .profile-card {
   background: #fff;
-  padding: 1.2rem;
+  padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   width: 100%;
   box-sizing: border-box;
@@ -84,397 +152,105 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.Texto-Data{ 
-  display: flex !important;
-  height:40px;
-  margin:5px 0px;
-  font-size: 18px;
-  gap:5px;
-}
-
-.Texto-Data p{
-  margin:0px;
-}
-
-.records-list {
+/* ===== TEXT DATA STYLES ===== */
+.Texto-Data {
   display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.record-item {
-  background: #f5f5f5;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  transition: background 0.2s ease;
-}
-
-.record-item:hover {
-  background: #eaeaea;
-}
-
-.record-info h4 {
-  margin: 0;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
   font-size: 1rem;
-  color: #222;
+  min-height: 40px;
 }
 
-.record-info p {
+.Texto-Data p {
   margin: 0;
-  color: #555;
-  font-size: 0.9rem;
+  color: #333;
 }
 
-.records-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.add-record-btn{
-  background-color: transparent;
-  border: none;
-  font-size: 30px;
-  text-align: center;
-  transition: color 0.3s ease;
-}
-
-.add-record-btn:hover{
-  color:rgb(105, 99, 184);
-}
-
-.profile-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.settings-icon{
-  font-size: 70px;
-  color:#18181b;
-  transition: color 0.2s ease;
-}
-
-.settings-icon:hover{
-  color:rgb(66, 65, 65);
-  cursor:pointer;
-}
-
-.edit-record-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #888;
-  transition: color 0.2s ease;
-}
-
-.edit-record-btn:hover {
-  color: #222;
-}
-
-.user-profile-box {
-  background-color: #ececf0;
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  max-width: 800px;
-  width: 100%;
-  color:#18181b;
-  margin-bottom: 50px;
-  display: block;
-  height: auto;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.top-info {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-}
-
-.top-info a {
-  font-size: 50px;
-  color: black;
-  width: 50px !important;
-  height: 60px !important;
-}
-
-.top-info a:hover {
-  cursor: pointer;
-  color: grey;
-}
-
-.user-profile-title {
-  font-size: 1.2rem;
-  font-family: 'Brigends', sans-serif;
-  text-align: start;
-  color: rgb(26, 25, 25);
-  margin-bottom: 0;
-}
-
-.user-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 1rem;
-  width: 70%;
+.Texto-Data strong {
   color: #18181b;
+  font-weight: 600;
 }
 
-.user-form h2 {
-  text-align: start;
-  color: #18181b;
-  margin: 0;
-}
-
-.user-mail {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 3rem;
-  font-weight: bolder;
-  color: #18181b;
-}
-
-.user-rol {
-  text-transform: uppercase;
-  font-weight: bolder;
-  color: rgb(51, 49, 49);
-  padding: 10px;
-  width: 150px;
-  height: 20px;
-  text-align: center;
-  background-color: #fbf106;
-}
-
-.resto-user-info h2 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  color: #292927;
-  text-align: start;
-}
-
-.resto-user-info,
-.cuota-info {
-  padding: 20px;
-  line-height: 1.4;
-  background: #aca3a3;
-  border-radius: 10px;
-  color: #292927;
-}
-
-.cuota-info .cuota-inactiva {
-  color: rgb(216, 29, 29);
-  font-weight: bolder;
-}
-
-.user-form strong {
-  color: #292927;
-}
-
-.separador-user {
+/* ===== CUOTA STYLES ===== */
+.cuota-estado {
   display: flex;
+  align-items: flex-start;
   gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border-left: 4px solid;
+  animation: fadeIn 0.5s ease-out;
 }
 
-.Derecha {
-  text-align: right;
-  width: 30%;
-  font-size: 40px;
-  font-weight: bolder;
+.cuota-activa, .cuota-pagada {
+  background-color: #e8f5e8;
+  border-left-color: #4caf50;
 }
 
-.Derecha a {
-  text-decoration: none;
-  color: gray;
+.cuota-pendiente {
+  background-color: #fff3e0;
+  border-left-color: #ff9800;
 }
 
-.Derecha a:hover {
-  color: black;
+.cuota-vencida {
+  background-color: #ffebee;
+  border-left-color: #f44336;
 }
 
-.user-form input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.cuota-inactiva, .cuota-error {
+  background-color: #f5f5f5;
+  border-left-color: #9e9e9e;
 }
 
-.botonGuardarPerfil {
-  padding: 10px 16px;
-  background-color: #fbf106;
-  color: rgb(29, 28, 28);
-  font-weight: bolder;
-  font-family: 'Brigends';
-  letter-spacing: 0.1rem;
-  font-size: 20px;
-  border: solid 1px #fbf106;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-  font-size: 1.3rem;
-}
-
-.botonGuardarPerfil:hover {
-  background-color: #e0e2e6;
-  border: solid 1px #fbf106;
-}
-
-.mensajeExito {
-  color: green;
-  margin-top: 10px;
-}
-
-.user-form-edit {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 1rem;
-}
-
-.contenido-record {
-  background-color: #aca3a3;
-  border-radius: 10px;
-  text-align: start;
-  color: #292927;
-  font-size: 1.2rem;
-  padding: 20px;
-  height: 350px;
-}
-
-.records h2 {
-  color: #292927;
+.cuota-icon {
   font-size: 1.5rem;
-  margin: 0;
-  text-align: start;
-  padding: 3px 0;
+  margin-top: 0.125rem;
 }
 
-.Derecha p {
-  font-size: 1rem;
+.cuota-info {
+  flex: 1;
 }
 
-.fila-edit {
-  display: flex;
-  justify-content: space-between;
+.cuota-descripcion {
+  font-weight: bold;
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 1.1rem;
 }
 
-.bloque-edit {
-  padding: 10px 0;
-  width: 200px;
-  box-sizing: content-box;
-  gap: 1.3rem;
+#active-fee-icon{
+  color: rgb(40, 122, 29);
+  font-size: 3rem;
+}
+#pending-fee-icon{
+  color: goldenrod;
+  font-size: 3rem;
+}
+#unactive-fee-icon{
+  color: rgb(170, 17, 17);
+  font-size: 3rem;
 }
 
-.bloque-edit input {
-  width: 200px !important;
-  padding: 10px 10px;
+.cuota-vencimiento, 
+.cuota-monto, 
+.cuota-metodo,
+.cuota-plan {
+  margin: 0.375rem 0;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
 }
 
-.edit-user-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #18181b;
+.cuota-vencimiento strong,
+.cuota-monto strong,
+.cuota-metodo strong,
+.cuota-plan strong {
+  color: #333;
 }
 
-.edit-user-box {
-  background-color: #27272a;
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  max-width: 500px;
-  width: 100%;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.edit-user-title {
-  font-size: 2rem;
-  font-family: 'Brigends';
-  text-align: center;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.05rem;
-  color: white;
-  font-weight: lighter;
-}
-
-.edit-user-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.edit-user-form h3 {
-  font-size: 25px;
-  margin: 0;
-}
-
-.botonClave {
-  background-color: transparent;
-  border: solid 1px white;
-  color: white;
-  border-radius: 5px;
-  width: 300px;
-  font-size: 15px !important;
-  font-weight: lighter;
-  font-family: 'Brigends';
-  padding: 15px 0;
-  text-align: center;
-  transition: 0.2s ease-in-out;
-}
-
-.botonClave:hover {
-  background-color: white;
-  color: #18181b;
-}
-
-/* En tu CSS global */
-.swal2-popup {
-  font-family: inherit;
-  border-radius: 12px !important;
-}
-
-.swal2-confirm {
-  background-color: #fbf106 !important;
-  color: #18181b !important;
-  font-weight: bold !important;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.55) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.4;
-  }
-  
-}
-/* ======== Skeleton Loading Styles ======== */
+/* ===== SKELETON LOADING STYLES ===== */
 .skeleton-header {
   display: flex;
   justify-content: space-between;
@@ -496,57 +272,51 @@
   overflow: hidden;
 }
 
-@keyframes skeleton-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
 .skeleton-title {
-  height: 28px;
-  width: 120px;
-  margin-bottom: 8px;
+  height: 1.75rem;
+  width: 7.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .skeleton-email {
-  height: 16px;
-  width: 180px;
-  margin-bottom: 6px;
+  height: 1rem;
+  width: 11.25rem;
+  margin-bottom: 0.375rem;
 }
 
 .skeleton-name {
-  height: 20px;
-  width: 150px;
+  height: 1.25rem;
+  width: 9.375rem;
 }
 
 .skeleton-settings-icon {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   background: #e5e7eb;
   border-radius: 8px;
   animation: skeleton-shimmer 2s infinite;
 }
 
 .skeleton-role {
-  height: 20px;
-  width: 100px;
+  height: 1.25rem;
+  width: 6.25rem;
   background: #e5e7eb;
   border-radius: 20px;
-  margin-bottom: 2rem;
+  margin: 1rem 0 2rem 0;
   animation: skeleton-shimmer 2s infinite;
 }
 
 .skeleton-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .skeleton-card-title {
-  height: 24px;
-  width: 140px;
+  height: 1.5rem;
+  width: 8.75rem;
   margin-bottom: 1rem;
 }
 
@@ -558,20 +328,20 @@
 }
 
 .skeleton-icon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   background: #e5e7eb;
   border-radius: 50%;
   animation: skeleton-shimmer 2s infinite;
 }
 
 .skeleton-data-text {
-  height: 16px;
-  width: 120px;
+  height: 1rem;
+  width: 7.5rem;
 }
 
 .skeleton-cuota-text {
-  height: 40px;
+  height: 2.5rem;
   width: 100%;
   border-radius: 8px;
 }
@@ -583,7 +353,7 @@
 }
 
 .skeleton-record-item {
-  height: 60px;
+  height: 3.75rem;
   background: #e5e7eb;
   border-radius: 8px;
   animation: skeleton-shimmer 2s infinite;
@@ -596,82 +366,104 @@
 }
 
 .skeleton-button {
-  height: 44px;
+  height: 2.75rem;
   flex: 1;
   background: #e5e7eb;
   border-radius: 8px;
   animation: skeleton-shimmer 2s infinite;
 }
 
-/* Asegurar que los skeleton cards tengan el mismo estilo que las cards reales */
-.profile-card.skeleton-card {
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* ===== ERROR & WARNING MESSAGES ===== */
+.error-message, .warning-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
 }
 
-/* Responsive para skeleton */
+.error-message {
+  background-color: #ffebee;
+  border: 1px solid #f44336;
+  color: #d32f2f;
+}
+
+.warning-message {
+  background-color: #fff3e0;
+  border: 1px solid #ff9800;
+  color: #f57c00;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-  .fila-edit{
-    display: flex;
+  .user-profile-container {
+    padding: 1rem;
+  }
+  
+  .user-profile-box {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .profile-header {
     flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
   }
-  .bloque-edit{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: content-box;
-    gap: 1.2rem;
+  
+  .user-mail {
+    font-size: 1.25rem;
   }
-  .bloque-edit input{
-    width: 100% !important;
-    padding: 10px 5px;
+  
+  .settings-icon {
+    font-size: 2rem;
+    align-self: flex-end;
   }
-  .botonGuardarPerfil {
-    font-size: 0.8rem;
+  
+  .profile-content {
+    gap: 1rem;
+    margin-top: 1.5rem;
   }
-  .user-profile-container{
-    padding: 20px 20px;
+  
+  .profile-card {
+    padding: 1.25rem;
   }
-  .user-profile-box{
-    padding: 10px 20px;
+  
+  .Texto-Data {
+    font-size: 0.95rem;
   }
+  
   .skeleton-checkin {
     flex-direction: column;
   }
-  
-  .skeleton-title {
-    width: 100px;
-  }
-  
-  .skeleton-email {
-    width: 150px;
-  }
-  
-  .skeleton-name {
-    width: 120px;
-  }
-  .user-mail{
-    font-size: 1.3rem;
-  }
-  .settings-icon{
-    font-size: 3rem;
-  }
 }
 
-/* Mejorar la apariencia del esqueleto en modo oscuro si es necesario */
-@media (prefers-color-scheme: dark) {
-  .skeleton-text,
-  .skeleton-settings-icon,
-  .skeleton-role,
-  .skeleton-icon,
-  .skeleton-record-item,
-  .skeleton-button {
-    background: #f8fafc;
+@media (max-width: 480px) {
+  .user-profile-container {
+    padding: 0.5rem;
   }
   
-  .skeleton-card {
-    background: #f8fafc;
-    border-color:#e2e8f0;
+  .user-profile-box {
+    padding: 1rem;
+  }
+  
+  .user-profile-title {
+    font-size: 1.5rem;
+  }
+  
+  .user-mail {
+    font-size: 1.1rem;
+  }
+  
+  .user-name {
+    font-size: 1rem;
+  }
+  
+  .profile-card {
+    padding: 1rem;
+  }
+  
+  .Texto-Data {
+    font-size: 0.9rem;
+    flex-wrap: wrap;
   }
 }

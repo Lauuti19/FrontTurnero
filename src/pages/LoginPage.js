@@ -5,12 +5,14 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
-import transition from '../transition'
+import transition from '../transition';
+import { registerUser, loginUser, getCompleteUserAfterLogin } from "../services/auth";
 
 const LoginPage = () => {
   const { login } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -18,110 +20,123 @@ const LoginPage = () => {
     celular: "",
     password: ""
   });
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Limpiar error cuando el usuario empiece a escribir
+    if (error) setError("");
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async () => {
-    console.log(formData.email, 'Email', formData.password, 'Password');  
-    if (isRegistering) {
-      try {
-        const response = await fetch("https://backturnero-vvk6.onrender.com/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          alert("Registrado correctamente");
-          setIsRegistering(false);
-        } else {
-          alert(data.message || "Error al registrar");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Error de conexión con el servidor.");
-      }
-    } else {
-      try {
-        const response = await fetch("https://backturnero-vvk6.onrender.com/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            
-          // Guarda el token
-          localStorage.setItem("token", data.token);
-          const tokenGuardado = localStorage.getItem("token");
-
-          // VERIFICACIÓN DEL TOKEN - prueba el endpoint de perfil
-          try {
-            const perfilRes = await fetch(`https://backturnero-vvk6.onrender.com/api/auth/perfil`, {
-              headers: {
-                'Authorization': `Bearer ${data.token}`,
-                'Content-Type': 'application/json'
-              }
-            });
-
-            if (perfilRes.ok) {
-              const perfilData = await perfilRes.json();
-              console.log("Perfil obtenido correctamente:", perfilData);
-              
-              // Usa los datos del PERFIL que son más completos
-              login(perfilData.usuario, data.token);
-            } else {
-              console.warn("No se pudo obtener el perfil, usando datos del login");
-              // Si falla el perfil, usa los datos del login
-              login(data.usuario, data.token);
-            }
-          } catch (perfilError) {
-            console.error("Error obteniendo perfil:", perfilError);
-            // Si hay error, usa los datos del login
-            login(data.usuario, data.token);
-          }
-
-          // Navegación basada en los datos del usuario
-          const usuarioFinal = data.usuario; // o perfilData.usuario si se obtuvo
-          const id_rol = usuarioFinal.id_rol;
-          const id_estado = usuarioFinal.id_estado;
-
-          console.log("Navegando con:", { id_rol, id_estado });
-
-          if (id_estado === 1) {
-            // Usuario activo - va al perfil sin importar el rol
-            navigate("/perfil");
-          } else if (id_estado === 2 || id_estado === 3) {
-            // Usuario inactivo o suspendido
-            navigate("/estado");
-          } else {
-            alert("Estado de usuario desconocido");
-            navigate("/");
-          }
-
-        } else {
-          alert(data.message || "Error al iniciar sesión");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Error de conexión con el servidor.");
-      }
+  const handleRegister = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      console.log("Datos de registro:", formData);
+      await registerUser(formData);
+      alert("Registrado correctamente");
+      setIsRegistering(false);
+      // Limpiar formulario después del registro exitoso
+      setFormData({
+        nombre: "",
+        email: "",
+        dni: "",
+        celular: "",
+        password: ""
+      });
+    } catch (error) {
+      console.error("Error en registro:", error);
+      setError(error.message || "Error al registrar");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      console.log("Datos de login:", { email: formData.email, password: formData.password });
+      const loginData = await loginUser({
+        email: formData.email,
+        password: formData.password
+      });
+
+      console.log("Respuesta del login:", loginData);
+
+      // Guardar token
+      localStorage.setItem("token", loginData.token);
+
+      // Obtener usuario completo con todos los datos combinados
+      const usuarioCompleto = await getCompleteUserAfterLogin(loginData.token, loginData);
+      console.log("Usuario completo:", usuarioCompleto);
+      
+      // Hacer login con los datos completos del usuario
+      login(usuarioCompleto, loginData.token);
+
+      // Navegación basada en el estado del usuario
+      const { id_estado } = usuarioCompleto;
+      console.log("Navegando con usuario:", usuarioCompleto);
+
+      if (id_estado === 1) {
+        navigate("/perfil");
+      } else if (id_estado === 2 || id_estado === 3) {
+        navigate("/estado");
+      } else {
+        setError("Estado de usuario desconocido");
+        navigate("/");
+      }
+
+    } catch (error) {
+      console.error("Error en login:", error);
+      setError(error.message || "Error al iniciar sesión");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Validaciones básicas
+    if (!formData.email || !formData.password) {
+      setError("Por favor, completa todos los campos obligatorios");
+      return;
+    }
+
+    if (isRegistering) {
+      if (!formData.nombre || !formData.dni || !formData.celular) {
+        setError("Por favor, completa todos los campos");
+        return;
+      }
+      await handleRegister();
+    } else {
+      await handleLogin();
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  const switchMode = () => {
+    setIsRegistering(!isRegistering);
+    setError("");
+    // Limpiar formulario al cambiar de modo
+    setFormData({
+      nombre: "",
+      email: "",
+      dni: "",
+      celular: "",
+      password: ""
+    });
   };
 
   return (
@@ -137,6 +152,13 @@ const LoginPage = () => {
         <div className="form-content">
           <h2 className="TituloLogin">{isRegistering ? "Registrarse" : "Iniciar Sesión"}</h2>
           
+          {/* Mostrar mensaje de error */}
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+          
           {isRegistering && (
             <input
               type="text"
@@ -144,6 +166,8 @@ const LoginPage = () => {
               placeholder="Nombre"
               value={formData.nombre}
               onChange={handleChange}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
             />
           )}
 
@@ -153,6 +177,8 @@ const LoginPage = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
+            onKeyPress={handleKeyPress}
+            disabled={isLoading}
           />
           
           {isRegistering && (
@@ -163,6 +189,8 @@ const LoginPage = () => {
                 placeholder="DNI"
                 value={formData.dni}
                 onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
               />
               <input
                 type="number"
@@ -170,6 +198,8 @@ const LoginPage = () => {
                 placeholder="Celular"
                 value={formData.celular}
                 onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
               />
             </>
           )}
@@ -181,19 +211,26 @@ const LoginPage = () => {
               placeholder="Contraseña"
               value={formData.password}
               onChange={handleChange}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
             />
             <span className="password-toggle" onClick={togglePasswordVisibility}>
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </span>
           </div>
           
-          <button className="btn primary" onClick={handleSubmit}>
-            {isRegistering ? "Crear Cuenta" : "Ingresar"}
+          <button 
+            className={`btn primary ${isLoading ? 'loading' : ''}`} 
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? "Cargando..." : (isRegistering ? "Crear Cuenta" : "Ingresar")}
           </button>
 
           <button
             className="btn link"
-            onClick={() => setIsRegistering(!isRegistering)}
+            onClick={switchMode}
+            disabled={isLoading}
           >
             {isRegistering
               ? "¿Ya tenés cuenta? Iniciar sesión"
