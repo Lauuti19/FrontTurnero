@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 import '../styles/ClassUserModal.css';
 import { FiUser } from "react-icons/fi";
 import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService'; // Importar el service
+import { classService } from '../services/classService';
 
-const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
+const ClassUsersModal = ({ classId, classType, fecha, onClose, getToken }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { getToken: authGetToken } = useAuth();
 
-  // Función unificada para obtener token
-  const obtenerToken = () => {
-    return getToken ? getToken() : authGetToken();
-  };
+  const obtenerToken = () => (getToken ? getToken() : authGetToken());
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,13 +18,16 @@ const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
       setError(null);
       try {
         const token = obtenerToken();
-        if (!token) {
-          throw new Error("No hay token disponible");
-        }
+        if (!token) throw new Error("No hay token disponible");
 
-        // Usar el service en lugar de fetch directo
-        const data = await classService.getClassUsers(token, classId, fecha);
-        setUsers(data);
+        // ✅ ahora sí: classId + classType + fecha
+        const data = await classService.getClassUsers(token, {
+          classId,
+          classType,           // "normal" o "especial"
+          fecha,
+        });
+
+        setUsers(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Error al obtener los usuarios anotados:', err);
         setError(err.message);
@@ -37,17 +37,24 @@ const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
       }
     };
 
-    if (classId && fecha) {
+    // solo traigo si tengo todo
+    if (classId && fecha && classType) {
       fetchUsers();
+    } else {
+      // si por algún motivo no vino el tipo, marcamos error legible
+      if (!classType) {
+        setError("Falta el tipo de clase (normal/especial)");
+      }
     }
-  }, [classId, fecha, obtenerToken]); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId, classType, fecha]);
 
   return (
     <div className="modal-overlay">
       <div className="modal-users-box">
         <button className="cerrar-modal" onClick={onClose}>X</button>
         <h2>Anotados en la clase</h2>
-        
+
         {error && (
           <div className="error-message">
             <p>⚠️ {error}</p>
@@ -55,15 +62,15 @@ const ClassUsersModal = ({ classId, fecha, onClose, getToken }) => {
         )}
 
         {loading ? (
-          <div className="loading-container">
-            <p>Cargando usuarios...</p>
-          </div>
+          <div className="loading-container"><p>Cargando usuarios...</p></div>
         ) : users.length > 0 ? (
           <div className="attendees-list-modal">
-            {users.map((user, index) => (
-              <div key={user.id_usuario || index} className="user-badge-modal">
+            {users.map((u, i) => (
+              <div key={u.id_usuario || i} className="user-badge-modal">
                 <FiUser className="user-icon-modal" />
-                <span className="user-name-modal">{user.nombre} {user.apellido}</span>
+                <span className="user-name-modal">
+                  {u.nombre} {u.apellido}
+                </span>
               </div>
             ))}
           </div>

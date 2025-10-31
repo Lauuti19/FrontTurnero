@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt, FaDumbbell, FaRunning, FaHeart } from 'react-icons/fa';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt,
+  FaDumbbell, FaRunning, FaHeart
+} from 'react-icons/fa';
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from '../components/ClassUsersModal';
-import RegisterButton from '../components/RegisterButton'; 
+import RegisterButton from '../components/RegisterButton';
 import { useAuth } from '../AuthContext';
 import { classService } from '../services/classService';
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
-const ClassSchedule = ({ 
-  userId: propUserId, 
-  isEmbedded = false, 
+const ClassSchedule = ({
+  userId: propUserId,
+  isEmbedded = false,
   showHeader = true,
   customContainerStyle = {},
   customItemStyle = {},
-  adminMode = false 
+  adminMode = false,
 }) => {
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
     if (today.getDay() === 0) {
-      today.setDate(today.getDate() + 1);
+      today.setDate(today.getDate() + 1); // saltear domingo
     }
     today.setHours(0, 0, 0, 0);
     return today;
@@ -30,14 +33,20 @@ const ClassSchedule = ({
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+
   const { getToken } = useAuth();
 
   const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
-  const userId = propUserId !== null && propUserId !== undefined 
-    ? propUserId 
-    : usuarioLocal?.id_usuario || usuarioLocal?.id; 
+  const userId = propUserId !== null && propUserId !== undefined
+    ? propUserId
+    : (usuarioLocal?.id_usuario || usuarioLocal?.id);
 
   const [expandedClassId, setExpandedClassId] = useState(null);
+
+  const formattedDate = useMemo(
+    () => currentDate.toISOString().split('T')[0],
+    [currentDate]
+  );
 
   const toggleExpand = (id) => {
     setExpandedClassId(expandedClassId === id ? null : id);
@@ -53,95 +62,22 @@ const ClassSchedule = ({
     setSelectedClass(null);
   };
 
-  const formatDateForAPI = (date) => {
-    return date.toISOString().split("T")[0];
-  };
-
-  const fetchClasses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const formattedDate = formatDateForAPI(currentDate);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
-
-      let data;
-      if (adminMode && userId) {
-        data = await classService.getClassesByUser(token, userId, formattedDate);
-      } else {
-        data = await classService.getClasses(token, formattedDate);
-      }
-      
-      const clasesFormateadas = data.map(clase => ({
-        ...clase,
-        hora: clase.hora ? clase.hora.substring(0, 5) : clase.hora
-      }));
-      
-      setClasses(clasesFormateadas);
-    } catch (err) {
-      console.error('Error cargando clases:', err);
-      setError(err.message || 'Error al cargar las clases');
-      setClasses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-  }, [currentDate, userId, adminMode, getToken]);
-
-  const handlePreviousDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - 1);
-    if (newDate.getDay() === 0) {
-      newDate.setDate(newDate.getDate() - 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + 1);
-    if (newDate.getDay() === 0) {
-      newDate.setDate(newDate.getDate() + 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-    if (today.getDay() === 0) {
-      today.setDate(today.getDate() + 1);
-    }
-    today.setHours(0, 0, 0, 0);
-    setCurrentDate(today);
-  };
-
   const getDisciplineIcon = (disciplina) => {
-    const disciplinaLower = disciplina.toLowerCase();
-    if (disciplinaLower.includes('funcional') || disciplinaLower.includes('cross')) {
-      return <FaRunning className="discipline-icon" />;
-    } else if (disciplinaLower.includes('musculación') || disciplinaLower.includes('pesas')) {
-      return <FaDumbbell className="discipline-icon" />;
-    } else if (disciplinaLower.includes('yoga') || disciplinaLower.includes('pilates')) {
-      return <FaHeart className="discipline-icon" />;
-    }
+    const d = (disciplina || '').toLowerCase();
+    if (d.includes('funcional') || d.includes('cross')) return <FaRunning className="discipline-icon" />;
+    if (d.includes('musculación') || d.includes('pesas')) return <FaDumbbell className="discipline-icon" />;
+    if (d.includes('yoga') || d.includes('pilates')) return <FaHeart className="discipline-icon" />;
     return <FaDumbbell className="discipline-icon" />;
   };
 
   const getFormattedDate = () => {
     const dayIndex = currentDate.getDay();
-    const adjustedDayIndex = dayIndex === 0 ? 6 : dayIndex - 1;
-    
+    const adjusted = dayIndex === 0 ? 6 : dayIndex - 1;
     return (
       <div className="schedule-date">
         <FaCalendarAlt className="calendar-icon" />
         <div className="date-content">
-          <span className="day-name">{daysOfWeek[adjustedDayIndex]}</span>
+          <span className="day-name">{daysOfWeek[adjusted]}</span>
           <div className="date-numbers">
             <span className="date-day">{String(currentDate.getDate()).padStart(2, '0')}</span>
             <span className="date-separator">/</span>
@@ -155,59 +91,117 @@ const ClassSchedule = ({
   };
 
   const getCapacityPercentage = (disponibles, total) => {
-    return Math.round((1 - disponibles / total) * 100);
+    const t = Number(total) > 0 ? Number(total) : 20;
+    const d = Math.max(0, Number(disponibles) || 0);
+    return Math.round((1 - d / t) * 100);
   };
 
-  const getCapacityColor = (percentage) => {
-    if (percentage >= 80) return '#dc2626';
-    if (percentage >= 60) return '#f59e0b';
+  const getCapacityColor = (p) => {
+    if (p >= 80) return '#dc2626';
+    if (p >= 60) return '#f59e0b';
     return '#16a34a';
   };
 
-  // Skeleton loading items
-  const renderSkeletonItems = () => {
-    return Array.from({ length: 4 }).map((_, index) => (
-      <div key={index} className="class-item skeleton-item">
+  const fetchClasses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
+
+      let data;
+      if (adminMode && userId) {
+        data = await classService.getClassesByUser(token, userId, formattedDate);
+      } else {
+        data = await classService.getClasses(token, formattedDate);
+      }
+
+      const clasesFormateadas = (Array.isArray(data) ? data : []).map((c) => {
+        const total = Number(c.capacidad_max ?? c.total ?? 20);
+        const disponibles = Number(c.disponibles ?? 0);
+        return {
+          ...c,
+          hora: c.hora ? String(c.hora).substring(0, 5) : c.hora,
+          total,
+          inscriptos: Math.max(0, total - disponibles),
+        };
+      });
+
+      setClasses(clasesFormateadas);
+    } catch (err) {
+      console.error('Error cargando clases:', err);
+      setError(err.message || 'Error al cargar las clases');
+      setClasses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClasses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDate, userId, adminMode, getToken]);
+
+  const handlePreviousDay = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() - 1);
+    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() - 1);
+    newDate.setHours(0, 0, 0, 0);
+    setCurrentDate(newDate);
+  };
+
+  const handleNextDay = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + 1);
+    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() + 1);
+    newDate.setHours(0, 0, 0, 0);
+    setCurrentDate(newDate);
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    if (today.getDay() === 0) today.setDate(today.getDate() + 1);
+    today.setHours(0, 0, 0, 0);
+    setCurrentDate(today);
+  };
+
+  const renderSkeletonItems = () =>
+    Array.from({ length: 4 }).map((_, i) => (
+      <div key={i} className="class-item skeleton-item">
         <div className="class-main-info">
-          <div className="class-icon skeleton-icon"></div>
-          
+          <div className="class-icon skeleton-icon" />
           <div className="class-details">
-            <div className="class-discipline skeleton-text skeleton-title"></div>
+            <div className="class-discipline skeleton-text skeleton-title" />
             <div className="class-meta">
-              <div className="class-time skeleton-text skeleton-time"></div>
-              <div className="class-trainer skeleton-text skeleton-trainer"></div>
+              <div className="class-time skeleton-text skeleton-time" />
+              <div className="class-trainer skeleton-text skeleton-trainer" />
             </div>
-            <div className="class-description skeleton-text skeleton-description"></div>
+            <div className="class-description skeleton-text skeleton-description" />
           </div>
-          
           <div className="class-capacity">
             <div className="capacity-info">
-              <div className="capacity-bar skeleton-bar"></div>
-              <div className="capacity-text skeleton-text skeleton-capacity"></div>
+              <div className="capacity-bar skeleton-bar" />
+              <div className="capacity-text skeleton-text skeleton-capacity" />
             </div>
           </div>
         </div>
-
         <div className="class-actions skeleton-actions">
           <div className="class-features">
-            <div className="feature-tag skeleton-tag"></div>
-            <div className="feature-tag skeleton-tag"></div>
-            <div className="feature-tag skeleton-tag"></div>
+            <div className="feature-tag skeleton-tag" />
+            <div className="feature-tag skeleton-tag" />
+            <div className="feature-tag skeleton-tag" />
           </div>
-          
           <div className="action-buttons">
-            {adminMode && (
-              <div className="btn-view-users skeleton-button"></div>
-            )}
-            <div className="skeleton-register-button"></div>
+            <div className="btn-view-users skeleton-button" />
+            <div className="skeleton-register-button" />
           </div>
         </div>
       </div>
     ));
-  };
 
   return (
-    <div 
+    <div
       className={`class-schedule-container ${isEmbedded ? 'embedded' : ''}`}
       style={customContainerStyle}
     >
@@ -218,23 +212,21 @@ const ClassSchedule = ({
               <h2>Horario de Clases</h2>
               <p>Entrena con nosotros</p>
             </div>
-            
+
             <div className="date-navigation">
-              <button 
-                className="nav-btn prev-btn" 
+              <button
+                className="nav-btn prev-btn"
                 onClick={handlePreviousDay}
                 title="Día anterior"
                 disabled={loading}
               >
                 <FaChevronLeft />
               </button>
-              
-              <div className="current-date">
-                {getFormattedDate()}
-              </div>
 
-              <button 
-                className="nav-btn next-btn" 
+              <div className="current-date">{getFormattedDate()}</div>
+
+              <button
+                className="nav-btn next-btn"
                 onClick={handleNextDay}
                 title="Día siguiente"
                 disabled={loading}
@@ -243,7 +235,7 @@ const ClassSchedule = ({
               </button>
             </div>
 
-            <button 
+            <button
               className="today-btn"
               onClick={handleToday}
               title="Ir a hoy"
@@ -262,27 +254,27 @@ const ClassSchedule = ({
             </button>
           </div>
         )}
-        
+
         <div className="classes-list">
           {loading ? (
             renderSkeletonItems()
           ) : classes.length > 0 ? (
             classes.map((clase) => {
-              const capacityPercentage = getCapacityPercentage(clase.disponibles, clase.total);
+              const total = Number(clase.total) || 20;
+              const disponibles = Number(clase.disponibles) || 0;
+              const capacityPercentage = getCapacityPercentage(disponibles, total);
               const capacityColor = getCapacityColor(capacityPercentage);
 
               return (
                 <div
                   key={clase.id_clase}
-                  className={`class-item ${expandedClassId === clase.id_clase ? "expanded" : ""}`}
+                  className={`class-item ${expandedClassId === clase.id_clase ? 'expanded' : ''}`}
                   style={customItemStyle}
                   onClick={() => toggleExpand(clase.id_clase)}
                 >
                   <div className="class-main-info">
-                    <div className="class-icon">
-                      {getDisciplineIcon(clase.disciplina)}
-                    </div>
-                    
+                    <div className="class-icon">{getDisciplineIcon(clase.disciplina)}</div>
+
                     <div className="class-details">
                       <h3 className="class-discipline">{clase.disciplina}</h3>
                       <div className="class-meta">
@@ -293,50 +285,49 @@ const ClassSchedule = ({
                         {clase.descripcion || 'Clase grupal de alta intensidad'}
                       </p>
                     </div>
-                    
+
                     <div className="class-capacity">
                       <div className="capacity-info">
-                        <div 
+                        <div
                           className="capacity-bar"
                           style={{
-                            background: `linear-gradient(90deg, ${capacityColor} ${capacityPercentage}%, #e5e7eb ${capacityPercentage}%)`
+                            background: `linear-gradient(90deg, ${capacityColor} ${capacityPercentage}%, #e5e7eb ${capacityPercentage}%)`,
                           }}
-                        ></div>
+                        />
                         <span className="capacity-text">
-                          {clase.disponibles}/{clase.total} cupos
+                          {disponibles}/{total} cupos
                         </span>
                       </div>
-                      {capacityPercentage >= 80 && (
-                        <span className="capacity-alert">¡Últimos cupos!</span>
-                      )}
+                      {capacityPercentage >= 80 && <span className="capacity-alert">¡Últimos cupos!</span>}
                     </div>
                   </div>
 
-                  <div className={`class-actions ${expandedClassId === clase.id_clase ? "visible" : ""}`}>
+                  <div className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}>
                     <div className="class-features">
                       <span className="feature-tag">💪 Intensidad {clase.intensidad || 'Media'}</span>
                       <span className="feature-tag">⏱️ {clase.duracion || '60'} min</span>
                       <span className="feature-tag">🏋️‍♂️ {clase.nivel || 'Todos los niveles'}</span>
                     </div>
-                    
+
                     <div className="action-buttons">
-                      {adminMode && (
-                        <button
-                          className="btn-view-users"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openUsersModal(clase);
-                          }}
-                          title="Ver alumnos anotados"
-                        >
-                          <FaUsers />
-                          <span>Ver alumnos</span>
-                        </button>
-                      )}
-                      
+                      <button
+                        className="btn-view-users"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openUsersModal(clase);
+                        }}
+                        title="Ver alumnos anotados"
+                      >
+                        <FaUsers />
+                        <span>Ver alumnos</span>
+                        <span className="badge">{clase.inscriptos ?? 0}</span>
+                      </button>
+
                       <RegisterButton
                         classId={clase.id_clase}
-                        fecha={formatDateForAPI(currentDate)}
+                        classType={clase.tipo === 'especial' ? 'especial' : 'normal'}
+                        specialClassOriginalId={clase.id_original}
+                        fecha={formattedDate}
                         hora={clase.hora}
                         disciplina={clase.disciplina}
                         userId={userId}
@@ -354,20 +345,21 @@ const ClassSchedule = ({
               <div className="no-classes-icon">🏋️‍♂️</div>
               <h3>No hay clases programadas</h3>
               <p>
-                {adminMode && userId 
-                  ? 'El usuario no tiene clases para este día' 
-                  : 'No hay clases programadas para este día. Revisa otros días.'
-                }
+                {adminMode && userId
+                  ? 'El usuario no tiene clases para este día'
+                  : 'No hay clases programadas para este día. Revisa otros días.'}
               </p>
             </div>
           )}
         </div>
       </div>
 
+      {/* 👇 acá va el modal, fuera del return de la lista */}
       {showModal && selectedClass && (
         <ClassUsersModal
           classId={selectedClass.id_clase}
-          fecha={formatDateForAPI(currentDate)}
+          classType={selectedClass.is_especial ? 'especial' : 'normal'}
+          fecha={formattedDate}
           onClose={closeUsersModal}
           getToken={getToken}
         />

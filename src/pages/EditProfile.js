@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/UserProfile.css';
+import '../styles/UpdateProfile.css';
 import { useAuth } from '../AuthContext';
 import Swal from 'sweetalert2';
-import { getFullUserData } from '../services/userService'; // Importar el servicio
+import { getFullUserData } from '../services/userService';
 
 const EditProfile = () => {
   const { getUserId, getToken } = useAuth();
@@ -25,10 +25,8 @@ const EditProfile = () => {
       return;
     }
 
-    // Usar el servicio getFullUserData en lugar de fetch directo
     getFullUserData(token, id_usuario)
       .then(data => {
-        // El servicio ya combina datos de perfil y usuario
         setFormData({
           nombre: data.nombre || '',
           email: data.email || '',
@@ -43,6 +41,54 @@ const EditProfile = () => {
         setLoading(false);
       });
   }, [getUserId, getToken]);
+
+  // Skeleton loading para editar perfil
+  const renderSkeletonEdit = () => {
+    return (
+      <div className="edit-skeleton-container">
+        <div className="edit-skeleton-box">
+          {/* Título skeleton */}
+          <div className="edit-skeleton-title"></div>
+          
+          {/* Información personal skeleton */}
+          <div className="edit-skeleton-section">
+            <div className="edit-skeleton-section-title"></div>
+            
+            <div className="edit-skeleton-label"></div>
+            <div className="edit-skeleton-input"></div>
+            
+            <div className="edit-skeleton-label"></div>
+            <div className="edit-skeleton-input"></div>
+            
+            {/* Fila de celular y DNI skeleton */}
+            <div className="edit-skeleton-row">
+              <div className="edit-skeleton-column">
+                <div className="edit-skeleton-label"></div>
+                <div className="edit-skeleton-input"></div>
+              </div>
+              <div className="edit-skeleton-column">
+                <div className="edit-skeleton-label"></div>
+                <div className="edit-skeleton-input"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Cambio de contraseña skeleton */}
+          <div className="edit-skeleton-section">
+            <div className="edit-skeleton-section-title"></div>
+            
+            <div className="edit-skeleton-text"></div>
+            <div className="edit-skeleton-text short"></div>
+            
+            <div className="edit-skeleton-password-button"></div>
+          </div>
+
+          {/* Botón guardar skeleton */}
+          <div className="edit-skeleton-button"></div>
+        </div>
+      </div>
+    );
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -185,13 +231,9 @@ const EditProfile = () => {
     } while (errorMsg);
   };
 
-  //if (loading) return (
-  //  <div className="edit-user-container">
-  //    <div className="edit-user-box">
-  //      <p>Cargando datos...</p>
-  //    </div>
-  //  </div>
-  //);
+  if (loading) {
+    return renderSkeletonEdit();
+  }
   
   if (error) return (
     <div className="edit-user-container">

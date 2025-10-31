@@ -1,36 +1,132 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
 import '../styles/ClassSchedule.css';
 import { useAuth } from "../AuthContext";
-import ClassUsersModal from './ClassUsersModal';
-import { FaUsers } from 'react-icons/fa';
-import { FiUser } from "react-icons/fi";
-import RegisterButton from './RegisterButton';
-import {useNavigate} from 'react-router-dom';
+import ClassUsersModal from '../components/ClassUsersModal';
+import RegisterButton from '../components/RegisterButton';
+import { classService } from '../services/classService';
 
-const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
 const ClassesUser = () => {
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
+    if (today.getDay() === 0) {
+      today.setDate(today.getDate() + 1);
+    }
     today.setHours(0, 0, 0, 0);
     return today;
   });
 
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [expandedClassId, setExpandedClassId] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [expandedClassId, setExpandedClassId] = useState(null);
-  const [classAttendees, setClassAttendees] = useState({});
-  const navigate = useNavigate();
 
-  const { getUserId } = useAuth();
+  const { getToken, getUserId } = useAuth();
+  const userId = getUserId?.() || JSON.parse(localStorage.getItem('usuario'))?.id_usuario;
 
-  const toggleExpand = async (id) => {
-    if (expandedClassId !== id) {
-      await fetchClassAttendees(id);
+  const formattedDate = useMemo(
+    () => currentDate.toISOString().split('T')[0],
+    [currentDate]
+  );
+
+  const getFormattedDate = () => {
+    const dayIndex = currentDate.getDay();
+    const adjusted = dayIndex === 0 ? 6 : dayIndex - 1;
+    return (
+      <div className="schedule-date">
+        <FaCalendarAlt className="calendar-icon" />
+        <div className="date-content">
+          <span className="day-name">{daysOfWeek[adjusted]}</span>
+          <div className="date-numbers">
+            <span className="date-day">{String(currentDate.getDate()).padStart(2, '0')}</span>
+            <span className="date-separator">/</span>
+            <span className="date-month">{String(currentDate.getMonth() + 1).padStart(2, '0')}</span>
+            <span className="date-separator">/</span>
+            <span className="date-year">{currentDate.getFullYear()}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const getCapacityPercentage = (disponibles, total) => {
+    const t = Number(total) > 0 ? Number(total) : 20;
+    const d = Math.max(0, Number(disponibles) || 0);
+    return Math.round((1 - d / t) * 100);
+  };
+
+  const getCapacityColor = (p) => {
+    if (p >= 80) return '#dc2626';
+    if (p >= 60) return '#f59e0b';
+    return '#16a34a';
+  };
+
+  // 👇 ESTA es la parte que cambiamos
+  const fetchClasses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
+      if (!userId) throw new Error('No se encontró el id del usuario');
+
+      // usamos tu service
+      const data = await classService.getClassesByUser(token, userId, formattedDate);
+
+      const clasesFormateadas = (Array.isArray(data) ? data : []).map((c) => {
+        const total = Number(c.capacidad_max ?? c.total ?? 20);
+        const disponibles = Number(c.disponibles ?? 0);
+        return {
+          ...c,
+          hora: c.hora ? String(c.hora).substring(0, 5) : c.hora,
+          total,
+          inscriptos: Math.max(0, total - disponibles),
+        };
+      });
+
+      setClasses(clasesFormateadas);
+    } catch (err) {
+      // 👇 acá te va a caer "No hay cuotas válidas..." si el back lo mandó
+      console.error('Error obteniendo clases del usuario:', err);
+      setError(err.message || 'Error al obtener las clases del usuario');
+      setClasses([]);
+    } finally {
+      setLoading(false);
     }
-    setExpandedClassId(expandedClassId === id ? null : id);
+  };
+
+  useEffect(() => {
+    fetchClasses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDate, userId, getToken]);
+
+  const handlePreviousDay = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() - 1);
+    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() - 1);
+    newDate.setHours(0, 0, 0, 0);
+    setCurrentDate(newDate);
+  };
+
+  const handleNextDay = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + 1);
+    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() + 1);
+    newDate.setHours(0, 0, 0, 0);
+    setCurrentDate(newDate);
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    if (today.getDay() === 0) today.setDate(today.getDate() + 1);
+    today.setHours(0, 0, 0, 0);
+    setCurrentDate(today);
   };
 
   const openUsersModal = (clase) => {
@@ -43,193 +139,202 @@ const ClassesUser = () => {
     setSelectedClass(null);
   };
 
-  const formatDateForAPI = (date) => date.toISOString().split("T")[0];
-
-  const fetchClasses = async () => {
-    setLoading(true);
-    const formattedDate = formatDateForAPI(currentDate);
-    const userId = getUserId();
-
-    if (!userId) {
-      console.error("No se encontró el id del usuario en localStorage");
-      setClasses([]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/classes/by-user?userId=${userId}&fecha=${formattedDate}`);
-      const data = await res.json();
-      setClasses(data);
-    } catch (error) {
-      console.error('Error al obtener las clases:', error);
-      setClasses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchClassAttendees = async (classId) => {
-    try {
-      const formattedDate = formatDateForAPI(currentDate);
-      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/classes/attendees?classId=${classId}&fecha=${formattedDate}`);
-      const data = await res.json();
-      
-      // Actualizar el estado con los usuarios de esta clase
-      setClassAttendees(prev => ({
-        ...prev,
-        [classId]: data
-      }));
-    } catch (error) {
-      console.error('Error al obtener los anotados:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-  }, [currentDate, getUserId()]);
-
-  const handlePreviousDay = () => {
-    const newDate = new Date(currentDate);
-    do {
-      newDate.setDate(newDate.getDate() - 1);
-    } while (newDate.getDay() === 0);
-    setCurrentDate(newDate);
-  };
-
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    do {
-      newDate.setDate(newDate.getDate() + 1);
-    } while (newDate.getDay() === 0);
-    setCurrentDate(newDate);
-  };
-
-  // Función para mobile: manejar el click en el botón de ver anotados
-  const handleMobileUsersClick = (e, clase) => {
-    e.stopPropagation();
-    openUsersModal(clase);
-  };
-
-  // Función para desktop: manejar el click en el botón de ver anotados
-  const handleDesktopUsersClick = (e, clase) => {
-    e.stopPropagation();
-    toggleExpand(clase.id_clase);
-    openUsersModal(clase);
-  };
-
-  const formattedDay = (
-    <div className="clase-fecha-mobile">
-      <span className="fecha-dia">{daysOfWeek[currentDate.getDay()]}</span>
-      <div className="fecha-numeros">
-        <span className="fecha-numero">
-          {String(currentDate.getDate()).padStart(2, '0')}
-        </span>
-        <span className="guion-fecha">-</span>
-        <span className="fecha-numero">
-          {String(currentDate.getMonth() + 1).padStart(2, '0')}
-        </span>
+  const renderSkeletonItems = () =>
+    Array.from({ length: 4 }).map((_, i) => (
+      <div key={i} className="class-item skeleton-item">
+        <div className="class-main-info">
+          <div className="class-icon skeleton-icon" />
+          <div className="class-details">
+            <div className="class-discipline skeleton-text skeleton-title" />
+            <div className="class-meta">
+              <div className="class-time skeleton-text skeleton-time" />
+              <div className="class-trainer skeleton-text skeleton-trainer" />
+            </div>
+            <div className="class-description skeleton-text skeleton-description" />
+          </div>
+          <div className="class-capacity">
+            <div className="capacity-info">
+              <div className="capacity-bar skeleton-bar" />
+              <div className="capacity-text skeleton-text skeleton-capacity" />
+            </div>
+          </div>
+        </div>
+        <div className="class-actions skeleton-actions">
+          <div className="class-features">
+            <div className="feature-tag skeleton-tag" />
+            <div className="feature-tag skeleton-tag" />
+            <div className="feature-tag skeleton-tag" />
+          </div>
+          <div className="action-buttons">
+            <div className="btn-view-users skeleton-button" />
+            <div className="skeleton-register-button" />
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    ));
 
   return (
-    <div className="ClassSchedule-container">
-      <div className="ClassSchedule-container-box">
-        <div className="ClassSchedule-container-title">
-          <button className="botonDias" onClick={handlePreviousDay}>◀</button>
-          <span className='Fecha'>{formattedDay}</span>
-          <button className="botonDias" onClick={handleNextDay}>▶</button>
+    <div className="class-schedule-container">
+      <div className="class-schedule-box">
+        <div className="schedule-header">
+          <div className="schedule-title">
+            <h2>Mis clases</h2>
+            <p>Lo que tenés para hoy</p>
+          </div>
+
+          <div className="date-navigation">
+            <button
+              className="nav-btn prev-btn"
+              onClick={handlePreviousDay}
+              title="Día anterior"
+              disabled={loading}
+            >
+              <FaChevronLeft />
+            </button>
+
+            <div className="current-date">{getFormattedDate()}</div>
+
+            <button
+              className="nav-btn next-btn"
+              onClick={handleNextDay}
+              title="Día siguiente"
+              disabled={loading}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+
+          <button
+            className="today-btn"
+            onClick={handleToday}
+            title="Ir a hoy"
+            disabled={loading}
+          >
+            Hoy
+          </button>
         </div>
-        <div className="Class-Schedule-form">
+
+        {error && (
+          <div className="error-message">
+            {/* 👇 acá ahora se ve el texto exacto del SQL */}
+            <p>⚠️ {error}</p>
+            <button onClick={fetchClasses} className="retry-btn">
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        <div className="classes-list">
           {loading ? (
-            <p>Cargando clases...</p>
+            renderSkeletonItems()
           ) : classes.length > 0 ? (
             classes.map((clase) => {
-              const porcentaje = Math.round((1 - clase.disponibles / 20) * 100);
-              const ahora = new Date();
-              ahora.setSeconds(0, 0);
-
-              const [horaClase, minutosClase] = clase.hora.split(":").map(Number);
-              const claseDateTime = new Date(currentDate);
-              claseDateTime.setHours(horaClase, minutosClase, 0, 0);
-
-              const diferenciaEnMinutos = (claseDateTime - ahora) / (1000 * 60);
-              const esPasada = claseDateTime < ahora;
-              const esMuyCerca = diferenciaEnMinutos < 30;
-
-              let disabledReason = "";
-              if (esPasada) {
-                disabledReason = "Finalizada";
-              } else if (esMuyCerca) {
-                disabledReason = "Por Iniciar";
-              }
-
-              const desactivarRegistro = esPasada || esMuyCerca;
+              const total = Number(clase.total) || Number(clase.capacidad_max) || 20;
+              const disponibles = Number(clase.disponibles) || 0;
+              const capacityPercentage = getCapacityPercentage(disponibles, total);
+              const capacityColor = getCapacityColor(capacityPercentage);
 
               return (
                 <div
                   key={clase.id_clase}
-                  className={`Class-Schedule-item ${expandedClassId === clase.id_clase ? "expanded" : ""}`}
-                  style={{
-                    background: `linear-gradient(90deg, #fbf106 ${porcentaje}%, #27272a ${porcentaje}%)`
-                  }}
-                  onClick={() => toggleExpand(clase.id_clase)}
+                  className={`class-item ${expandedClassId === clase.id_clase ? 'expanded' : ''}`}
+                  onClick={() =>
+                    setExpandedClassId(
+                      expandedClassId === clase.id_clase ? null : clase.id_clase
+                    )
+                  }
                 >
-                  <div className='Contenido-Map-Clases1'>
-                    <h1>{clase.disciplina}</h1>
-                    <h1>-</h1>
-                    <h1 id='Horario'>{clase.hora}</h1>
-                  </div>
-                  <div className={`Contenido-Map-Clases2 ${expandedClassId === clase.id_clase ? "visible" : ""}`}>
-                    {/* Lista de usuarios anotados */}
-                    {expandedClassId === clase.id_clase && classAttendees[clase.id_clase] && (
-                      <div className="attendees-container">
-                        <h4>Anotados:</h4>
-                        <div className="attendees-list">
-                          {classAttendees[clase.id_clase].map((user, index) => (
-                            <div key={index} className="user-badge">
-                              <FiUser className="user-icon" />
-                              <span className="user-name">{user.nombre} {user.apellido}</span>
-                            </div>
-                          ))}
-                        </div>
+                  <div className="class-main-info">
+                    <div className="class-icon">
+                      <FaUsers className="discipline-icon" />
+                    </div>
+
+                    <div className="class-details">
+                      <h3 className="class-discipline">
+                        {clase.disciplina}{' '}
+                        {clase.tipo === 'especial' && <span className="badge-especial">Especial</span>}
+                      </h3>
+                      <div className="class-meta">
+                        <span className="class-time">{clase.hora} Hs</span>
+                        <span className="class-trainer">
+                          {clase.entrenador ? `Con ${clase.entrenador}` : 'Clase asignada'}
+                        </span>
                       </div>
-                    )}
-                    
-                    <button
-                      className="boton-ver-anotados"
-                      title="Ver anotados"
-                      onClick={(e) => {
-                        if (window.innerWidth <= 768) {
-                          handleMobileUsersClick(e, clase);
-                        } else {
-                          handleDesktopUsersClick(e, clase);
-                        }
-                      }}
-                    >
-                      <FaUsers />
-                    </button>
-                    <div title={esPasada ? "La clase ya terminó" : esMuyCerca ? "Falta menos de 30 minutos" : ""}>
-                      <RegisterButton 
-                        key={`${clase.id_clase}-${formatDateForAPI(currentDate)}-${getUserId()}`}
+                      <p className="class-description">
+                        {clase.descripcion || 'Clase grupal'}
+                      </p>
+                    </div>
+
+                    <div className="class-capacity">
+                      <div className="capacity-info">
+                        <div
+                          className="capacity-bar"
+                          style={{
+                            background: `linear-gradient(90deg, ${capacityColor} ${capacityPercentage}%, #e5e7eb ${capacityPercentage}%)`,
+                          }}
+                        />
+                        <span className="capacity-text">
+                          {disponibles}/{total} cupos
+                        </span>
+                      </div>
+                      {capacityPercentage >= 80 && (
+                        <span className="capacity-alert">¡Últimos cupos!</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div
+                    className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}
+                  >
+                    <div className="class-features">
+                      <span className="feature-tag">📅 {formattedDate}</span>
+                      <span className="feature-tag">
+                        {clase.tipo === 'especial' ? 'Feriado / Especial' : 'Normal'}
+                      </span>
+                      <span className="feature-tag">
+                        🧍 {clase.inscriptos ?? total - disponibles} anotados
+                      </span>
+                    </div>
+
+                    <div className="action-buttons">
+                      <button
+                        className="btn-view-users"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openUsersModal(clase);
+                        }}
+                        title="Ver alumnos anotados"
+                      >
+                        <FaUsers />
+                        <span>Ver alumnos</span>
+                        <span className="badge">{clase.inscriptos ?? 0}</span>
+                      </button>
+
+                      <RegisterButton
                         classId={clase.id_clase}
-                        fecha={formatDateForAPI(currentDate)}
+                        classType={clase.tipo === 'especial' ? 'especial' : 'normal'}
+                        specialClassOriginalId={clase.id_original}
+                        fecha={formattedDate}
                         hora={clase.hora}
                         disciplina={clase.disciplina}
-                        userId={getUserId()}
+                        userId={userId}
+                        disabled={clase.disponibles === 0}
                         onSuccess={fetchClasses}
-                        disabled={desactivarRegistro}
-                        disabledReason={disabledReason}
+                        getToken={getToken}
                       />
                     </div>
-                    <h3>Lugares disponibles: {clase.disponibles}</h3>
                   </div>
                 </div>
               );
             })
           ) : (
-            <p>No tienes clases disponibles para el dia de hoy.</p>
+            !error && (
+              <div className="no-classes">
+                <div className="no-classes-icon">📆</div>
+                <h3>No tenés clases para este día</h3>
+                <p>Probá con otro día o hablá con tu profe 🙂</p>
+              </div>
+            )
           )}
         </div>
       </div>
@@ -237,8 +342,10 @@ const ClassesUser = () => {
       {showModal && selectedClass && (
         <ClassUsersModal
           classId={selectedClass.id_clase}
-          fecha={formatDateForAPI(currentDate)}
+          classType={selectedClass.tipo === 'especial' ? 'especial' : 'normal'}
+          fecha={formattedDate}
           onClose={closeUsersModal}
+          getToken={getToken}
         />
       )}
     </div>
