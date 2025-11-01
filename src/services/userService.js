@@ -1,15 +1,17 @@
 // services/userService.js
-import { fetchWithAuth, fetchJson } from "./api";
+import { fetchWithAuth } from "./api";
 
+// busca usuarios por nombre (requiere token)
 export const searchByName = async (token, nombre = "") => {
   const q = encodeURIComponent(nombre || "");
   const data = await fetchWithAuth(`/usuarios/buscar?nombre=${q}`, token);
   return Array.isArray(data) ? data : data.usuarios || [];
 };
 
-export const getProfesAndAdmins = async () => {
-  // tu backend: GET /api/usuarios/profes-admins/buscar
-  const data = await fetchJson(`/usuarios/profes-admins/buscar`);
+// trae profes y admins SIN token (o con, si querés pasar uno)
+export const getProfesAndAdmins = async (token = null) => {
+  // GET /api/usuarios/profes-admins/buscar
+  const data = await fetchWithAuth(`/usuarios/profes-admins/buscar`, token);
 
   // puede venir como array, o como [[rows]] si viene de CALL
   if (Array.isArray(data)) {
