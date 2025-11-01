@@ -28,6 +28,7 @@ import DisciplinesManagerPage from "./pages/Manager/DisciplinesManagerPage.js";
 import UsersManagerPage from "./pages/Manager/UsersManagerPage.js";
 import ExcercisesManagerPage from "./pages/Manager/ExcercisesManagerPage.js"; 
 import CashMovementsPage from "./pages/CashMovementsPage.js"; 
+import WorkHoursPage from "./pages/WorkHoursPage.js"; 
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
 
@@ -75,6 +76,8 @@ function AppContent() {
           <Route path="/manager/disciplinas" element={<DisciplinesManagerPage />} />
           <Route path="/manager/usuarios" element={<UsersManagerPage />} />
           <Route path="/manager/ejercicios" element={<ExcercisesManagerPage />} />
+          <Route path="/manager/work_hours" element={<WorkHoursPage />} />
+
           <Route path="/Movimientos" element={<CashMovementsPage />} />
         </Routes>
       </AnimatePresence>

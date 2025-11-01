@@ -1,0 +1,572 @@
+/* src/styles/WorkHours.css */
+
+.work-page-container {
+  padding: 1rem;
+}
+
+.work-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.work-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.work-icon {
+  font-size: 46px;
+  color: #18181b;
+}
+
+.work-page-title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.tabs-work {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tabs-work button {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.tabs-work button:hover {
+  color: #4b5563;
+}
+
+.tabs-work button.active {
+  color: #18181b;
+  border-bottom: 3px solid #fbf106;
+  background: #fefce8;
+  border-radius: 6px 6px 0 0;
+}
+
+/* secciones */
+.work-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.work-section h2 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+/* filtros */
+.work-filters,
+.work-inline {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.work-filters label,
+.work-inline label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.work-filters input,
+.work-filters select,
+.work-inline input,
+.work-inline select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+}
+
+.work-filters input:focus,
+.work-filters select:focus,
+.work-inline input:focus,
+.work-inline select:focus {
+  outline: none;
+  border-color: #fbf106;
+  box-shadow: 0 0 0 3px rgba(251, 241, 6, 0.2);
+}
+
+.work-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.btn-primary-work {
+  background: #18181b;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary-work:hover {
+  background: #3f3f46;
+}
+
+.btn-secondary-work {
+  background: #fbf106;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary-work:hover {
+  background: #e6d905;
+}
+
+.work-error {
+  color: #ef4444;
+  background: #fef2f2;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.table-wrapper-work {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.work-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.work-table th {
+  background: #fbf106;
+  color: #18181b;
+  font-weight: 700;
+  padding: 0.75rem;
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+
+.work-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+}
+
+.work-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.work-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.work-status {
+  background: #fefce8;
+  border: 1px solid #fbf106;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  color: #18181b;
+}
+
+.work-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.work-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .tabs-work {
+    flex-direction: column;
+    border-bottom: none;
+  }
+
+  .tabs-work button {
+    border-radius: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .work-form,
+  .work-filters,
+  .work-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .work-page-title {
+    font-size: 1.6rem;
+  }
+}
+/* ========== CONTAINER GENERAL ========== */
+.work-page-container {
+  padding: 1rem;
+}
+
+.work-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.work-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.work-icon {
+  font-size: 46px;
+  color: #18181b;
+}
+
+.work-page-title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* ========== TABS ========== */
+.tabs-work {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tabs-work button {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.tabs-work button:hover {
+  color: #4b5563;
+}
+
+.tabs-work button.active {
+  color: #18181b;
+  border-bottom: 3px solid #fbf106;
+  background: #fefce8;
+  border-radius: 6px 6px 0 0;
+}
+
+/* ========== SECCIONES (COMPONENTES) ========== */
+.work-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.work-section h2 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+/* bloques específicos */
+.wh-pactadas h2::before {
+  content: "•";
+  color: #fbf106;
+}
+.wh-asistencias h2::before {
+  content: "•";
+  color: #38bdf8;
+}
+.wh-trabajadas h2::before {
+  content: "•";
+  color: #22c55e;
+}
+.wh-liquidaciones h2::before {
+  content: "•";
+  color: #f97316;
+}
+
+/* ========== FILTROS / FORMULARIOS ========== */
+.work-filters,
+.work-inline {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.work-filters label,
+.work-inline label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+  min-width: 160px;
+}
+
+.work-filters input,
+.work-filters select,
+.work-inline input,
+.work-inline select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.work-filters input:focus,
+.work-filters select:focus,
+.work-inline input:focus,
+.work-inline select:focus {
+  outline: none;
+  border-color: #fbf106;
+  box-shadow: 0 0 0 3px rgba(251, 241, 6, 0.2);
+}
+
+.work-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+/* ========== BOTONES ========== */
+.btn-primary-work {
+  background: #18181b;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.btn-primary-work:hover {
+  background: #3f3f46;
+}
+
+.btn-secondary-work {
+  background: #fbf106;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.btn-secondary-work:hover {
+  background: #e6d905;
+}
+
+/* botones de acción dentro de tablas */
+.work-table button {
+  font-size: 0.7rem;
+  padding: 0.35rem 0.5rem;
+  margin-right: 0.3rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.work-table button:nth-child(1) {
+  background: #eef2ff;
+  color: #312e81;
+}
+
+.work-table button:nth-child(2) {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ========== MENSAJES / ESTADOS ========== */
+.work-error {
+  color: #ef4444;
+  background: #fef2f2;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.work-status {
+  background: #fefce8;
+  border: 1px solid #fbf106;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  color: #18181b;
+}
+
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* ========== TABLAS ========== */
+.table-wrapper-work {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.work-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 650px;
+}
+
+.work-table thead tr {
+  border-radius: 12px 12px 0 0;
+}
+
+.work-table th {
+  background: #fbf106;
+  color: #18181b;
+  font-weight: 700;
+  padding: 0.75rem;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-size: 0.8rem;
+}
+
+.work-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.work-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.work-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* ========== CARDS (pre-liquidación, etc.) ========== */
+.work-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.work-card h4 {
+  margin-bottom: 0.5rem;
+}
+
+.work-card p {
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+/* ========== ACCIONES INLINE ========== */
+.work-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .tabs-work {
+    flex-direction: column;
+    border-bottom: none;
+  }
+
+  .tabs-work button {
+    border-radius: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .work-form,
+  .work-filters,
+  .work-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .work-page-title {
+    font-size: 1.6rem;
+  }
+
+  .work-table {
+    min-width: 0;
+  }
+}
