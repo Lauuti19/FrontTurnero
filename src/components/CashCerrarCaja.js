@@ -22,6 +22,10 @@ const CashCerrarCaja = () => {
   const [loadingIngresos, setLoadingIngresos] = useState(false);
   const [error, setError] = useState(null);
 
+  // liquidaciones cerradas
+  const [liquidaciones, setLiquidaciones] = useState(null);
+  const [loadingLiquidaciones, setLoadingLiquidaciones] = useState(false);
+
   // modal
   const [showModal, setShowModal] = useState(false);
   const [modalCaja, setModalCaja] = useState(null);
@@ -101,22 +105,53 @@ const CashCerrarCaja = () => {
     }
   };
 
+  // 🔹 liquidaciones cerradas (normaliza array u objeto)
+  const fetchLiquidaciones = async (per) => {
+    setLoadingLiquidaciones(true);
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/liquidaciones/cerradas?periodo=${per}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(
+          data?.error || "No se pudieron obtener las liquidaciones"
+        );
+
+      // puede venir como:
+      // [{...}]  ó  {...}  ó  { liquidaciones: [...] }
+      let liq = null;
+
+      if (Array.isArray(data)) {
+        liq = data[0] || null;
+      } else if (Array.isArray(data?.liquidaciones)) {
+        liq = data.liquidaciones[0] || null;
+      } else {
+        liq = data;
+      }
+
+      setLiquidaciones(liq);
+    } catch (err) {
+      console.error(err);
+      setLiquidaciones(null);
+    } finally {
+      setLoadingLiquidaciones(false);
+    }
+  };
+
   // cargar todo cuando cambia período
   useEffect(() => {
     fetchCaja(periodo);
     fetchEgresos(periodo);
     fetchIngresosDetalle(periodo);
+    fetchLiquidaciones(periodo);
   }, [periodo]);
-
-  const handleReload = () => {
-    fetchCaja(periodo);
-    fetchEgresos(periodo);
-    fetchIngresosDetalle(periodo);
-  };
 
   // ---------- modal ----------
   const openCloseModal = async () => {
-    // al abrir, traemos la caja del período otra vez por si cambió
     try {
       const res = await fetch(
         `${CASH_MOV_BASE}/caja/activa?periodo=${periodo}`,
@@ -137,7 +172,6 @@ const CashCerrarCaja = () => {
       setShowModal(true);
     } catch (err) {
       console.error(err);
-      // si no hay, igual abrimos pero vacío
       setModalCaja(null);
       setModalAhorros("");
       setModalObs("");
@@ -185,8 +219,11 @@ const CashCerrarCaja = () => {
       });
 
       setShowModal(false);
-      // recargar todo
-      handleReload();
+      // recargar datos del período actual
+      fetchCaja(periodo);
+      fetchEgresos(periodo);
+      fetchIngresosDetalle(periodo);
+      fetchLiquidaciones(periodo);
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -227,9 +264,7 @@ const CashCerrarCaja = () => {
           onChange={(e) => setPeriodo(e.target.value)}
           className="admin-month-input"
         />
-        <button onClick={handleReload} className="btn-admin-secondary">
-          Recargar
-        </button>
+        {/* sacamos el botón Recargar */}
         <button onClick={openCloseModal} className="btn-admin-save">
           Cerrar caja
         </button>
@@ -288,19 +323,34 @@ const CashCerrarCaja = () => {
             <ul style={{ marginTop: "0.5rem" }}>
               {ingresosDetalle.map((row, idx) => (
                 <li key={idx}>
-                  {row.metodo_pago}: ${Number(row.total_ingresos || 0).toFixed(2)}
+                  {row.metodo_pago}: $
+                  {Number(row.total_ingresos || 0).toFixed(2)}
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        {/* LIQUIDACIONES: podés reemplazar esto con tu endpoint de liquidaciones */}
+        {/* LIQUIDACIONES */}
         <div className="admins-card" style={{ flex: "1 1 250px" }}>
           <div className="admins-card-title">LIQUIDACIONES</div>
-          <div className="admins-card-sub">
-            (Agregar acá las /liquidaciones/cerradas?periodo=...)
-          </div>
+          {loadingLiquidaciones ? (
+            <div className="admins-card-sub">Cargando...</div>
+          ) : !liquidaciones ? (
+            <div className="admins-card-sub">Sin datos</div>
+          ) : (
+            <>
+              <div className="admins-card-sub">
+                Cantidad: {liquidaciones.cantidad_liquidaciones || 0}
+              </div>
+              <div className="admins-card-sub">
+                Horas pagadas: {liquidaciones.total_horas_pagadas || 0}
+              </div>
+              <div className="admins-card-value">
+                ${Number(liquidaciones.total_liquidado || 0).toFixed(2)}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
