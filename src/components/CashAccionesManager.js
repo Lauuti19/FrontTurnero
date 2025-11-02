@@ -4,9 +4,9 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 const CASH_BASE =
-  process.env.REACT_APP_CASH_URL || "http://localhost:3001/api/cash";
+  process.env.REACT_APP_CASH_URL || "https://backturnero-vvk6.onrender.com/api/cash";
 const USERS_BASE =
-  process.env.REACT_APP_USERS_URL || "http://localhost:3001/api/usuarios";
+  process.env.REACT_APP_USERS_URL || "https://backturnero-vvk6.onrender.com/api/usuarios";
 
 const CashAccionesManager = () => {
   const [acciones, setAcciones] = useState([]);

@@ -8,7 +8,7 @@ const CashDeudas = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:3001/api/deudas/all", {
+    fetch("https://backturnero-vvk6.onrender.com/api/deudas/all", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

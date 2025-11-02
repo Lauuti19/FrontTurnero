@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 const CASH_BASE =
-  process.env.REACT_APP_CASH_URL || "http://localhost:3001/api/cash";
+  process.env.REACT_APP_CASH_URL || "https://backturnero-vvk6.onrender.com/api/cash";
 
 const CashDistribucionByCaja = () => {
   const [cajas, setCajas] = useState([]);

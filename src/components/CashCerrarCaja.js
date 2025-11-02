@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 const CASH_MOV_BASE =
   process.env.REACT_APP_CASH_MOV_URL ||
-  "http://localhost:3001/api/cash-movements";
+  "https://backturnero-vvk6.onrender.com/api/cash-movements";
 
 const CashCerrarCaja = () => {
   const [periodo, setPeriodo] = useState(() => {
@@ -110,7 +110,7 @@ const CashCerrarCaja = () => {
     setLoadingLiquidaciones(true);
     try {
       const res = await fetch(
-        `http://localhost:3001/api/liquidaciones/cerradas?periodo=${per}`,
+        `https://backturnero-vvk6.onrender.com/api/liquidaciones/cerradas?periodo=${per}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

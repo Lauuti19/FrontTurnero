@@ -3,7 +3,7 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import WorkHoursPactadasForm from "./WorkHoursPactadasForm";
 
-const API_BASE = "http://localhost:3001/api";
+const API_BASE = "https://backturnero-vvk6.onrender.com/api";
 
 // helper del token
 const getStoredToken = () => {
