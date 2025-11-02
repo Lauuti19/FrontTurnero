@@ -20,7 +20,8 @@ const menuConfig = {
           { path: "/manager/rutinas", label: "Rutinas" },
           { path: "/registrar-cuota", label: "Cuotas" },
           { path: "/manager/ejercicios", label: "Ejercicios" },
-          { path: "/manager/work_hours", label: "Profes" }
+          { path: "/manager/work_hours", label: "Profes" },
+          { path: "/manager/admins", label: "Administradores" }
 
         ]
       },

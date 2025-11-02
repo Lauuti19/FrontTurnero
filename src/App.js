@@ -29,6 +29,9 @@ import UsersManagerPage from "./pages/Manager/UsersManagerPage.js";
 import ExcercisesManagerPage from "./pages/Manager/ExcercisesManagerPage.js"; 
 import CashMovementsPage from "./pages/CashMovementsPage.js"; 
 import WorkHoursPage from "./pages/WorkHoursPage.js"; 
+import AdministradoresPage from "./pages/AdministradoresPage.js"; 
+
+
 import './App.css';
 import EditProfile from "./pages/EditProfile.js";
 
@@ -77,6 +80,7 @@ function AppContent() {
           <Route path="/manager/usuarios" element={<UsersManagerPage />} />
           <Route path="/manager/ejercicios" element={<ExcercisesManagerPage />} />
           <Route path="/manager/work_hours" element={<WorkHoursPage />} />
+          <Route path="/manager/admins" element={<AdministradoresPage />} />
 
           <Route path="/Movimientos" element={<CashMovementsPage />} />
         </Routes>

@@ -50,7 +50,7 @@ const CashMovementsPage = () => {
           className={activeTab === "all" ? "active" : ""}
           onClick={() => setActiveTab("all")}
         >
-          Todos
+          Mensuales
         </button>
         <button
           className={activeTab === "products" ? "active" : ""}
