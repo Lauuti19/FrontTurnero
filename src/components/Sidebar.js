@@ -56,7 +56,9 @@ const menuConfig = {
       { path: "/clasesUser", label: "Clases" },
       { path: "#", label: "Progreso" },
       { path: "/timer", label: "Timer" },
-      { path: "/rutina", label: "Mi Rutina" }
+      { path: "/rutina", label: "Mi Rutina" },
+      { path: "/mismovimientos", label: "Movimientos" }
+
     ]
   }
 };
