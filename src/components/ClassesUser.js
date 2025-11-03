@@ -4,7 +4,8 @@ import '../styles/ClassSchedule.css';
 import { useAuth } from "../AuthContext";
 import ClassUsersModal from '../components/ClassUsersModal';
 import RegisterButton from '../components/RegisterButton';
-import { classService } from '../services/classService';
+import { useClasses } from '../hooks';
+
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -66,7 +67,6 @@ const ClassesUser = () => {
     return '#16a34a';
   };
 
-  // 👇 ESTA es la parte que cambiamos
   const fetchClasses = async () => {
     try {
       setLoading(true);
@@ -76,8 +76,7 @@ const ClassesUser = () => {
       if (!token) throw new Error('No hay token de autenticación disponible');
       if (!userId) throw new Error('No se encontró el id del usuario');
 
-      // usamos tu service
-      const data = await classService.getClassesByUser(token, userId, formattedDate);
+      const data = await useClasses.getClassesByUser(token, userId, formattedDate);
 
       const clasesFormateadas = (Array.isArray(data) ? data : []).map((c) => {
         const total = Number(c.capacidad_max ?? c.total ?? 20);
@@ -92,7 +91,6 @@ const ClassesUser = () => {
 
       setClasses(clasesFormateadas);
     } catch (err) {
-      // 👇 acá te va a caer "No hay cuotas válidas..." si el back lo mandó
       console.error('Error obteniendo clases del usuario:', err);
       setError(err.message || 'Error al obtener las clases del usuario');
       setClasses([]);
@@ -103,7 +101,6 @@ const ClassesUser = () => {
 
   useEffect(() => {
     fetchClasses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate, userId, getToken]);
 
   const handlePreviousDay = () => {
@@ -216,7 +213,6 @@ const ClassesUser = () => {
 
         {error && (
           <div className="error-message">
-            {/* 👇 acá ahora se ve el texto exacto del SQL */}
             <p>⚠️ {error}</p>
             <button onClick={fetchClasses} className="retry-btn">
               Reintentar
@@ -287,7 +283,7 @@ const ClassesUser = () => {
                     className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}
                   >
                     <div className="class-features">
-                      <span className="feature-tag">📅 {formattedDate}</span>
+                      <span className="feature-tag"><FaCalendarAlt /> {formattedDate}</span>
                       <span className="feature-tag">
                         {clase.tipo === 'especial' ? 'Feriado / Especial' : 'Normal'}
                       </span>
@@ -296,18 +292,17 @@ const ClassesUser = () => {
                       </span>
                     </div>
 
-                    <div className="action-buttons">
+                    <div className="classes-action-buttons">
                       <button
                         className="btn-view-users"
                         onClick={(e) => {
                           e.stopPropagation();
                           openUsersModal(clase);
                         }}
-                        title="Ver alumnos anotados"
+                        title="Ver Anotados anotados"
                       >
                         <FaUsers />
-                        <span>Ver alumnos</span>
-                        <span className="badge">{clase.inscriptos ?? 0}</span>
+                        <span>Ver Anotados</span>
                       </button>
 
                       <RegisterButton

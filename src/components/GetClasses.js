@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { FaEdit, FaTrash, FaSave, FaCalendarAlt, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService';
-import { disciplinaService } from '../services/disciplinaService';
+import { useClasses } from '../hooks';
+import { useDisciplines } from '../hooks';
 import '../styles/ViewClasses.css';
 
 const ViewClasses = () => {
@@ -24,7 +24,7 @@ const ViewClasses = () => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await disciplinaService.getDisciplinas(token);
+      const data = await useDisciplines.getDisciplinas(token);
       setDisciplinas(data);
     } catch (error) {
       console.error("Error cargando disciplinas:", error);
@@ -41,7 +41,7 @@ const ViewClasses = () => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await classService.getClasses(token, fechaHoy);
+      const data = await useClasses.getClasses(token, fechaHoy);
       setClases(data);
       setError(null);
     } catch (err) {
@@ -76,7 +76,7 @@ const ViewClasses = () => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      await classService.updateClass(token, id, editedClass);
+      await useClasses.updateClass(token, id, editedClass);
 
       await Swal.fire({
         icon: 'success',
@@ -116,7 +116,7 @@ const ViewClasses = () => {
           throw new Error('No hay token de autenticación disponible');
         }
 
-        await classService.deleteClass(token, id);
+        await useClasses.deleteClass(token, id);
 
         await Swal.fire({
           icon: 'success',

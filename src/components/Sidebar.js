@@ -47,7 +47,7 @@ const menuConfig = {
       { path: "/timer", label: "Timer" }
     ]
   },
-  3: { // Alumno
+  3: { 
     items: [
       { path: "/perfil", label: "Mi Perfil" },
       { path: "/clasesUser", label: "Clases" },

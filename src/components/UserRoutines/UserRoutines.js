@@ -1,108 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import './Routines.css';
+import React, { useEffect } from 'react';
 import { useAuth } from "../../../src/AuthContext.js";
+import { useRoutines } from '../../hooks/useRoutines.js';
+import { useVideoModal } from '../../hooks/useVideoModal.js';
+import { 
+  LoadingState, 
+  ErrorState, 
+  EmptyState, 
+  RoutineCard, 
+  VideoModal 
+} from './RoutineComponente.js';
+import './Routines.css';
 
 const UserRoutines = () => {
-  const [routines, setRoutines] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [videoUrl, setVideoUrl] = useState(null);
-  const { getUserId } = useAuth();
+  const { getUserId, getToken } = useAuth();
+  const userId = getUserId();
+  const token = getToken();
 
+  const { 
+    userRoutines, 
+    loading, 
+    error, 
+    getRoutinesByUser 
+  } = useRoutines();
+
+  const { videoUrl, openVideoModal, closeVideoModal, getEmbedUrl } = useVideoModal();
+
+  // 🔹 Cargar rutinas cuando se monta el componente
   useEffect(() => {
-    const fetchRoutines = async () => {
-      setLoading(true);
-      const userId = getUserId();
+    if (userId && token) {
+      getRoutinesByUser(token, userId);
+    }
+  }, [userId, token, getRoutinesByUser]);
 
-      if (!userId) {
-        setError('No se pudo identificar al usuario');
-        setLoading(false);
-        return;
-      }
+  const renderContent = () => {
+    if (loading) return <LoadingState />;
+    if (error) return <ErrorState message={error} />;
+    if (!userRoutines || userRoutines.length === 0) return <EmptyState />;
 
-      try {
-        const response = await fetch(`https://backturnero-vvk6.onrender.com/api/routines/user/${userId}`);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Error al obtener las rutinas');
+    // Agrupar rutinas por día si vienen con campo "dia"
+    const groupedRoutines = userRoutines.reduce((acc, routine) => {
+      const day = routine.dia || "Sin día asignado";
+      if (!acc[day]) acc[day] = [];
+      acc[day].push(routine);
+      return acc;
+    }, {});
 
-        if (data.length === 0) {
-          setError('No se encontraron rutinas para este usuario.');
-          setRoutines([]);
-          return;
-        }
-
-        setError(null);
-        const routinesByDay = data.reduce((acc, routine) => {
-          if (!acc[routine.dia]) acc[routine.dia] = [];
-          acc[routine.dia].push(routine);
-          return acc;
-        }, {});
-        setRoutines(routinesByDay);
-      } catch (error) {
-        setError(error.message || 'Hubo un error al obtener las rutinas.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRoutines();
-  }, [getUserId]);
-
-  const openVideoModal = (url) => setVideoUrl(url);
-  const closeVideoModal = () => setVideoUrl(null);
+    return (
+      <div className="routines-grid">
+        {Object.entries(groupedRoutines).map(([day, dayRoutines]) => (
+          <RoutineCard 
+            key={day}
+            day={day} 
+            dayRoutines={dayRoutines} 
+            onVideoClick={openVideoModal}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="routines-container">
-      <h2>Mi Rutina de Entrenamiento</h2>
-      {error && <p className="mensajeError">{error}</p>}
-      {loading && <p>Cargando rutinas...</p>}
+      <header className="routines-header">
+        <h2>Mi Rutina de Entrenamiento</h2>
+        <p className="routines-subtitle">Sigue tu plan de entrenamiento personalizado</p>
+      </header>
 
-      {Object.keys(routines).length > 0 && (
-        <div className="routines-grid">
-          {Object.entries(routines).map(([day, dayRoutines]) => (
-            <div key={day} className="routine-card">
-              <div className="routine-header">
-                <h3>Día {day} - {dayRoutines[0].rutina_nombre}</h3>
-              </div>
-              <div className="routine-exercises">
-                {dayRoutines.sort((a, b) => a.orden - b.orden).map((exercise) => (
-                  <div key={`${day}-${exercise.orden}`} className="exercise-item">
-                    <div className="exercise-info">
-                      <span className="exercise-order">{exercise.orden}.</span>
-                      <span className="exercise-name">{exercise.ejercicio_nombre}</span>
-                      <span className="exercise-sets"> - {exercise.rondas} rondas × {exercise.repeticiones} repeticiones</span>
-                    </div>
-                    {exercise.link && (
-                      <button 
-                        className="video-button"
-                        onClick={() => openVideoModal(exercise.link)}
-                        title="Ver demostración"
-                      >
-                        📹
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <main className="routines-content">
+        {renderContent()}
+      </main>
 
-      {videoUrl && (
-        <div className="video-modal">
-          <div className="video-modal-content">
-            <button className="close-modal" onClick={closeVideoModal}>×</button>
-            <iframe 
-              src={videoUrl.replace("watch?v=", "embed/")} 
-              title="Video demostración" 
-              frameBorder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      )}
+      <VideoModal 
+        videoUrl={videoUrl}
+        getEmbedUrl={getEmbedUrl}
+        onClose={closeVideoModal}
+      />
     </div>
   );
 };

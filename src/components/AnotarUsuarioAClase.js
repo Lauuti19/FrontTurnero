@@ -6,9 +6,7 @@ import { useAuth } from '../AuthContext'; // Importar el AuthContext
 
 const AnotarUsuarioAClase = () => {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
-  const { getToken } = useAuth(); // Obtener la función getToken si ClassSchedule la necesita
-
-  console.log("Usuario seleccionado:", usuarioSeleccionado);
+  const { getToken } = useAuth(); 
 
   return (
     <div className="anotar-usuario-a-clase">
@@ -32,7 +30,7 @@ const AnotarUsuarioAClase = () => {
             adminMode={true}
             customContainerStyle={{ padding: '10px', backgroundColor: 'transparent' }}
             customItemStyle={{ width: '100%', maxWidth: 'none' }}
-            getToken={getToken} // Pasar getToken si ClassSchedule hace peticiones
+            getToken={getToken} 
           />
         ) : (
           <div className="selecciona-usuario-message">

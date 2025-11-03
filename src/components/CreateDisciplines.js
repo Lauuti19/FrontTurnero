@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaSave, FaDumbbell } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import { disciplinaService } from '../services/disciplinaService';
+import { useDisciplines } from '../hooks'
 import { useAuth } from '../AuthContext';
 import '../styles/CreateDiscipline.css';
 
@@ -34,7 +34,7 @@ const CreateDiscipline = () => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      await disciplinaService.createDisciplina(token, {
+      await useDisciplines.createDisciplina(token, {
         name: formData.name.trim()
       });
 

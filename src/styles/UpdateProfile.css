@@ -6,7 +6,20 @@
   padding: 2rem;
   background-color: #18181b;
 }
-
+.back-in-edit{
+  color: gray;
+  display: flex !important;
+  flex-direction: row;
+  text-decoration: none !important;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  font-size: 20px;
+  height: 0px;
+}
+.back-in-edit:hover{
+  color: #ccc;
+}
 .edit-user-box {
   background-color: #27272a;
   padding: 2rem 3rem;

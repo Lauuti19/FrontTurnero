@@ -2,23 +2,40 @@
 import { fetchWithAuth } from './api';
 
 export const planService = {
-  getPlanes: (token) => fetchWithAuth('/planes', token),
+  /**
+   * Obtener todos los planes
+   */
+  getPlanes: async (token) => {
+    return await fetchWithAuth('/planes', token);
+  },
 
-  createPlan: (token, planData) =>
-    fetchWithAuth('/planes/create', token, {
+  /**
+   * Crear un nuevo plan
+   */
+  createPlan: async (token, planData) => {
+    return await fetchWithAuth('/planes/create', token, {
       method: 'POST',
       body: JSON.stringify(planData),
-    }),
+    });
+  },
 
-  updatePlan: (token, id, planData) =>
-    fetchWithAuth('/planes/update', token, {
+  /**
+   * Actualizar un plan existente
+   */
+  updatePlan: async (token, planData) => {
+    return await fetchWithAuth('/planes/update', token, {
       method: 'PUT',
-      body: JSON.stringify({ id, ...planData }),
-    }),
+      body: JSON.stringify(planData),
+    });
+  },
 
-  deletePlan: (token, id) =>
-    fetchWithAuth('/planes/delete', token, {
+  /**
+   * Eliminar un plan (borrado lógico)
+   */
+  deletePlan: async (token, planId) => {
+    return await fetchWithAuth('/planes/delete', token, {
       method: 'PUT',
-      body: JSON.stringify({ id }),
-    }),
+      body: JSON.stringify({ planId }),
+    });
+  },
 };

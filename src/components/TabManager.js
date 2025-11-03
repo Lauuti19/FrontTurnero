@@ -8,7 +8,6 @@ const TabManager = ({
   onTabChange, 
   children 
 }) => {
-  console.log('Active tab:', activeTab);
   return (
     <div className="tab-manager-container">
       <div className="tab-manager-content">

@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { classService } from '../services/classService';
+import React from 'react';
 import Swal from 'sweetalert2';
 import { useAuth } from "../AuthContext";
 import '../styles/RegisterButton.css';
 
 const RegisterButton = ({
   classId,
-  classType = 'normal',           // 👈 NUEVO: viene "normal" o "especial"
-  specialClassOriginalId,          // 👈 NUEVO: para cuando es especial
+  classType = 'normal',
+  specialClassOriginalId,
   fecha,
   hora,
   disciplina,
@@ -16,51 +15,16 @@ const RegisterButton = ({
   disabledReason,
   userId,
   getToken,
+  registrationContext,
+  requiresCredits = true,
+  isRegistered = false,
+  isLoading = false,
+  onRegister,
+  onUnregister,
+  isStaff = false,
+  isAnotandoAOtro = false
 }) => {
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const { actualizarCreditos, getToken: authGetToken } = useAuth();
-
-  // token
-  const obtenerToken = () => (getToken ? getToken() : authGetToken());
-
-  // ---------- 1) Chequear si ya está anotado ----------
-  const checkRegistration = useCallback(async () => {
-    if (!userId || !classId || !fecha) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const token = obtenerToken();
-      if (!token) {
-        console.error("No hay token disponible");
-        setLoading(false);
-        return;
-      }
-
-      // 👇 usamos el service nuevo que espera classType
-      const result = await classService.checkUserRegistration(token, {
-        classId,
-        classType,  // "normal" | "especial"
-        userId,
-        fecha,
-      });
-
-      setIsRegistered(!!result.isRegistered);
-    } catch (err) {
-      console.error("Error al verificar registro:", err);
-      // si falla, lo dejamos como no registrado
-      setIsRegistered(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, classId, fecha, classType, obtenerToken]);
-
-  useEffect(() => {
-    checkRegistration();
-  }, [checkRegistration]);
+  const { actualizarCreditos } = useAuth();
 
   // ---------- SweetAlert base ----------
   const modal = Swal.mixin({
@@ -88,25 +52,15 @@ const RegisterButton = ({
       return;
     }
 
-    const token = obtenerToken();
-    if (!token) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: 'No hay token de autenticación disponible.',
-      });
-      return;
-    }
-
     const result = await modal.fire({
-      title: '<span class="simbolo">¿</span>Confirmar inscripción<span class="simbolo">?</span>',
+      title: registrationContext.registerTitle,
       html: `<div class="textos-alert">
-               <h2 class="texto-alert1">¿Querés anotarte a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?</h2>
-               <h2 class="texto-alert2">Recordá que se descontará 1 crédito de tu cuenta</h2>
+               <h2 class="texto-alert1">${registrationContext.registerMessage}</h2>
+               ${requiresCredits ? `<h2 class="texto-alert2">${registrationContext.creditMessage}</h2>` : ''}
              </div>`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Sí, anotarme',
+      confirmButtonText: isAnotandoAOtro ? 'Sí, anotar usuario' : 'Sí, anotarme',
       cancelButtonText: 'Cancelar',
       reverseButtons: true,
     });
@@ -114,124 +68,79 @@ const RegisterButton = ({
     if (!result.isConfirmed) return;
 
     try {
-      setLoading(true);
-
-      // 👇 armamos el body según si es normal o especial
-      let payload;
-      if (classType === 'especial') {
-        // el back quiere specialClassId numérico → usamos id_original que te trae el back
-        payload = {
-          userId,
-          fecha,
-          specialClassId: specialClassOriginalId,  // 👈 clave
-        };
-      } else {
-        payload = {
-          userId,
-          fecha,
-          classId,
-        };
-      }
-
-      // usar service (ya apunta a /classes/register)
-      await classService.registerUserToClass(token, payload);
+      await onRegister();
 
       await modal.fire({
         icon: 'success',
-        title: '¡Registrado!',
-        html: 'Te anotaste correctamente.',
+        title: '¡Éxito!',
+        html: registrationContext.successRegister,
+        timer: 2000,
+        showConfirmButton: false
       });
 
-      // refrescar créditos
-      await actualizarCreditos?.();
-
-      setIsRegistered(true);
-      onSuccess?.();
     } catch (err) {
       console.error(err);
       await Swal.fire({
         icon: 'error',
-        title: 'Algo no funcionó',
-        html: err.message || 'Intentá nuevamente en unos minutos.',
+        title: 'Error',
+        html: err.message || 'No se pudo completar la inscripción. Intentá nuevamente.',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   // ---------- 3) Desanotar ----------
   const handleCancel = async () => {
-    const token = obtenerToken();
-    if (!token) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: 'No hay token de autenticación disponible.',
-      });
-      return;
-    }
-
     const result = await modal.fire({
-      title: '<span class="simbolo">¿</span>Cancelar inscripción<span class="simbolo">?</span>',
-      html: `¿Querés cancelar tu inscripción a <strong>${disciplina}</strong> a las <strong>${hora}</strong>?`,
+      title: registrationContext.cancelTitle,
+      html: `<div class="textos-alert">
+               <h2 class="texto-alert1">${registrationContext.cancelMessage}</h2>
+             </div>`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Sí, Desanotarse',
+      confirmButtonText: isAnotandoAOtro ? 'Sí, desanotar usuario' : 'Sí, desanotarme',
       cancelButtonText: 'Volver',
+      reverseButtons: true,
     });
 
     if (!result.isConfirmed) return;
 
     try {
-      setLoading(true);
-
-      // igual que arriba, pero a /classes/unregister
-      let payload;
-      if (classType === 'especial') {
-        payload = {
-          userId,
-          fecha,
-          specialClassId: specialClassOriginalId,
-        };
-      } else {
-        payload = {
-          userId,
-          fecha,
-          classId,
-        };
-      }
-
-      await classService.unregisterUserFromClass(token, payload);
+      await onUnregister();
 
       await modal.fire({
         icon: 'success',
-        title: 'Inscripción cancelada',
+        title: 'Listo',
+        html: registrationContext.successCancel,
+        timer: 2000,
+        showConfirmButton: false
       });
 
-      await actualizarCreditos?.();
-
-      setIsRegistered(false);
-      onSuccess?.();
     } catch (err) {
       console.error(err);
       await modal.fire({
         icon: 'error',
         title: 'Error',
-        html: err.message || 'No se pudo cancelar',
+        html: err.message || 'No se pudo cancelar la inscripción.',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   // ---------- 4) Render ----------
-  if (loading) {
-    return <button className="botonReservar" disabled>Cargando...</button>;
+  if (isLoading) {
+    return (
+      <button className="botonReservar botonCargando" disabled>
+        <h3>Cargando...</h3>
+      </button>
+    );
   }
 
   if (disabled) {
     return (
-      <button className="botonReservar botonDesactivado" disabled title={disabledReason}>
+      <button 
+        className="botonReservar botonDesactivado" 
+        disabled 
+        title={disabledReason}
+      >
         <h3>{disabledReason || "No disponible"}</h3>
       </button>
     );
@@ -239,19 +148,37 @@ const RegisterButton = ({
 
   if (!userId) {
     return (
-      <button className="botonReservar botonDesactivado" disabled title="Seleccione un usuario primero">
+      <button 
+        className="botonReservar botonDesactivado" 
+        disabled 
+        title="Seleccione un usuario primero"
+      >
         <h3>Seleccione usuario</h3>
       </button>
     );
   }
 
+  // Textos del botón según el contexto
+  const getButtonText = () => {
+    if (isAnotandoAOtro) {
+      return isRegistered ? 'Desanotar usuario' : 'Anotar usuario';
+    }
+    
+    if (isStaff) {
+      return isRegistered ? 'Desanotarse' : 'Anotarse';
+    }
+
+    return isRegistered ? 'Desanotarse' : 'Anotarse';
+  };
+
   return (
     <button
       className={`botonReservar ${isRegistered ? 'botonCancelar' : 'botonAnotarse'}`}
       onClick={isRegistered ? handleCancel : handleRegister}
-      disabled={loading}
+      disabled={isLoading}
+      title={isRegistered ? 'Cancelar inscripción' : 'Inscribirse en la clase'}
     >
-      <h3>{loading ? 'Procesando...' : isRegistered ? 'Desanotarse' : 'Anotarse'}</h3>
+      <h3>{isLoading ? 'Procesando...' : getButtonText()}</h3>
     </button>
   );
 };

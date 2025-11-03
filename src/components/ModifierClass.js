@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService';
-import { disciplinaService } from '../services/disciplinaService';
+import { useClasses } from '../hooks';
+import { useDisciplines } from '../hooks';
 import '../styles/CreateClasses.css';
 
 const CreateClass = ({ onClassCreated }) => {
@@ -28,7 +28,7 @@ const CreateClass = ({ onClassCreated }) => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await disciplinaService.getDisciplinas(token);
+      const data = await useDisciplines.getDisciplinas(token);
       setDisciplinas(data);
       setError(null);
     } catch (err) {
@@ -74,7 +74,7 @@ const CreateClass = ({ onClassCreated }) => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      await classService.createClass(token, formData);
+      await useClasses.createClass(token, formData);
 
       await Swal.fire({
         icon: 'success',

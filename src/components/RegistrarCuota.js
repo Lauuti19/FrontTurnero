@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaMoneyBillWave, FaCheck, FaUser } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
-import * as userService from '../services/userService';
-import { planService } from '../services/planService';
+import { useUsers } from '../hooks';
+import { usePlans } from '../hooks';
 import { paymentService } from '../services/paymentService';
 
 const RegistrarCuota = () => {
@@ -42,7 +42,7 @@ const RegistrarCuota = () => {
         return;
       }
       try {
-        const data = await userService.searchByName(token, nombreUsuario.trim());
+        const data = await useUsers.searchByName(token, nombreUsuario.trim());
         if (abort) return;
         const list = Array.isArray(data) ? data : (data.usuarios || []);
         setUsuarios(list);
@@ -65,7 +65,7 @@ const RegistrarCuota = () => {
     const loadPlanes = async () => {
       if (!token) return;
       try {
-        const data = await planService.getPlanes(token);
+        const data = await usePlans.getPlanes(token);
         if (abort) return;
         const list = Array.isArray(data) ? data : (data.planes || []);
         setPlanes(list);

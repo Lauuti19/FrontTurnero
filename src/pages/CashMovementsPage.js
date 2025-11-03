@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import "../styles/CashMovements.css";
 import { FaCashRegister } from "react-icons/fa";
-import CashMovementsToday from "../components/CashMovementsToday";
-import CashMovementsByRange from "../components/CashMovementsByRange";
-import CashMovementsAll from "../components/CashMovementsAll";
+import CashMovementsToday from "../components/movementsComponents/CashMovementsToday";
+import CashMovementsByRange from "../components/movementsComponents/CashMovementsByRange";
+import CashMovementsAll from "../components/movementsComponents/CashMovementsAll";
 import RegisterMovementModal from "../components/RegisterMovementModal";
 import ProductsManager from "../components/ProductsManager";
 

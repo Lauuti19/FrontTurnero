@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/CreateClass.css';
-import { disciplinaService } from '../services/disciplinaService';
-import { planService } from '../services/planService';
+import { useDisciplines } from '../hooks';
+import { usePlans } from '../hooks';
 import { useAuth } from '../AuthContext';
 
 const CreatePlan = () => {
@@ -29,7 +29,7 @@ const CreatePlan = () => {
         }
 
         // PASA EL TOKEN al servicio
-        const data = await disciplinaService.getDisciplinas(token);
+        const data = await useDisciplines.getDisciplinas(token);
         setDisciplinas(data);
         setError(null);
       } catch (err) {
@@ -77,7 +77,7 @@ const CreatePlan = () => {
       }
 
       // Usar el servicio de planes con autenticación
-      await planService.createPlan(token, formData);
+      await usePlans.createPlan(token, formData);
       
       alert("✅ Plan creado exitosamente");
       

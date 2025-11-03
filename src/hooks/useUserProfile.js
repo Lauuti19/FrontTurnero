@@ -1,7 +1,7 @@
 // hooks/useUserProfile.js
 import { useEffect, useState } from "react";
-import { getFullUserData } from "../services/userService";
 import { useAuth } from "../AuthContext";
+import { userService } from "../services";
 
 export const useUserProfile = () => {
   const { getToken, getUserId, usuario: usuarioAuth } = useAuth();
@@ -20,7 +20,7 @@ export const useUserProfile = () => {
       return;
     }
 
-    getFullUserData(token, userId)
+    userService.getFullUserData(token, userId)
       .then((data) => {
         const roleMap = { 1: "Administrador", 2: "Profesor", 3: "Alumno" };
 

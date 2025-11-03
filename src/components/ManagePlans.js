@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
-import { planService } from '../services/planService';
+import { usePlans } from '../hooks';
 import { useAuth } from '../AuthContext';
 import '../styles/CreateClass.css';
 
@@ -12,47 +13,31 @@ const ManagePlans = () => {
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [editedPlan, setEditedPlan] = useState({});
 
-  // Función para cargar los planes (reutilizable)
-  const fetchPlanes = async () => {
-    try {
-      setLoading(true);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+  
+  const fetchPlanes = useCallback(async () => {
+  try {
+    setLoading(true);
+    const token = getToken();
+    if (!token) throw new Error('No hay token de autenticación disponible');
 
-      const data = await planService.getPlanes(token);
-      console.log('Datos recibidos de planes:', data); // DEBUG
-      
-      // Asegurarnos de que siempre sea un array
-      if (Array.isArray(data)) {
-        setPlanes(data);
-      } else if (data && Array.isArray(data.planes)) {
-        // Si viene como { planes: [...] }
-        setPlanes(data.planes);
-      } else if (data && Array.isArray(data.data)) {
-        // Si viene como { data: [...] }
-        setPlanes(data.data);
-      } else {
-        // Si no es un array, lo convertimos a array vacío
-        console.warn('Los datos no son un array:', data);
-        setPlanes([]);
-      }
-      
-      setError(null);
-    } catch (err) {
-      console.error('Error cargando planes:', err);
-      setError(err.message || 'Error al cargar los planes');
-      setPlanes([]); // Asegurar que siempre sea array
-    } finally {
-      setLoading(false);
+    const data = await usePlans.getPlanes(token);
+    if (Array.isArray(data)) setPlanes(data);
+    else if (data?.planes) setPlanes(data.planes);
+    else if (data?.data) setPlanes(data.data);
+    else {
+      console.warn('Los datos no son un array:', data);
+      setPlanes([]);
     }
-  };
+    setError(null);
+  } catch (err) {
+    console.error('Error cargando planes:', err);
+    setError(err.message || 'Error al cargar los planes');
+    setPlanes([]);
+  } finally {
+    setLoading(false);
+  }
+}, [getToken]);
 
-  useEffect(() => {
-    fetchPlanes();
-  }, [getToken]);
 
   const handleEditClick = (plan) => {
     setEditingPlanId(plan.id_plan);
@@ -73,7 +58,7 @@ const ManagePlans = () => {
       }
 
       // Usar el servicio de planes en lugar de fetch directo
-      await planService.updatePlan(token, id, {
+      await usePlans.updatePlan(token, id, {
         name: editedPlan.name,
         description: editedPlan.description,
         price: parseFloat(editedPlan.price),
@@ -103,7 +88,7 @@ const ManagePlans = () => {
       }
 
       // Usar el servicio de planes en lugar de fetch directo
-      await planService.deletePlan(token, id);
+      await usePlans.deletePlan(token, id);
       
       // Actualizar el estado local
       setPlanes(prev => prev.filter(p => p.id_plan !== id));

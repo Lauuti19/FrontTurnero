@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit, FaTrash, FaSave, FaDumbbell, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import { disciplinaService } from '../services/disciplinaService';
+import { useDisciplines } from '../hooks';
 import { useAuth } from '../AuthContext';
 import '../styles/ManageDisciplines.css';
 
@@ -22,7 +22,7 @@ const ManageDisciplines = () => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await disciplinaService.getDisciplinas(token);
+      const data = await useDisciplines.getDisciplinas(token);
       setDisciplinas(data);
       setError(null);
     } catch (err) {
@@ -70,7 +70,7 @@ const ManageDisciplines = () => {
           throw new Error('No hay token de autenticación disponible');
         }
 
-        await disciplinaService.updateDisciplina(token, id, {
+        await useDisciplines.updateDisciplina(token, id, {
           name: editName.trim()
         });
 
@@ -112,7 +112,7 @@ const ManageDisciplines = () => {
           throw new Error('No hay token de autenticación disponible');
         }
 
-        await disciplinaService.deleteDisciplina(token, id);
+        await useDisciplines.deleteDisciplina(token, id);
 
         await Swal.fire({
           icon: 'success',
