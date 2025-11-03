@@ -10,7 +10,7 @@ import { useAuth as useAuthHook, useUsers } from "../hooks";
 
 const LoginPage = () => {
   const { login: authLogin } = useAuth();
-  const { login: loginUser, registerClient, loading: authLoading, error: authError } = useAuthHook(); 
+  const { login: loginUser, loading: authLoading, error: authError } = useAuthHook(); 
   const { getFullUserData, loading: usersLoading } = useUsers();
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -101,13 +101,33 @@ const LoginPage = () => {
     return true;
   }, [formData, isRegistering]);
 
-  // ✅ CORREGIDO: Usar hook registerClient
   const handleRegister = async () => {
     if (!validateForm()) return;
     
     setIsLoading(true);
     try {
-      await registerClient(formData);
+      const response = await fetch('http://backturnero-vvk6.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          email: formData.email,
+          dni: formData.dni,
+          celular: formData.celular,
+          password: formData.password,
+          id_rol: 2, // Rol de cliente
+          id_estado: 2 // Estado pendiente por defecto
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error en el registro');
+      }
+
       // ✅ Éxito - mostrar mensaje y cambiar a login
       setError("");
       alert("✅ Registrado correctamente. Ahora podés iniciar sesión.");
@@ -117,13 +137,13 @@ const LoginPage = () => {
       
     } catch (error) {
       console.error("Error en registro:", error);
-      // El error ya está manejado por el hook y se muestra en authError
+      setError(error.message || "Error al registrar usuario");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ CORREGIDO: Usar hook loginUser y getFullUserData
+  // ✅ LOGIN CON HOOK (como estaba)
   const handleLogin = async () => {
     if (!validateForm()) return;
     

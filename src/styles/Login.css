@@ -12,6 +12,7 @@
   --error-text: #c33;
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 0.3s ease;
+  overflow-x: hidden;
 }
 
 /* Reset y base */
@@ -75,7 +76,6 @@
   transform: translateY(-50%);
   z-index: 2;
   border-radius: 20px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
@@ -277,7 +277,7 @@
 
 .form-transform-container.register-form .form-content {
   color: var(--text-dark);
-  margin-top: 40px;
+  margin-top: 80px;
 }
 
 .form-title {
@@ -315,7 +315,6 @@
   outline: none;
   border-color: var(--accent-yellow);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(251, 241, 6, 0.2);
 }
 
 .form-transform-container.register-form .form-input {
@@ -325,7 +324,6 @@
 
 .form-transform-container.register-form .form-input:focus {
   border-color: var(--primary-bg);
-  box-shadow: 0 5px 15px rgba(24, 24, 27, 0.2);
 }
 
 /* Contenedor de contraseña */
@@ -392,7 +390,6 @@
 
 .submit-login-button:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(251, 241, 6, 0.4);
 }
 
 .submit-login-button.loading {
@@ -435,6 +432,9 @@
   font-size: 0.9rem;
   font-weight: 500;
   animation: shake 0.5s ease-in-out;
+}
+.form-transform-container.register-form .form-title{
+  font-size: 30px
 }
 
 @keyframes shake {
@@ -516,7 +516,9 @@
     height: auto !important;
     min-height: 500px;
   }
-  
+  .form-transform-container.register-form .form-content{
+    margin-top: 30px;
+  }
   .form-transform-container.register-form {
     min-height: 700px;
   }
