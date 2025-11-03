@@ -3,7 +3,7 @@ export const classesTabConfig = {
   title: "Gestion de Clases",
   tabs: [
     { id: 'create', label: 'Crear Clase' },
-    { id: 'view', label: 'Ver Clases Hoy' },
+    {/*{ id: 'view', label: 'Ver Clases Hoy' },*/},
     { id: 'anotar', label: 'Anotar Alumno' }
   ]
 };

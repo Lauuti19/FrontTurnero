@@ -334,14 +334,21 @@
   border-top-color: #e9ecef;
 }
 
-.classes-action-buttons {
+.class-action-buttons {
   display: flex;
   gap: 12px;
   padding: 20px 24px;
   align-items: center;
   justify-content: flex-end;
 }
-
+.btn-register {
+  background-color: #ffd700;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-family: 'Brigends';
+  border-radius: 5px;
+  border: none;
+}
 .btn-view-users {
   display: flex;
   align-items: center;

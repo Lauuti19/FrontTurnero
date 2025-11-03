@@ -5,18 +5,25 @@ export const authService = {
   /**
    * Registrar cliente (usuario normal)
    */
-  registerClient: async (userData) => {
-    return await fetchWithAuth('/auth/register', null, {
+   registerClient: async (userData) => {
+    // ✅ Asegurar que la estructura sea la correcta
+    const registrationData = {
+      nombre: userData.nombre,
+      email: userData.email,
+      dni: userData.dni,
+      celular: userData.celular,
+      password: userData.password
+    };
+
+    console.log('📝 Datos de registro enviados:', registrationData);
+
+    return await fetchWithAuth('/auth/register-user', null, {
       method: 'POST',
-      body: JSON.stringify(userData),
+      body: JSON.stringify(registrationData),
     });
   },
-
-  /**
-   * Registrar usuario (admin/profesor)
-   */
-  registerUser: async (token, userData) => {
-    return await fetchWithAuth('/auth/register-user', token, {
+   registerUser: async (token, userData) => {
+    return await fetchWithAuth('/auth/register', token, {
       method: 'POST',
       body: JSON.stringify(userData),
     });

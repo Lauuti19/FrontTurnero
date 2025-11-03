@@ -1,185 +1,152 @@
-import React from 'react';
-import Swal from 'sweetalert2';
-import { useAuth } from "../AuthContext";
-import '../styles/RegisterButton.css';
+import React, { useState } from 'react';
+import { classService } from '../services';
 
 const RegisterButton = ({
   classId,
   classType = 'normal',
-  specialClassOriginalId,
+  specialClassOriginalId = null,
   fecha,
-  hora,
-  disciplina,
-  onSuccess,
-  disabled,
-  disabledReason,
+  hora = '',
+  disciplina = 'Clase',
   userId,
+  disabled = false,
+  disabledReason = "",
+  onSuccess,
   getToken,
-  registrationContext,
-  requiresCredits = true,
-  isRegistered = false,
-  isLoading = false,
-  onRegister,
-  onUnregister,
-  isStaff = false,
-  isAnotandoAOtro = false
+  // Props con valores por defecto para evitar undefined
+  registerTitle = "Anotarse",
+  unregisterTitle = "Desanotarse",
+  loadingTitle = "Procesando..."
 }) => {
-  const { actualizarCreditos } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isRegistered, setIsRegistered] = useState(false);
 
-  // ---------- SweetAlert base ----------
-  const modal = Swal.mixin({
-    buttonsStyling: false,
-    allowOutsideClick: true,
-    allowEscapeKey: true,
-    backdrop: true,
-    customClass: {
-      popup: 'mi-popup',
-      title: 'mi-titulo',
-      htmlContainer: 'mi-html',
-      confirmButton: 'mi-boton-confirmar',
-      cancelButton: 'mi-boton-cancelar',
-    }
-  });
+  // Validar que tenemos los datos necesarios
+  const isValid = classId && userId && fecha && getToken;
 
-  // ---------- 2) Registrar ----------
   const handleRegister = async () => {
-    if (!userId) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: 'No se ha seleccionado un usuario válido.',
-      });
+    if (!isValid) {
+      setError('Datos incompletos para el registro');
       return;
     }
 
-    const result = await modal.fire({
-      title: registrationContext.registerTitle,
-      html: `<div class="textos-alert">
-               <h2 class="texto-alert1">${registrationContext.registerMessage}</h2>
-               ${requiresCredits ? `<h2 class="texto-alert2">${registrationContext.creditMessage}</h2>` : ''}
-             </div>`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: isAnotandoAOtro ? 'Sí, anotar usuario' : 'Sí, anotarme',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true,
-    });
-
-    if (!result.isConfirmed) return;
+    setLoading(true);
+    setError(null);
 
     try {
-      await onRegister();
+      const token = getToken();
+      if (!token) throw new Error('No se pudo obtener el token');
 
-      await modal.fire({
-        icon: 'success',
-        title: '¡Éxito!',
-        html: registrationContext.successRegister,
-        timer: 2000,
-        showConfirmButton: false
-      });
+      const registrationData = {
+        classId,
+        classType,
+        userId,
+        fecha,
+        hora,
+        disciplina
+      };
 
+      if (specialClassOriginalId) {
+        registrationData.specialClassOriginalId = specialClassOriginalId;
+      }
+
+      console.log('Registrando con datos:', registrationData);
+      
+      await classService.registerToClass(token, registrationData);
+      setIsRegistered(true);
+      
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
-      console.error(err);
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: err.message || 'No se pudo completar la inscripción. Intentá nuevamente.',
-      });
+      console.error('Error en registro:', err);
+      setError(err.message || 'Error al registrar en la clase');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ---------- 3) Desanotar ----------
-  const handleCancel = async () => {
-    const result = await modal.fire({
-      title: registrationContext.cancelTitle,
-      html: `<div class="textos-alert">
-               <h2 class="texto-alert1">${registrationContext.cancelMessage}</h2>
-             </div>`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: isAnotandoAOtro ? 'Sí, desanotar usuario' : 'Sí, desanotarme',
-      cancelButtonText: 'Volver',
-      reverseButtons: true,
-    });
+  const handleUnregister = async () => {
+    if (!isValid) {
+      setError('Datos incompletos para la desinscripción');
+      return;
+    }
 
-    if (!result.isConfirmed) return;
+    setLoading(true);
+    setError(null);
 
     try {
-      await onUnregister();
+      const token = getToken();
+      if (!token) throw new Error('No se pudo obtener el token');
 
-      await modal.fire({
-        icon: 'success',
-        title: 'Listo',
-        html: registrationContext.successCancel,
-        timer: 2000,
-        showConfirmButton: false
-      });
+      const registrationData = {
+        classId,
+        classType,
+        userId,
+        fecha
+      };
 
+      if (specialClassOriginalId) {
+        registrationData.specialClassOriginalId = specialClassOriginalId;
+      }
+
+      console.log('Desregistrando con datos:', registrationData);
+      
+      await classService.unregisterFromClass(token, registrationData);
+      setIsRegistered(false);
+      
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
-      console.error(err);
-      await modal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: err.message || 'No se pudo cancelar la inscripción.',
-      });
+      console.error('Error en desinscripción:', err);
+      setError(err.message || 'Error al desinscribirse de la clase');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ---------- 4) Render ----------
-  if (isLoading) {
+  // Si hay un error, mostrarlo
+  if (error) {
     return (
-      <button className="botonReservar botonCargando" disabled>
-        <h3>Cargando...</h3>
-      </button>
+      <div className="registration-error">
+        <span className="error-text">{error}</span>
+        <button 
+          onClick={() => setError(null)}
+          className="error-dismiss"
+        >
+          ×
+        </button>
+      </div>
     );
   }
 
-  if (disabled) {
-    return (
-      <button 
-        className="botonReservar botonDesactivado" 
-        disabled 
-        title={disabledReason}
-      >
-        <h3>{disabledReason || "No disponible"}</h3>
-      </button>
-    );
-  }
-
-  if (!userId) {
-    return (
-      <button 
-        className="botonReservar botonDesactivado" 
-        disabled 
-        title="Seleccione un usuario primero"
-      >
-        <h3>Seleccione usuario</h3>
-      </button>
-    );
-  }
-
-  // Textos del botón según el contexto
-  const getButtonText = () => {
-    if (isAnotandoAOtro) {
-      return isRegistered ? 'Desanotar usuario' : 'Anotar usuario';
-    }
-    
-    if (isStaff) {
-      return isRegistered ? 'Desanotarse' : 'Anotarse';
-    }
-
-    return isRegistered ? 'Desanotarse' : 'Anotarse';
-  };
+  // Determinar el estado del botón
+  const isCurrentlyRegistered = disabled && disabledReason === "Ya estás anotado";
 
   return (
-    <button
-      className={`botonReservar ${isRegistered ? 'botonCancelar' : 'botonAnotarse'}`}
-      onClick={isRegistered ? handleCancel : handleRegister}
-      disabled={isLoading}
-      title={isRegistered ? 'Cancelar inscripción' : 'Inscribirse en la clase'}
-    >
-      <h3>{isLoading ? 'Procesando...' : getButtonText()}</h3>
-    </button>
+    <div className="register-button-container">
+      {isCurrentlyRegistered || isRegistered ? (
+        <button
+          className={`btn-unregister ${loading ? 'loading' : ''}`}
+          onClick={handleUnregister}
+          disabled={loading}
+          title={unregisterTitle}
+        >
+          {loading ? loadingTitle : unregisterTitle}
+        </button>
+      ) : (
+        <button
+          className={`btn-register ${loading ? 'loading' : ''}`}
+          onClick={handleRegister}
+          disabled={disabled || loading || !isValid}
+          title={disabled ? disabledReason : registerTitle}
+        >
+          {loading ? loadingTitle : registerTitle}
+        </button>
+      )}
+    </div>
   );
 };
 

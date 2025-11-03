@@ -7,6 +7,7 @@ import {
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from './ClassUsersModal';
 import RegistrationManager from './RegisterButtonFiles/RegistrationManager';
+import RegisterButton from './RegisterButton';
 import SkeletonLoader from './SkeletonLoader';
 import { useAuth } from '../AuthContext';
 import { useClassSchedule } from '../hooks/otherHooks/useClassSchedule';
@@ -20,6 +21,8 @@ const ClassSchedule = ({
   customContainerStyle = {},
   customItemStyle = {},
   adminMode = false,
+  customTitle = "Horario de Clases", // Nueva prop
+  customSubtitle = "Entrena con nosotros" // Nueva prop
 }) => {
   const { getToken } = useAuth();
   const [expandedClassId, setExpandedClassId] = useState(null);
@@ -109,9 +112,10 @@ const ClassSchedule = ({
         {showHeader && (
           <div className="schedule-header">
             <div className="schedule-title">
-              <h2>Horario de Clases</h2>
-              <p>Entrena con nosotros</p>
+              <h2>{customTitle}</h2> {/* Usar prop personalizada */}
+              <p>{customSubtitle}</p> {/* Usar prop personalizada */}
             </div>
+
 
             <div className="date-navigation">
               <button
@@ -204,7 +208,7 @@ const ClassSchedule = ({
                   </div>
 
                   <div className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}>
-                    <div className="classes-action-buttons">
+                    <div className="class-action-buttons">
                       <button
                         className="btn-view-users"
                         onClick={(e) => {
@@ -217,7 +221,8 @@ const ClassSchedule = ({
                         <span>Ver Anotados</span>
                       </button>
 
-                      <RegistrationManager
+                      <RegisterButton
+                      className="botonAnotarse"
                         classId={clase.id_clase}
                         classType={classType}
                         specialClassOriginalId={getClassOriginalId(clase)}

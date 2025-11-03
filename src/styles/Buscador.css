@@ -10,6 +10,8 @@
   background: #1e1e1e;
   color: #eee;
   border: 1px solid #444;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .buscador-input:focus {
@@ -45,7 +47,8 @@
 
 /* 🧍 Ítem individual */
 .buscador-suggestion-item {
-  padding: 10px 14px;
+  padding: 0px 20px;
+  justify-content: center;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }

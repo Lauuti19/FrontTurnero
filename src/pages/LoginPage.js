@@ -6,11 +6,11 @@ import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
 import transition from '../transition';
-import { useAuth as useAuthHook, useUsers } from "../hooks"; // ✅ Importar hooks
+import { useAuth as useAuthHook, useUsers } from "../hooks"; 
 
 const LoginPage = () => {
-  const { login: authLogin } = useAuth(); // ✅ Renombrar para evitar conflicto
-  const { login: loginUser, registerClient, loading: authLoading, error: authError } = useAuthHook(); // ✅ Usar hook de auth
+  const { login: authLogin } = useAuth();
+  const { login: loginUser, registerClient, loading: authLoading, error: authError } = useAuthHook(); 
   const { getFullUserData, loading: usersLoading } = useUsers();
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -378,7 +378,7 @@ const PasswordField = ({ showPassword, value, onChange, onKeyPress, onToggle, di
 const ActionButtons = ({ isRegistering, isLoading, isAnimating, onSubmit, onSwitchMode }) => (
   <div className="action-buttons">
     <button 
-      className={`submit-button ${isLoading ? 'loading' : ''}`}
+      className={`submit-login-button ${isLoading ? 'loading' : ''}`}
       onClick={onSubmit}
       disabled={isLoading || isAnimating}
     >

@@ -119,7 +119,6 @@ const RegistrationManager = (props) => {
     checkUserRegistration
   ]);
 
-  // ✅ CORREGIDO: Usar los mismos endpoints para todos
   const handleRegister = async () => {
     const token = obtenerToken();
     if (!token) {

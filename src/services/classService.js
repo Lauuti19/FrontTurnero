@@ -11,6 +11,7 @@ const buildQueryString = (params = {}) => {
   return searchParams.toString();
 };
 
+// En services/classService.js
 export const classService = {
   /**
    * Obtener todas las clases para una fecha
@@ -21,7 +22,7 @@ export const classService = {
   },
 
   /**
-   * Obtener clases de un usuario en una fecha (con verificación de créditos)
+   * Obtener clases de un usuario en una fecha (CON verificación de créditos)
    */
   getClassesByUser: async (token, userId, fecha) => {
     const query = buildQueryString({ userId, fecha });
@@ -47,10 +48,20 @@ export const classService = {
   },
 
   /**
-   * Desinscribir usuario de clase
+   * Desinscribir usuario de clase (con créditos)
    */
   unregisterFromClass: async (token, registrationData) => {
     return await fetchWithAuth('/classes/unregister', token, {
+      method: 'POST',
+      body: JSON.stringify(registrationData),
+    });
+  },
+
+  /**
+   * Desinscribir usuario de clase (SIN créditos - modo admin)
+   */
+  unregisterFromClassNoCredits: async (token, registrationData) => {
+    return await fetchWithAuth('/classes/unregister-no-credits', token, {
       method: 'POST',
       body: JSON.stringify(registrationData),
     });
@@ -86,12 +97,11 @@ export const classService = {
    * Actualizar clase
    */
   updateClass: async (token, classId, classData) => {
-  return await fetchWithAuth('/classes/update', token, {
-    method: 'PUT',
-    body: JSON.stringify({ id_clase: classId, ...classData }),
-  });
+    return await fetchWithAuth('/classes/update', token, {
+      method: 'PUT',
+      body: JSON.stringify({ id_clase: classId, ...classData }),
+    });
   },
-
 
   /**
    * Eliminar clase (borrado lógico)

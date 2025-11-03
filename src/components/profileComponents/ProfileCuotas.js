@@ -85,7 +85,6 @@ export const ProfileCuota = ({ cuota: initialCuota }) => {
         <div className={`cuota-estado cuota-${estado || "inactiva"}`}>
           <span className="cuota-icon">{iconMap[estado] || <BiSolidError />}</span>
           <div className="cuota-info">
-            <p className="cuota-descripcion">{descripcion || `Cuota ${getEstadoText(estado)}`}</p>
             
             {fecha_vencimiento && (
               <p className="cuota-detail">
@@ -121,12 +120,6 @@ export const ProfileCuota = ({ cuota: initialCuota }) => {
                 {paymentLoading ? 'Procesando...' : 'Pagar Cuota'}
               </button>
             )}
-
-            {/* Estado actual de la cuota */}
-            <div className="cuota-status-badge">
-              <span className={`status-dot status-${estado}`}></span>
-              Estado: {getEstadoText(estado)}
-            </div>
           </div>
         </div>
       </section>
