@@ -1,149 +1,113 @@
-import { fetchWithAuth } from './api';
+// src/services/workHoursService.js
+import { fetchWithAuth } from "./api";
+
+// Helper para crear querystrings
+const q = (obj = {}) =>
+  Object.entries(obj)
+    .filter(([, v]) => v !== undefined && v !== null && v !== "")
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join("&");
+
+const BASE = "/workhours";
 
 export const workHoursService = {
-  /**
-   * Crear horas pactadas
-   */
-  createWorkHours: async (token, workHoursData) => {
-    return await fetchWithAuth('/workhours/create', token, {
-      method: 'POST',
-      body: JSON.stringify(workHoursData),
+  // --- CRUD de horas pactadas ---
+  create: async (token, { user_id, work_hours, rate }) => {
+    return await fetchWithAuth(`${BASE}/create`, token, {
+      method: "POST",
+      body: JSON.stringify({ user_id, work_hours, rate }),
     });
   },
 
-  /**
-   * Obtener horas pactadas
-   */
-  getWorkHours: async (token, userId = null) => {
-    const queryParams = new URLSearchParams();
-    if (userId) queryParams.append('user_id', userId);
-    return await fetchWithAuth(`/workhours/list?${queryParams}`, token);
+  list: async (token, { user_id } = {}) => {
+    const qs = q({ user_id });
+    const endpoint = qs ? `${BASE}/list?${qs}` : `${BASE}/list`;
+    return await fetchWithAuth(endpoint, token);
   },
 
-  /**
-   * Liquidar profesor
-   */
-  liquidateTeacher: async (token, liquidationData) => {
-    return await fetchWithAuth('/workhours/liquidar', token, {
-      method: 'POST',
-      body: JSON.stringify(liquidationData),
+  update: async (token, { id_pactado, work_hours, rate }) => {
+    return await fetchWithAuth(`${BASE}/update`, token, {
+      method: "PUT",
+      body: JSON.stringify({ id_pactado, work_hours, rate }),
     });
   },
 
-  /**
-   * Registrar check-in
-   */
-  registerCheckIn: async (token, checkInData) => {
-    return await fetchWithAuth('/workhours/checkin', token, {
-      method: 'POST',
-      body: JSON.stringify(checkInData),
+  softDelete: async (token, id_pactado) => {
+    return await fetchWithAuth(`${BASE}/delete/${id_pactado}`, token, {
+      method: "DELETE",
     });
   },
 
-  /**
-   * Registrar check-out
-   */
-  registerCheckOut: async (token, checkOutData) => {
-    return await fetchWithAuth('/workhours/checkout', token, {
-      method: 'POST',
-      body: JSON.stringify(checkOutData),
+  // --- Check-in / Check-out ---
+  checkIn: async (token, { id_usuario, fecha, hora }) => {
+    return await fetchWithAuth(`${BASE}/checkin`, token, {
+      method: "POST",
+      body: JSON.stringify({ id_usuario, fecha, hora }),
     });
   },
 
-  /**
-   * Eliminar horas pactadas (soft delete)
-   */
-  deleteWorkHours: async (token, workHoursId) => {
-    return await fetchWithAuth(`/workhours/delete/${workHoursId}`, token, {
-      method: 'DELETE',
+  checkOut: async (token, { id_usuario, fecha, hora }) => {
+    return await fetchWithAuth(`${BASE}/checkout`, token, {
+      method: "POST",
+      body: JSON.stringify({ id_usuario, fecha, hora }),
     });
   },
 
-  /**
-   * Actualizar horas pactadas
-   */
-  updateWorkHours: async (token, updateData) => {
-    return await fetchWithAuth('/workhours/update', token, {
-      method: 'PUT',
-      body: JSON.stringify(updateData),
+  // --- Estado de asistencia / check del día ---
+  getAttendanceStatus: async (token, { id_usuario, fecha }) => {
+    const endpoint = `${BASE}/status?${q({ id_usuario, fecha })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  getCheckStatusDia: async (token, { id_usuario, fecha }) => {
+    const endpoint = `${BASE}/check-status-dia?${q({ id_usuario, fecha })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  // --- Horas trabajadas ---
+  getWorkedHours: async (token, { id_usuario, periodo }) => {
+    const endpoint = `${BASE}/worked-hours?${q({ id_usuario, periodo })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  getWorkedHoursByRange: async (token, { id_usuario, desde, hasta }) => {
+    const endpoint = `${BASE}/worked-hours-range?${q({
+      id_usuario,
+      desde,
+      hasta,
+    })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  // --- Listados globales (para administración) ---
+  getAsistenciasProfes: async (token, { desde, hasta, periodo }) => {
+    const endpoint = `${BASE}/asistencias?${q({ desde, hasta, periodo })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  getHorasTrabajadasProfes: async (token, { desde, hasta, periodo }) => {
+    const endpoint = `${BASE}/horas-profes?${q({ desde, hasta, periodo })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  // --- Pre-liquidación y liquidar ---
+  getPreLiquidacion: async (token, { id_usuario, periodo }) => {
+    const endpoint = `${BASE}/pre-liquidacion?${q({ id_usuario, periodo })}`;
+    return await fetchWithAuth(endpoint, token);
+  },
+
+  liquidarProfesor: async (token, { id_usuario, periodo, horas_pagadas }) => {
+    return await fetchWithAuth(`${BASE}/liquidar`, token, {
+      method: "POST",
+      body: JSON.stringify({ id_usuario, periodo, horas_pagadas }),
     });
   },
 
-  /**
-   * Obtener horas trabajadas por periodo
-   */
-  getWorkedHours: async (token, userId, period = null) => {
-    const queryParams = new URLSearchParams({ id_usuario: userId });
-    if (period) queryParams.append('periodo', period);
-    return await fetchWithAuth(`/workhours/worked-hours?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener horas trabajadas por rango
-   */
-  getWorkedHoursByRange: async (token, userId, startDate, endDate) => {
-    const queryParams = new URLSearchParams({ 
-      id_usuario: userId, 
-      desde: startDate, 
-      hasta: endDate 
-    });
-    return await fetchWithAuth(`/workhours/worked-hours-range?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener asistencias de profesores
-   */
-  getTeacherAttendances: async (token, startDate = null, endDate = null, period = null) => {
-    const queryParams = new URLSearchParams();
-    if (startDate) queryParams.append('desde', startDate);
-    if (endDate) queryParams.append('hasta', endDate);
-    if (period) queryParams.append('periodo', period);
-    return await fetchWithAuth(`/workhours/asistencias?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener horas trabajadas de profesores
-   */
-  getTeacherWorkedHours: async (token, startDate = null, endDate = null, period = null) => {
-    const queryParams = new URLSearchParams();
-    if (startDate) queryParams.append('desde', startDate);
-    if (endDate) queryParams.append('hasta', endDate);
-    if (period) queryParams.append('periodo', period);
-    return await fetchWithAuth(`/workhours/horas-profes?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener pre-liquidación de profesor
-   */
-  getTeacherPreLiquidation: async (token, userId, period) => {
-    const queryParams = new URLSearchParams({ 
-      id_usuario: userId, 
-      periodo: period 
-    });
-    return await fetchWithAuth(`/workhours/pre-liquidacion?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener liquidaciones por rango
-   */
-  getLiquidationsByRange: async (token, startDate, endDate) => {
-    const queryParams = new URLSearchParams({ desde: startDate, hasta: endDate });
-    return await fetchWithAuth(`/workhours/liquidaciones?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener estado de asistencia
-   */
-  getAttendanceStatus: async (token, userId, date) => {
-    const queryParams = new URLSearchParams({ id_usuario: userId, fecha: date });
-    return await fetchWithAuth(`/workhours/status?${queryParams}`, token);
-  },
-
-  /**
-   * Obtener estado de check del día
-   */
-  getCheckStatusDay: async (token, userId, date) => {
-    const queryParams = new URLSearchParams({ id_usuario: userId, fecha: date });
-    return await fetchWithAuth(`/workhours/check-status-dia?${queryParams}`, token);
+  // --- Liquidaciones por rango ---
+  getLiquidacionesPorRango: async (token, { desde, hasta }) => {
+    const endpoint = `${BASE}/liquidaciones?${q({ desde, hasta })}`;
+    return await fetchWithAuth(endpoint, token);
   },
 };
+
+export default workHoursService;

@@ -6,6 +6,11 @@ import { useAuth } from '../AuthContext';
 
 const CreatePlan = () => {
   const { getToken } = useAuth();
+
+  // ✅ Invocar los hooks y desestructurar sus funciones
+  const { getDisciplinas } = useDisciplines();
+  const { createPlan } = usePlans();
+
   const [disciplinas, setDisciplinas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,14 +28,12 @@ const CreatePlan = () => {
       try {
         setLoading(true);
         const token = getToken();
-        
-        if (!token) {
-          throw new Error('No hay token de autenticación disponible');
-        }
 
-        // PASA EL TOKEN al servicio
-        const data = await useDisciplines.getDisciplinas(token);
-        setDisciplinas(data);
+        if (!token) throw new Error('No hay token de autenticación disponible');
+
+        // ✅ usar la función del hook
+        const data = await getDisciplinas(token);
+        setDisciplinas(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
         console.error('Error cargando disciplinas:', err);
@@ -42,7 +45,7 @@ const CreatePlan = () => {
     };
 
     fetchDisciplinas();
-  }, [getToken]); // Añade getToken como dependencia
+  }, [getToken, getDisciplinas]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,8 +64,7 @@ const CreatePlan = () => {
 
   const handleCreatePlan = async (e) => {
     e.preventDefault();
-    
-    // Validaciones
+
     if (formData.disciplines.length === 0) {
       alert('Por favor selecciona al menos una disciplina');
       return;
@@ -71,17 +73,13 @@ const CreatePlan = () => {
     try {
       setSubmitLoading(true);
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Usar el servicio de planes con autenticación
-      await usePlans.createPlan(token, formData);
-      
+      // ✅ usar la función del hook
+      await createPlan(token, formData);
+
       alert("✅ Plan creado exitosamente");
-      
-      // Resetear formulario
+
       setFormData({
         name: '',
         description: '',
@@ -89,7 +87,6 @@ const CreatePlan = () => {
         totalCredits: '',
         disciplines: []
       });
-      
     } catch (error) {
       console.error('Error creando plan:', error);
       alert(error.message || "Error al crear el plan");
@@ -97,14 +94,6 @@ const CreatePlan = () => {
       setSubmitLoading(false);
     }
   };
-
-  //if (loading) {
-  //  return (
-  //    <div className="CreateClassContainer">
-  //      <p>Cargando disciplinas...</p>
-  //    </div>
-  //  );
-  //}
 
   if (error && disciplinas.length === 0) {
     return (
@@ -118,7 +107,7 @@ const CreatePlan = () => {
   return (
     <div className="CreateClassContainer">
       <h2 id="Title-Planes">Crear Plan</h2>
-      
+
       {error && (
         <div className="warning-message">
           <p>⚠️ {error}</p>
@@ -134,7 +123,7 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
-        
+
         <label>Descripción:</label>
         <textarea
           name="description"
@@ -142,7 +131,7 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
-        
+
         <label>Monto:</label>
         <input
           type="number"
@@ -152,7 +141,7 @@ const CreatePlan = () => {
           required
           placeholder="Ej: 999.99"
         />
-        
+
         <label>Créditos Totales:</label>
         <input
           type="number"
@@ -161,10 +150,12 @@ const CreatePlan = () => {
           onChange={handleChange}
           required
         />
-        
+
         <label>Disciplinas:</label>
         <div className="checkbox-group">
-          {disciplinas.length > 0 ? (
+          {loading ? (
+            <p>Cargando disciplinas...</p>
+          ) : disciplinas.length > 0 ? (
             disciplinas.map((d) => (
               <div key={d.id_disciplina} className="checkbox-item">
                 <input
@@ -184,7 +175,7 @@ const CreatePlan = () => {
             <p>No hay disciplinas disponibles</p>
           )}
         </div>
-        
+
         <button 
           type="submit" 
           className="create-plan-btn"

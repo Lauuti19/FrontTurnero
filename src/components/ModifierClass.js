@@ -17,7 +17,11 @@ const CreateClass = ({ onClassCreated }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // ✅ Invocar los hooks correctamente
   const { getToken } = useAuth();
+  const { getDisciplinas } = useDisciplines();
+  const { createClass } = useClasses();
 
   const fetchDisciplinas = useCallback(async () => {
     try {
@@ -28,7 +32,7 @@ const CreateClass = ({ onClassCreated }) => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await useDisciplines.getDisciplinas(token);
+      const data = await getDisciplinas(token);
       setDisciplinas(data);
       setError(null);
     } catch (err) {
@@ -38,7 +42,7 @@ const CreateClass = ({ onClassCreated }) => {
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, [getToken, getDisciplinas]);
 
   useEffect(() => {
     fetchDisciplinas();
@@ -74,7 +78,8 @@ const CreateClass = ({ onClassCreated }) => {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      await useClasses.createClass(token, formData);
+      // ✅ Usar createClass del hook, no directamente de useClasses
+      await createClass(token, formData);
 
       await Swal.fire({
         icon: 'success',

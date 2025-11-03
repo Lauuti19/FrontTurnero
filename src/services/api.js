@@ -29,22 +29,41 @@ export const fetchWithAuth = async (endpoint, token, options = {}) => {
         if (errorText) {
           errorMessage = errorText;
         }
-      } catch (e) {
-        // Si no se puede leer el texto de error, usar el mensaje por defecto
-      }
+      } catch (e) {}
       throw new Error(errorMessage);
     }
 
-    // Intentar parsear como JSON
     try {
       const data = await response.json();
       return data;
     } catch (jsonError) {
-      // Si no es JSON, devolver texto
       return await response.text();
     }
   } catch (error) {
     console.error('Error en fetchWithAuth:', error);
     throw error;
+  }
+};
+
+// 🔹 NUEVO: para endpoints que NO necesitan token
+export const fetchJson = async (endpoint, options = {}) => {
+  const url = `${API_URL}${endpoint}`;
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
+  };
+
+  try {
+    const res = await fetch(url, config);
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.error("Error en fetchJson:", err);
+    throw err;
   }
 };

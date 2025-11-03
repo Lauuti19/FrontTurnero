@@ -397,6 +397,7 @@
 @media (max-width: 768px) {
   .user-profile-container {
     padding: 1rem;
+    height: fit-content;
   }
   
   .user-profile-box {
@@ -439,6 +440,8 @@
 @media (max-width: 480px) {
   .user-profile-container {
     padding: 0.5rem;
+    height: min-content;
+    min-height: auto;
   }
   
   .user-profile-box {

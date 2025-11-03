@@ -85,12 +85,13 @@ export const classService = {
   /**
    * Actualizar clase
    */
-  updateClass: async (token, classData) => {
-    return await fetchWithAuth('/classes/update', token, {
-      method: 'PUT',
-      body: JSON.stringify(classData),
-    });
+  updateClass: async (token, classId, classData) => {
+  return await fetchWithAuth('/classes/update', token, {
+    method: 'PUT',
+    body: JSON.stringify({ id_clase: classId, ...classData }),
+  });
   },
+
 
   /**
    * Eliminar clase (borrado lógico)

@@ -7,6 +7,8 @@ import '../styles/ManageDisciplines.css';
 
 const ManageDisciplines = () => {
   const { getToken } = useAuth();
+  const { getDisciplinas, updateDisciplina, deleteDisciplina } = useDisciplines(); // ✅ Se usa correctamente el hook
+
   const [disciplinas, setDisciplinas] = useState([]);
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState('');
@@ -17,12 +19,9 @@ const ManageDisciplines = () => {
     try {
       setLoading(true);
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      const data = await useDisciplines.getDisciplinas(token);
+      const data = await getDisciplinas(token);
       setDisciplinas(data);
       setError(null);
     } catch (err) {
@@ -65,14 +64,9 @@ const ManageDisciplines = () => {
     if (result.isConfirmed) {
       try {
         const token = getToken();
-        
-        if (!token) {
-          throw new Error('No hay token de autenticación disponible');
-        }
+        if (!token) throw new Error('No hay token de autenticación disponible');
 
-        await useDisciplines.updateDisciplina(token, id, {
-          name: editName.trim()
-        });
+        await updateDisciplina(token, id, { name: editName.trim() });
 
         await Swal.fire({
           icon: 'success',
@@ -107,12 +101,9 @@ const ManageDisciplines = () => {
     if (result.isConfirmed) {
       try {
         const token = getToken();
-        
-        if (!token) {
-          throw new Error('No hay token de autenticación disponible');
-        }
+        if (!token) throw new Error('No hay token de autenticación disponible');
 
-        await useDisciplines.deleteDisciplina(token, id);
+        await deleteDisciplina(token, id);
 
         await Swal.fire({
           icon: 'success',
@@ -142,17 +133,17 @@ const ManageDisciplines = () => {
     return disciplina.disciplina || disciplina.nombre || 'Sin nombre';
   };
 
-  //if (loading) {
-  //  return (
-  //    <div className="manage-disciplines-container">
-  //      <div className="manage-disciplines-box">
-  //        <div className="loading-container">
-  //          <p>Cargando disciplinas...</p>
-  //        </div>
-  //      </div>
-  //    </div>
-  //  );
-  //}
+  if (loading) {
+    return (
+      <div className="manage-disciplines-container">
+        <div className="manage-disciplines-box">
+          <div className="loading-container">
+            <p>Cargando disciplinas...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error && disciplinas.length === 0) {
     return (

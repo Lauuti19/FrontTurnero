@@ -1,80 +1,105 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import "./Routines.css";
 import { useAuth } from "../../../src/AuthContext.js";
-import { useRoutines } from '../../hooks/useRoutines.js';
-import { useVideoModal } from '../../hooks/useVideoModal.js';
-import { 
-  LoadingState, 
-  ErrorState, 
-  EmptyState, 
-  RoutineCard, 
-  VideoModal 
-} from './RoutineComponente.js';
-import './Routines.css';
+import { useRoutines } from "../../hooks/useRoutines.js";
+import { useVideoModal } from "../../hooks/useVideoModal.js";
 
 const UserRoutines = () => {
   const { getUserId, getToken } = useAuth();
-  const userId = getUserId();
-  const token = getToken();
-
-  const { 
-    userRoutines, 
-    loading, 
-    error, 
-    getRoutinesByUser 
-  } = useRoutines();
-
+  const { userRoutines, loading, error, getRoutinesByUser } = useRoutines();
   const { videoUrl, openVideoModal, closeVideoModal, getEmbedUrl } = useVideoModal();
+  const [routinesByDay, setRoutinesByDay] = useState({});
 
-  // 🔹 Cargar rutinas cuando se monta el componente
+  // 🔹 Obtener rutinas al montar
   useEffect(() => {
-    if (userId && token) {
-      getRoutinesByUser(token, userId);
-    }
-  }, [userId, token, getRoutinesByUser]);
+    const loadRoutines = async () => {
+      const token = getToken();
+      const userId = getUserId();
+      if (!userId || !token) return;
+      const res = await getRoutinesByUser(token, userId);
 
-  const renderContent = () => {
-    if (loading) return <LoadingState />;
-    if (error) return <ErrorState message={error} />;
-    if (!userRoutines || userRoutines.length === 0) return <EmptyState />;
+      // agrupar por día si hay rutinas
+      if (res && Array.isArray(res)) {
+        const grouped = res.reduce((acc, item) => {
+          const day = item.dia || "Sin día";
+          if (!acc[day]) acc[day] = [];
+          acc[day].push(item);
+          return acc;
+        }, {});
+        setRoutinesByDay(grouped);
+      } else {
+        setRoutinesByDay({});
+      }
+    };
 
-    // Agrupar rutinas por día si vienen con campo "dia"
-    const groupedRoutines = userRoutines.reduce((acc, routine) => {
-      const day = routine.dia || "Sin día asignado";
-      if (!acc[day]) acc[day] = [];
-      acc[day].push(routine);
-      return acc;
-    }, {});
+    loadRoutines();
+  }, [getUserId, getToken, getRoutinesByUser]);
 
-    return (
-      <div className="routines-grid">
-        {Object.entries(groupedRoutines).map(([day, dayRoutines]) => (
-          <RoutineCard 
-            key={day}
-            day={day} 
-            dayRoutines={dayRoutines} 
-            onVideoClick={openVideoModal}
-          />
-        ))}
-      </div>
-    );
-  };
+  // 🔹 Renderizado principal
+  if (loading) return <p>Cargando rutinas...</p>;
+  if (error) return <p className="mensajeError">{error}</p>;
+  if (!Object.keys(routinesByDay).length) return <p>No hay rutinas disponibles.</p>;
 
   return (
     <div className="routines-container">
-      <header className="routines-header">
-        <h2>Mi Rutina de Entrenamiento</h2>
-        <p className="routines-subtitle">Sigue tu plan de entrenamiento personalizado</p>
-      </header>
+      <h2>Mi Rutina de Entrenamiento</h2>
 
-      <main className="routines-content">
-        {renderContent()}
-      </main>
+      <div className="routines-grid">
+        {Object.entries(routinesByDay).map(([day, dayRoutines]) => (
+          <div key={day} className="routine-card">
+            <div className="routine-header">
+              <h3>
+                Día {day} - {dayRoutines[0]?.rutina_nombre || "Rutina"}
+              </h3>
+            </div>
+            <div className="routine-exercises">
+              {dayRoutines
+                .sort((a, b) => (a.orden || 0) - (b.orden || 0))
+                .map((exercise) => (
+                  <div
+                    key={`${day}-${exercise.id_ejercicio}-${exercise.orden}`}
+                    className="exercise-item"
+                  >
+                    <div className="exercise-info">
+                      <span className="exercise-order">{exercise.orden}.</span>
+                      <span className="exercise-name">{exercise.ejercicio_nombre}</span>
+                      <span className="exercise-sets">
+                        {" "}
+                        - {exercise.rondas || 1} rondas × {exercise.repeticiones || "-"}
+                      </span>
+                    </div>
+                    {exercise.link && (
+                      <button
+                        className="video-button"
+                        onClick={() => openVideoModal(exercise.link)}
+                        title="Ver demostración"
+                      >
+                        📹
+                      </button>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
+      </div>
 
-      <VideoModal 
-        videoUrl={videoUrl}
-        getEmbedUrl={getEmbedUrl}
-        onClose={closeVideoModal}
-      />
+      {videoUrl && (
+        <div className="video-modal">
+          <div className="video-modal-content">
+            <button className="close-modal" onClick={closeVideoModal}>
+              ×
+            </button>
+            <iframe
+              src={getEmbedUrl(videoUrl)}
+              title="Video demostración"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

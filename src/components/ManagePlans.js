@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 import { usePlans } from '../hooks';
 import { useAuth } from '../AuthContext';
@@ -7,37 +6,41 @@ import '../styles/CreateClass.css';
 
 const ManagePlans = () => {
   const { getToken } = useAuth();
+  const { getPlanes, updatePlan, deletePlan } = usePlans(); 
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [planes, setPlanes] = useState([]);
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [editedPlan, setEditedPlan] = useState({});
 
-  
   const fetchPlanes = useCallback(async () => {
-  try {
-    setLoading(true);
-    const token = getToken();
-    if (!token) throw new Error('No hay token de autenticación disponible');
+    try {
+      setLoading(true);
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-    const data = await usePlans.getPlanes(token);
-    if (Array.isArray(data)) setPlanes(data);
-    else if (data?.planes) setPlanes(data.planes);
-    else if (data?.data) setPlanes(data.data);
-    else {
-      console.warn('Los datos no son un array:', data);
+      const data = await getPlanes(token); 
+      if (Array.isArray(data)) setPlanes(data);
+      else if (data?.planes) setPlanes(data.planes);
+      else if (data?.data) setPlanes(data.data);
+      else {
+        console.warn('Los datos no son un array:', data);
+        setPlanes([]);
+      }
+      setError(null);
+    } catch (err) {
+      console.error('Error cargando planes:', err);
+      setError(err.message || 'Error al cargar los planes');
       setPlanes([]);
+    } finally {
+      setLoading(false);
     }
-    setError(null);
-  } catch (err) {
-    console.error('Error cargando planes:', err);
-    setError(err.message || 'Error al cargar los planes');
-    setPlanes([]);
-  } finally {
-    setLoading(false);
-  }
-}, [getToken]);
+  }, [getToken, getPlanes]);
 
+  useEffect(() => {
+    fetchPlanes();
+  }, [fetchPlanes]);
 
   const handleEditClick = (plan) => {
     setEditingPlanId(plan.id_plan);
@@ -52,13 +55,9 @@ const ManagePlans = () => {
   const handleSaveEdit = async (id) => {
     try {
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Usar el servicio de planes en lugar de fetch directo
-      await usePlans.updatePlan(token, id, {
+      await updatePlan(token, id, {
         name: editedPlan.name,
         description: editedPlan.description,
         price: parseFloat(editedPlan.price),
@@ -66,9 +65,7 @@ const ManagePlans = () => {
       });
 
       setEditingPlanId(null);
-      // Recargar la lista de planes
       await fetchPlanes();
-      
       alert('✅ Plan actualizado exitosamente');
     } catch (error) {
       console.error("Error al editar:", error);
@@ -82,15 +79,10 @@ const ManagePlans = () => {
 
     try {
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Usar el servicio de planes en lugar de fetch directo
-      await usePlans.deletePlan(token, id);
-      
-      // Actualizar el estado local
+      await deletePlan(token, id); // ✅ ahora correcto
+
       setPlanes(prev => prev.filter(p => p.id_plan !== id));
       alert('✅ Plan eliminado exitosamente');
     } catch (error) {
@@ -105,24 +97,10 @@ const ManagePlans = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setEditedPlan(prev => ({ 
-      ...prev, 
-      [field]: value 
-    }));
+    setEditedPlan(prev => ({ ...prev, [field]: value }));
   };
 
-  // Asegurarnos de que planes siempre sea un array para el render
   const planesArray = Array.isArray(planes) ? planes : [];
-
-  //if (loading) {
-  //  return (
-  //    <div className="CreateClassContainer">
-  //      <div className="loading-container">
-  //        <p>Cargando planes...</p>
-  //      </div>
-  //    </div>
-  //  );
-  //}
 
   if (error && planesArray.length === 0) {
     return (

@@ -18,7 +18,7 @@ docker-compose up -d
 
 ## 🔗 **Dependencias del Sistema**  
 Este frontend **NO funciona solo**, necesita:  
-1. **[BackTurnero](https://github.com/Lauuti19/BackTurnero)** - API en Node.js (debe estar corriendo en `http://localhost:3001`)  
+1. **[BackTurnero](https://github.com/Lauuti19/BackTurnero)** - API en Node.js (debe estar corriendo en `https://backturnero-vvk6.onrender.com`)  
 2. **[BDTurnero](https://github.com/Lauuti19/BDTurnero)** - Base de datos MySQL (requerida por el backend)  
 
 📌 **Importante**:  
