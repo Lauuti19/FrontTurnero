@@ -1,15 +1,15 @@
-// src/pages/CashMovementsPage.js
 import React, { useState } from "react";
 import "../styles/CashMovements.css";
 import { FaCashRegister } from "react-icons/fa";
-import CashMovementsToday from "../components/CashMovementsToday";
-import CashMovementsByRange from "../components/CashMovementsByRange";
-import CashMovementsAll from "../components/CashMovementsAll";
+import CashMovementsToday from "../components/movementsComponents/CashMovementsToday";
+import CashMovementsByRange from "../components/movementsComponents/CashMovementsByRange";
+import CashMovementsAll from "../components/movementsComponents/CashMovementsAll";
 import RegisterMovementModal from "../components/RegisterMovementModal";
 import ProductsManager from "../components/ProductsManager";
+import CashDeudas from "../components/CashDeudas"; // 🆕 Importación
 
 const CashMovementsPage = () => {
-  const [activeTab, setActiveTab] = useState("today"); // today | range | all | products
+  const [activeTab, setActiveTab] = useState("today");
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -50,7 +50,13 @@ const CashMovementsPage = () => {
           className={activeTab === "all" ? "active" : ""}
           onClick={() => setActiveTab("all")}
         >
-          Todos
+          Mensuales
+        </button>
+        <button
+          className={activeTab === "deudas" ? "active" : ""}
+          onClick={() => setActiveTab("deudas")}
+        >
+          Deudas
         </button>
         <button
           className={activeTab === "products" ? "active" : ""}
@@ -64,14 +70,13 @@ const CashMovementsPage = () => {
       {activeTab === "today" && <CashMovementsToday />}
       {activeTab === "range" && <CashMovementsByRange />}
       {activeTab === "all" && <CashMovementsAll />}
+      {activeTab === "deudas" && <CashDeudas />}
       {activeTab === "products" && <ProductsManager />}
 
       {showModal && (
         <RegisterMovementModal
           onClose={() => setShowModal(false)}
-          onSuccess={() => {
-            setShowModal(false);
-          }}
+          onSuccess={() => setShowModal(false)}
         />
       )}
     </div>

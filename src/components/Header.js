@@ -7,21 +7,21 @@ const Header = () => {
   const { usuario, creditos } = useAuth();
   const navigate = useNavigate();
 
+  // Verificar si el usuario tiene rol de staff (1 o 2)
+  const isStaff = usuario && (usuario.id_rol === 1 || usuario.id_rol === 2);
+
   return (
     <header className="header">
       <nav className="nav">
         <a href="/" className="nav-link">Inicio</a>
-        <a href="/disciplinas" className="nav-link">Disciplinas</a>
-        <a href="/sobrenosotros" className="nav-link">Sobre Nosotros</a>
-        <a href="/contacto" className="nav-link">Contacto</a>
 
         {usuario && (
           <span
             className="creditos-header"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate('/comprar-creditos')}
+            onClick={() => isStaff ? null : navigate('/comprar-creditos')}
           >
-            ₡ {creditos !== null ? creditos : '...'}
+            {isStaff ? 'Staff Mode' : `₡ ${creditos !== null ? creditos : '...'}`}
           </span>
         )}
 

@@ -1,11 +1,19 @@
+// components/EditProfile.jsx
 import React, { useEffect, useState } from 'react';
 import '../styles/UpdateProfile.css';
 import { useAuth } from '../AuthContext';
 import Swal from 'sweetalert2';
-import { getFullUserData } from '../services/userService';
+import { useUsers, useAuth as useAuthHook } from '../hooks';
+import SkeletonLoader from '../components/SkeletonLoader';
+import { IoIosExit } from "react-icons/io";
+import { Link } from 'react-router-dom';
+
 
 const EditProfile = () => {
   const { getUserId, getToken } = useAuth();
+  const { getFullUserData, updateUserInfo, loading: usersLoading, error: usersError } = useUsers();
+  const { updatePassword, login, loading: authLoading } = useAuthHook();
+  
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -14,19 +22,21 @@ const EditProfile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const id_usuario = getUserId();
-    const token = getToken();
-    
-    if (!id_usuario || !token) {
-      setError('No hay sesión activa');
-      setLoading(false);
-      return;
-    }
+    const loadUserData = async () => {
+      const id_usuario = getUserId();
+      const token = getToken();
+      
+      if (!id_usuario || !token) {
+        setError('No hay sesión activa');
+        setLoading(false);
+        return;
+      }
 
-    getFullUserData(token, id_usuario)
-      .then(data => {
+      try {
+        const data = await getFullUserData(token, id_usuario);
         setFormData({
           nombre: data.nombre || '',
           email: data.email || '',
@@ -34,57 +44,65 @@ const EditProfile = () => {
           dni: data.dni || ''
         });
         setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error obteniendo datos:', err);
         setError(err.message || 'No se pudieron cargar los datos del usuario.');
         setLoading(false);
-      });
-  }, [getUserId, getToken]);
+      }
+    };
 
-  // Skeleton loading para editar perfil
+    loadUserData();
+  }, [getUserId, getToken, getFullUserData]);
+
   const renderSkeletonEdit = () => {
     return (
-      <div className="edit-skeleton-container">
-        <div className="edit-skeleton-box">
-          {/* Título skeleton */}
-          <div className="edit-skeleton-title"></div>
+      <div className="edit-user-container">
+        <div className="edit-user-box">
+          <SkeletonLoader 
+            type="text" 
+            height="40px" 
+            width="200px" 
+            className="edit-skeleton-title"
+          />
           
-          {/* Información personal skeleton */}
-          <div className="edit-skeleton-section">
-            <div className="edit-skeleton-section-title"></div>
+          <div className="edit-user-form">
+            {/* Información personal skeleton */}
+            <SkeletonLoader 
+              type="text" 
+              height="30px" 
+              width="180px" 
+              className="edit-skeleton-section-title"
+            />
             
-            <div className="edit-skeleton-label"></div>
-            <div className="edit-skeleton-input"></div>
+            <SkeletonLoader type="text" height="20px" width="80px" />
             
-            <div className="edit-skeleton-label"></div>
-            <div className="edit-skeleton-input"></div>
+            <SkeletonLoader type="text" height="20px" width="80px" />
             
-            {/* Fila de celular y DNI skeleton */}
-            <div className="edit-skeleton-row">
-              <div className="edit-skeleton-column">
-                <div className="edit-skeleton-label"></div>
-                <div className="edit-skeleton-input"></div>
+            <div className="fila-edit">
+              <div className="bloque-edit">
+                <SkeletonLoader type="text" height="20px" width="60px" />
               </div>
-              <div className="edit-skeleton-column">
-                <div className="edit-skeleton-label"></div>
-                <div className="edit-skeleton-input"></div>
+              <div className="bloque-edit">
+                <SkeletonLoader type="text" height="40px" width="100%" />
               </div>
             </div>
-          </div>
-
-          {/* Cambio de contraseña skeleton */}
-          <div className="edit-skeleton-section">
-            <div className="edit-skeleton-section-title"></div>
             
-            <div className="edit-skeleton-text"></div>
-            <div className="edit-skeleton-text short"></div>
+            <SkeletonLoader type="text" height="16px" width="100%" />
             
-            <div className="edit-skeleton-password-button"></div>
-          </div>
+            <SkeletonLoader 
+              type="text" 
+              height="45px" 
+              width="180px" 
+              className="edit-skeleton-password-button"
+            />
 
-          {/* Botón guardar skeleton */}
-          <div className="edit-skeleton-button"></div>
+            <SkeletonLoader 
+              type="text" 
+              height="50px" 
+              width="100%" 
+              className="edit-skeleton-button"
+            />
+          </div>
         </div>
       </div>
     );
@@ -105,20 +123,9 @@ const EditProfile = () => {
       return;
     }
 
+    setSubmitting(true);
     try {
-      const res = await fetch(`https://backturnero-vvk6.onrender.com/api/usuarios/update`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ ...formData, id_usuario })
-      });
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Error al actualizar el perfil.');
-      }
+      await updateUserInfo(token, { ...formData, id_usuario });
       
       await Swal.fire({
         icon: 'success',
@@ -134,37 +141,39 @@ const EditProfile = () => {
         title: 'Error',
         text: err.message
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleChangePassword = async () => {
-    let errorMsg = '';
-    let result;
     const token = getToken();
+    const id_usuario = getUserId();
     
-    if (!token) {
+    if (!token || !id_usuario) {
       await Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'No hay token de autenticación disponible.'
+        text: 'No hay sesión activa disponible.'
       });
       return;
     }
 
-    do {
-      result = await Swal.fire({
+    let shouldContinue = true;
+    
+    while (shouldContinue) {
+      const result = await Swal.fire({
         title: 'Cambiar contraseña',
         html:
           `<input type="password" id="old-password" class="swal2-input" placeholder="Contraseña actual"/>
-          <div id="error-msg" style="color:red;font-size:0.9em;text-align:left;margin-top:-10px;">${errorMsg}</div>
           <input type="password" id="new-password" class="swal2-input" placeholder="Nueva contraseña"/>`,
         focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'Cambiar',
         cancelButtonText: 'Cancelar',
         preConfirm: async () => {
-          const oldPassword = document.getElementById('old-password').value;
-          const newPassword = document.getElementById('new-password').value;
+          const oldPassword = document.getElementById('old-password')?.value;
+          const newPassword = document.getElementById('new-password')?.value;
           
           if (!oldPassword || !newPassword) {
             Swal.showValidationMessage('Complete ambos campos');
@@ -177,18 +186,9 @@ const EditProfile = () => {
           }
 
           try {
-            const res = await fetch('https://backturnero-vvk6.onrender.com/api/auth/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: formData.email, password: oldPassword })
-            });
-            
-            if (!res.ok) {
-              Swal.showValidationMessage('La contraseña actual es incorrecta.');
-              return false;
-            }
+            await login({ email: formData.email, password: oldPassword });
           } catch (err) {
-            Swal.showValidationMessage('Error de conexión');
+            Swal.showValidationMessage('La contraseña actual es incorrecta.');
             return false;
           }
           
@@ -199,59 +199,59 @@ const EditProfile = () => {
       if (result.isConfirmed && result.value) {
         const { newPassword } = result.value;
         try {
-          const id_usuario = getUserId();
-          const res = await fetch('https://backturnero-vvk6.onrender.com/api/auth/update-password', {
-            method: 'PUT',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ id_usuario, nuevaPassword: newPassword })
-          });
+          // ✅ CORREGIDO: Usar hook updatePassword
+          await updatePassword(token, { id_usuario, nuevaPassword: newPassword });
           
-          if (!res.ok) {
-            const errorData = await res.json();
-            errorMsg = errorData.message || 'Error al cambiar la contraseña';
-          } else {
-            await Swal.fire({
-              icon: 'success',
-              title: 'Contraseña actualizada',
-              showConfirmButton: false,
-              timer: 1500
-            });
-            errorMsg = '';
-            break;
-          }
+          await Swal.fire({
+            icon: 'success',
+            title: 'Contraseña actualizada',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          shouldContinue = false;
         } catch (err) {
-          errorMsg = 'Error de conexión al cambiar la contraseña';
+          await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Error al cambiar la contraseña'
+          });
         }
       } else {
-        break;
+        shouldContinue = false;
       }
-    } while (errorMsg);
+    }
   };
 
-  if (loading) {
+  const combinedLoading = loading || usersLoading;
+
+  if (combinedLoading) {
     return renderSkeletonEdit();
   }
   
-  if (error) return (
-    <div className="edit-user-container">
-      <div className="edit-user-box">
-        <p className="error-message">{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="botonGuardarPerfil"
-        >
-          Reintentar
-        </button>
+  if (error || usersError) {
+    return (
+      <div className="edit-user-container">
+        <div className="edit-user-box">
+          <p className="error-message">{error || usersError}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="botonGuardarPerfil"
+          >
+            Reintentar
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <div className="edit-user-container">
       <div className="edit-user-box">
+        <Link to='/perfil'>
+          <div className='back-in-edit'>
+            <IoIosExit /><p>Volver</p>
+          </div>
+        </Link>
         <h2 className="edit-user-title">Actualizar perfil</h2>
         <form className="edit-user-form" onSubmit={handleSubmit}>
           <h3>Información personal</h3>
@@ -298,12 +298,21 @@ const EditProfile = () => {
           
           <h3>Actualiza tu contraseña</h3>
           <p>Por tu seguridad, te recomendamos: elegir una contraseña única que no uses para conectarte a otras cuentas.</p>
-          <button type="button" className="botonClave" onClick={handleChangePassword}>
-            Cambiar contraseña
+          <button 
+            type="button" 
+            className="botonClave" 
+            onClick={handleChangePassword}
+            disabled={authLoading}
+          >
+            {authLoading ? 'Cambiando...' : 'Cambiar contraseña'}
           </button>
           
-          <button type="submit" className="botonGuardarPerfil">
-            Guardar cambios
+          <button 
+            type="submit" 
+            className="botonGuardarPerfil"
+            disabled={submitting}
+          >
+            {submitting ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </form>
       </div>

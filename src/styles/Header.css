@@ -16,7 +16,8 @@
   }
   .nav {
     display: flex;
-    gap: 2rem;
+    width: 60%;
+    justify-content: space-around;
     align-items: center;
     text-transform: uppercase;
     margin: 0 auto;
@@ -98,9 +99,7 @@
       flex-grow: 1;
     }
   
-    .nav-link{
-      display: none;
-    }
+    
     .btn-lgn{
       display:flex;
     }

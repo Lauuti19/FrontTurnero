@@ -1,53 +1,11 @@
-import React, { useEffect, useState } from 'react';
+// components/ClassUsersModal.jsx
+import React from 'react';
 import '../styles/ClassUserModal.css';
 import { FiUser } from "react-icons/fi";
-import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService';
+import { useClassUsers } from '../hooks/otherHooks/useClassUsers';
 
 const ClassUsersModal = ({ classId, classType, fecha, onClose, getToken }) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { getToken: authGetToken } = useAuth();
-
-  const obtenerToken = () => (getToken ? getToken() : authGetToken());
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = obtenerToken();
-        if (!token) throw new Error("No hay token disponible");
-
-        // ✅ ahora sí: classId + classType + fecha
-        const data = await classService.getClassUsers(token, {
-          classId,
-          classType,           // "normal" o "especial"
-          fecha,
-        });
-
-        setUsers(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error('Error al obtener los usuarios anotados:', err);
-        setError(err.message);
-        setUsers([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // solo traigo si tengo todo
-    if (classId && fecha && classType) {
-      fetchUsers();
-    } else {
-      // si por algún motivo no vino el tipo, marcamos error legible
-      if (!classType) {
-        setError("Falta el tipo de clase (normal/especial)");
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, classType, fecha]);
+  const { users, loading, error } = useClassUsers(classId, classType, fecha, getToken);
 
   return (
     <div className="modal-overlay">

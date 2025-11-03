@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaMoneyBillWave, FaCheck, FaUser } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
-import * as userService from '../services/userService';
-import { planService } from '../services/planService';
+import { useUsers, usePlans } from '../hooks';
 import { paymentService } from '../services/paymentService';
+import Buscador from './Buscador';
 
 const RegistrarCuota = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -18,6 +18,9 @@ const RegistrarCuota = () => {
   const [loading, setLoading] = useState(false);
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const { getAllPlans } = usePlans();
+  const { searchByName } = useUsers();
+
 
   // Guardrail: si no hay token
   useEffect(() => {
@@ -30,33 +33,6 @@ const RegistrarCuota = () => {
     }
   }, [token]);
 
-  // Buscar usuarios (con token)
-  useEffect(() => {
-    let abort = false;
-
-    const run = async () => {
-      if (!token) return;
-      if (nombreUsuario.trim().length < 1) {
-        setUsuarios([]);
-        setShowSuggestions(false);
-        return;
-      }
-      try {
-        const data = await userService.searchByName(token, nombreUsuario.trim());
-        if (abort) return;
-        const list = Array.isArray(data) ? data : (data.usuarios || []);
-        setUsuarios(list);
-        setShowSuggestions(true);
-      } catch (err) {
-        console.error('Buscar usuarios:', err);
-        setUsuarios([]);
-        setShowSuggestions(false);
-      }
-    };
-
-    run();
-    return () => { abort = true; };
-  }, [nombreUsuario, token]);
 
   // Obtener planes (con token)
   useEffect(() => {
@@ -65,7 +41,7 @@ const RegistrarCuota = () => {
     const loadPlanes = async () => {
       if (!token) return;
       try {
-        const data = await planService.getPlanes(token);
+        const data = await getAllPlans(token);
         if (abort) return;
         const list = Array.isArray(data) ? data : (data.planes || []);
         setPlanes(list);
@@ -168,40 +144,7 @@ const RegistrarCuota = () => {
               <FaSearch className="field-icon" />
               Buscar usuario
             </label>
-            <div className="search-container">
-              <input
-                type="text"
-                value={nombreUsuario}
-                onChange={(e) => {
-                  setNombreUsuario(e.target.value);
-                  setUsuarioSeleccionado(null);
-                }}
-                placeholder="Escribe el nombre del usuario..."
-                required
-                autoComplete="off"
-                className="search-input"
-                disabled={!token || loading}
-              />
-              {showSuggestions && usuarios.length > 0 && (
-                <div className="suggestions-dropdown">
-                  {usuarios.map((usuario) => (
-                    <div
-                      key={usuario.id_usuario}
-                      className="suggestion-item"
-                      onClick={() => handleUsuarioClick(usuario)}
-                    >
-                      <FaUser className="user-icon" />
-                      <div className="user-info">
-                        <span className="user-name">{usuario.nombre}</span>
-                        {usuario.email && (
-                          <span className="user-email">{usuario.email}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <Buscador onUsuarioSeleccionado={setUsuarioSeleccionado} />
           </div>
 
           {usuarioSeleccionado && (

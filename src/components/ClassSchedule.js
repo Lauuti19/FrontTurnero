@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+// components/ClassSchedule.jsx (refactorizado y corregido)
+import React, { useState } from 'react';
 import {
   FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt,
   FaDumbbell, FaRunning, FaHeart
 } from 'react-icons/fa';
 import '../styles/ClassSchedule.css';
-import ClassUsersModal from '../components/ClassUsersModal';
-import RegisterButton from '../components/RegisterButton';
+import ClassUsersModal from './ClassUsersModal';
+import RegistrationManager from './RegisterButtonFiles/RegistrationManager';
+import RegisterButton from './RegisterButton';
+import SkeletonLoader from './SkeletonLoader';
 import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService';
+import { useClassSchedule } from '../hooks/otherHooks/useClassSchedule';
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -18,35 +21,31 @@ const ClassSchedule = ({
   customContainerStyle = {},
   customItemStyle = {},
   adminMode = false,
+  customTitle = "Horario de Clases", // Nueva prop
+  customSubtitle = "Entrena con nosotros" // Nueva prop
 }) => {
-  const [currentDate, setCurrentDate] = useState(() => {
-    const today = new Date();
-    if (today.getDay() === 0) {
-      today.setDate(today.getDate() + 1); // saltear domingo
-    }
-    today.setHours(0, 0, 0, 0);
-    return today;
-  });
-
-  const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { getToken } = useAuth();
+  const [expandedClassId, setExpandedClassId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
 
-  const { getToken } = useAuth();
-
-  const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
-  const userId = propUserId !== null && propUserId !== undefined
-    ? propUserId
-    : (usuarioLocal?.id_usuario || usuarioLocal?.id);
-
-  const [expandedClassId, setExpandedClassId] = useState(null);
-
-  const formattedDate = useMemo(
-    () => currentDate.toISOString().split('T')[0],
-    [currentDate]
-  );
+  const {
+    currentDate,
+    classes,
+    loading,
+    error,
+    formattedDate,
+    handlePreviousDay,
+    handleNextDay,
+    handleToday,
+    refetch,
+    getCapacityPercentage,
+    getCapacityColor
+  } = useClassSchedule({
+    userId: propUserId,
+    adminMode,
+    getToken
+  });
 
   const toggleExpand = (id) => {
     setExpandedClassId(expandedClassId === id ? null : id);
@@ -90,115 +89,19 @@ const ClassSchedule = ({
     );
   };
 
-  const getCapacityPercentage = (disponibles, total) => {
-    const t = Number(total) > 0 ? Number(total) : 20;
-    const d = Math.max(0, Number(disponibles) || 0);
-    return Math.round((1 - d / t) * 100);
+  // CORRECCIÓN: Usar != null para incluir 0 como valor válido
+  const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
+  const userId = propUserId != null ? propUserId : (usuarioLocal?.id_usuario || usuarioLocal?.id);
+
+  // CORRECCIÓN: Función unificada para determinar el tipo de clase
+  const getClassType = (clase) => {
+    return (clase.tipo === 'especial' || clase.is_especial) ? 'especial' : 'normal';
   };
 
-  const getCapacityColor = (p) => {
-    if (p >= 80) return '#dc2626';
-    if (p >= 60) return '#f59e0b';
-    return '#16a34a';
+  // CORRECCIÓN: Función unificada para obtener el ID original
+  const getClassOriginalId = (clase) => {
+    return clase.id_original || clase.specialClassOriginalId;
   };
-
-  const fetchClasses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const token = getToken();
-      if (!token) throw new Error('No hay token de autenticación disponible');
-
-      let data;
-      if (adminMode && userId) {
-        data = await classService.getClassesByUser(token, userId, formattedDate);
-      } else {
-        data = await classService.getClasses(token, formattedDate);
-      }
-
-      const clasesFormateadas = (Array.isArray(data) ? data : []).map((c) => {
-        const total = Number(c.capacidad_max ?? c.total ?? 20);
-        const disponibles = Number(c.disponibles ?? 0);
-        return {
-          ...c,
-          hora: c.hora ? String(c.hora).substring(0, 5) : c.hora,
-          total,
-          inscriptos: Math.max(0, total - disponibles),
-        };
-      });
-
-      setClasses(clasesFormateadas);
-    } catch (err) {
-      console.error('Error cargando clases:', err);
-      setError(err.message || 'Error al cargar las clases');
-      setClasses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDate, userId, adminMode, getToken]);
-
-  const handlePreviousDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - 1);
-    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() - 1);
-    newDate.setHours(0, 0, 0, 0);
-    setCurrentDate(newDate);
-  };
-
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + 1);
-    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() + 1);
-    newDate.setHours(0, 0, 0, 0);
-    setCurrentDate(newDate);
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-    if (today.getDay() === 0) today.setDate(today.getDate() + 1);
-    today.setHours(0, 0, 0, 0);
-    setCurrentDate(today);
-  };
-
-  const renderSkeletonItems = () =>
-    Array.from({ length: 4 }).map((_, i) => (
-      <div key={i} className="class-item skeleton-item">
-        <div className="class-main-info">
-          <div className="class-icon skeleton-icon" />
-          <div className="class-details">
-            <div className="class-discipline skeleton-text skeleton-title" />
-            <div className="class-meta">
-              <div className="class-time skeleton-text skeleton-time" />
-              <div className="class-trainer skeleton-text skeleton-trainer" />
-            </div>
-            <div className="class-description skeleton-text skeleton-description" />
-          </div>
-          <div className="class-capacity">
-            <div className="capacity-info">
-              <div className="capacity-bar skeleton-bar" />
-              <div className="capacity-text skeleton-text skeleton-capacity" />
-            </div>
-          </div>
-        </div>
-        <div className="class-actions skeleton-actions">
-          <div className="class-features">
-            <div className="feature-tag skeleton-tag" />
-            <div className="feature-tag skeleton-tag" />
-            <div className="feature-tag skeleton-tag" />
-          </div>
-          <div className="action-buttons">
-            <div className="btn-view-users skeleton-button" />
-            <div className="skeleton-register-button" />
-          </div>
-        </div>
-      </div>
-    ));
 
   return (
     <div
@@ -209,9 +112,10 @@ const ClassSchedule = ({
         {showHeader && (
           <div className="schedule-header">
             <div className="schedule-title">
-              <h2>Horario de Clases</h2>
-              <p>Entrena con nosotros</p>
+              <h2>{customTitle}</h2> {/* Usar prop personalizada */}
+              <p>{customSubtitle}</p> {/* Usar prop personalizada */}
             </div>
+
 
             <div className="date-navigation">
               <button
@@ -249,7 +153,7 @@ const ClassSchedule = ({
         {error && (
           <div className="error-message">
             <p>⚠️ {error}</p>
-            <button onClick={fetchClasses} className="retry-btn">
+            <button onClick={refetch} className="retry-btn">
               Reintentar
             </button>
           </div>
@@ -257,13 +161,18 @@ const ClassSchedule = ({
 
         <div className="classes-list">
           {loading ? (
-            renderSkeletonItems()
+            <SkeletonLoader 
+              type="class-item" 
+              count={4}
+              className="class-schedule-skeleton"
+            />
           ) : classes.length > 0 ? (
             classes.map((clase) => {
               const total = Number(clase.total) || 20;
               const disponibles = Number(clase.disponibles) || 0;
               const capacityPercentage = getCapacityPercentage(disponibles, total);
               const capacityColor = getCapacityColor(capacityPercentage);
+              const classType = getClassType(clase);
 
               return (
                 <div
@@ -279,11 +188,7 @@ const ClassSchedule = ({
                       <h3 className="class-discipline">{clase.disciplina}</h3>
                       <div className="class-meta">
                         <span className="class-time">{clase.hora} Hs</span>
-                        <span className="class-trainer">Con {clase.entrenador || 'Nuestro equipo'}</span>
                       </div>
-                      <p className="class-description">
-                        {clase.descripcion || 'Clase grupal de alta intensidad'}
-                      </p>
                     </div>
 
                     <div className="class-capacity">
@@ -303,36 +208,31 @@ const ClassSchedule = ({
                   </div>
 
                   <div className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}>
-                    <div className="class-features">
-                      <span className="feature-tag">💪 Intensidad {clase.intensidad || 'Media'}</span>
-                      <span className="feature-tag">⏱️ {clase.duracion || '60'} min</span>
-                      <span className="feature-tag">🏋️‍♂️ {clase.nivel || 'Todos los niveles'}</span>
-                    </div>
-
-                    <div className="action-buttons">
+                    <div className="class-action-buttons">
                       <button
                         className="btn-view-users"
                         onClick={(e) => {
                           e.stopPropagation();
                           openUsersModal(clase);
                         }}
-                        title="Ver alumnos anotados"
+                        title="Ver Anotados anotados"
                       >
                         <FaUsers />
-                        <span>Ver alumnos</span>
-                        <span className="badge">{clase.inscriptos ?? 0}</span>
+                        <span>Ver Anotados</span>
                       </button>
 
                       <RegisterButton
+                      className="botonAnotarse"
                         classId={clase.id_clase}
-                        classType={clase.tipo === 'especial' ? 'especial' : 'normal'}
-                        specialClassOriginalId={clase.id_original}
+                        classType={classType}
+                        specialClassOriginalId={getClassOriginalId(clase)}
                         fecha={formattedDate}
                         hora={clase.hora}
                         disciplina={clase.disciplina}
                         userId={userId}
                         disabled={clase.inscripto || clase.disponibles === 0}
-                        onSuccess={fetchClasses}
+                        disabledReason={clase.inscripto ? "Ya estás anotado" : "No hay cupos disponibles"}
+                        onSuccess={refetch}
                         getToken={getToken}
                       />
                     </div>
@@ -354,11 +254,10 @@ const ClassSchedule = ({
         </div>
       </div>
 
-      {/* 👇 acá va el modal, fuera del return de la lista */}
       {showModal && selectedClass && (
         <ClassUsersModal
           classId={selectedClass.id_clase}
-          classType={selectedClass.is_especial ? 'especial' : 'normal'}
+          classType={getClassType(selectedClass)}
           fecha={formattedDate}
           onClose={closeUsersModal}
           getToken={getToken}

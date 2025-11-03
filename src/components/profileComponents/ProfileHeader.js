@@ -1,4 +1,4 @@
-import { BiCog } from "react-icons/bi";
+import { FaEdit } from "react-icons/fa";
 
 export const ProfileHeader = ({ usuario }) => (
   <header className="profile-header">
@@ -8,7 +8,7 @@ export const ProfileHeader = ({ usuario }) => (
       <p className="user-name">{usuario?.nombre}</p>
     </div>
     <a href="/editar" className="settings-icon" title="Editar perfil">
-      <BiCog />
+      <FaEdit />
     </a>
   </header>
 );

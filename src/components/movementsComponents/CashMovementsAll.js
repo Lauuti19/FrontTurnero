@@ -6,14 +6,30 @@ const CashMovementsAll = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 🔹 Función auxiliar para obtener las fechas del mes actual
+  const getCurrentMonthRange = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const formatDate = (date) => date.toISOString().split("T")[0];
+    return {
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+    };
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const { startDate, endDate } = getCurrentMonthRange();
 
-    fetch("https://backturnero-vvk6.onrender.com/api/cash-movements/all", {
+    const url = `https://backturnero-vvk6.onrender.com/api/cash-movements/by-date-range?start_date=${startDate}&end_date=${endDate}`;
+
+    fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Error al obtener los movimientos.");
+        if (!res.ok) throw new Error("Error al obtener los movimientos mensuales.");
         return res.json();
       })
       .then((data) => setMovements(data.movements || []))
@@ -21,25 +37,27 @@ const CashMovementsAll = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return (
-  <div className="loading-state">
-    <div className="loading-spinner"></div>
-    <p>Cargando movimientos...</p>
-  </div>
-);
+  if (loading)
+    return (
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
+        <p>Cargando movimientos...</p>
+      </div>
+    );
 
-if (error) return (
-  <div className="error-state">
-    <p style={{ color: "#ef4444" }}>{error}</p>
-  </div>
-);
+  if (error)
+    return (
+      <div className="error-state">
+        <p style={{ color: "#ef4444" }}>{error}</p>
+      </div>
+    );
 
   return (
     <div className="cash-section">
-      <h2>Todos los Movimientos</h2>
+      <h2>Movimientos del Mes</h2>
 
       {movements.length === 0 ? (
-        <p>No hay movimientos registrados.</p>
+        <p>No hay movimientos registrados para este mes.</p>
       ) : (
         <div className="table-wrapper">
           <table className="cash-table">
@@ -49,7 +67,7 @@ if (error) return (
                 <th>Tipo</th>
                 <th>Concepto</th>
                 <th>Productos</th>
-                <th>Pago? </th>
+                <th>Pago?</th>
                 <th>Método de Pago</th>
                 <th>Usuario</th>
                 <th>Total Movimiento</th>
@@ -69,22 +87,20 @@ if (error) return (
                     </span>
                   </td>
                   <td>{mov.concept}</td>
-                    <td style={{ whiteSpace: "pre-line" }}>
-                {mov.productos
-                    ? mov.productos.split("\n").map((prod, idx) => (
-                        <div key={idx}>{prod}</div>
-                    ))
-                    : ""}
-                </td> 
-                <td>
-                {mov.paid === 1 ? (
-                  <span style={{ color: "green" }}>✅</span>
-                ) : (
-                  <span style={{ color: "red" }}>❌</span>
-                )}
-              </td>
-
-
+                  <td style={{ whiteSpace: "pre-line" }}>
+                    {mov.productos
+                      ? mov.productos.split("\n").map((prod, idx) => (
+                          <div key={idx}>{prod}</div>
+                        ))
+                      : ""}
+                  </td>
+                  <td>
+                    {mov.paid === 1 ? (
+                      <span style={{ color: "green" }}>✅</span>
+                    ) : (
+                      <span style={{ color: "red" }}>❌</span>
+                    )}
+                  </td>
                   <td>{mov.payment_method}</td>
                   <td>{mov.user_name}</td>
                   <td>${parseFloat(mov.total_amount).toLocaleString()}</td>

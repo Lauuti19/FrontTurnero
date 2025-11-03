@@ -64,13 +64,11 @@ export const AuthProvider = ({ children }) => {
         const usuarioGuardado = localStorage.getItem("usuario");
         const tokenGuardado = localStorage.getItem("token");
         
-        console.log("Cargando estado inicial...");
-        console.log("Usuario en localStorage:", usuarioGuardado);
-        console.log("Token en localStorage:", tokenGuardado);
+        
         
         if (usuarioGuardado && tokenGuardado) {
           const usuarioData = JSON.parse(usuarioGuardado);
-          console.log("Usuario cargado:", usuarioData);
+          
           
           setUsuario(usuarioData);
           
@@ -85,14 +83,14 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error("Error cargando estado inicial:", error);
       } finally {
-        setLoading(false); // Importante: marcar como no loading
+        setLoading(false);
       }
     };
 
     cargarEstadoInicial();
   }, []);
 
-  // Función para actualizar créditos manualmente
+  
   const actualizarCreditos = async () => {
     if (usuario?.id_usuario || usuario?.id) {
       const id_usuario = usuario.id_usuario || usuario.id;
