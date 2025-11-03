@@ -4,24 +4,24 @@ import TabManager from "../../components/TabManager";
 import { useTabManager } from "../../components/useTabManager";
 import { routinesTabConfig } from "../../components/managerConfigs";
 import CreateRoutine from "../../components/CreateRoutine";
-import SearchRoutines from "../../components/SearchRoutines"; // lo vamos a usar como "asignar"
+import SearchRoutines from "../../components/SearchRoutines"; // Asignar a usuario
+import ViewRoutines from "../../components/ViewRoutines"; // 🔹 Nueva pestaña
 
 const RoutineManagerPage = () => {
-  // arranca en create ahora
-  const { activeTab, setActiveTab } = useTabManager("create"); 
+  const { activeTab, setActiveTab } = useTabManager("create");
 
   const renderContent = () => {
     switch (activeTab) {
       case "create":
-        // ahora crea PLANTILLAS, no busca usuario
         return <CreateRoutine />;
       case "assign":
-        // este va a buscar usuario y asignar rutina existente
         return <SearchRoutines mode="assign" />;
-      case "view":
-      default:
-        // modo lectura / ver rutinas de un usuario
+      case "user":
         return <SearchRoutines mode="view" />;
+      case "viewRoutines": // 🔹 Nueva pestaña
+        return <ViewRoutines />;
+      default:
+        return <CreateRoutine />;
     }
   };
 
@@ -31,7 +31,8 @@ const RoutineManagerPage = () => {
       tabs={[
         { id: "create", label: "Crear rutina" },
         { id: "assign", label: "Asignar a usuario" },
-        { id: "view", label: "Ver por usuario" },
+        { id: "user", label: "Ver por usuario" },
+        { id: "viewRoutines", label: "Ver rutinas" }, // 🔹 Nueva pestaña
       ]}
       activeTab={activeTab}
       onTabChange={setActiveTab}
