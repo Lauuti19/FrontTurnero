@@ -1,29 +1,39 @@
 // pages/Manager/RoutineManagerPage.js
-import React from 'react';
-import TabManager from '../../components/TabManager';
-import { useTabManager } from '../../components/useTabManager';
-import { routinesTabConfig } from '../../components/managerConfigs';
-import SearchRoutines from '../../components/SearchRoutines';
-import CreateRoutine from '../../components/CreateRoutine';
+import React from "react";
+import TabManager from "../../components/TabManager";
+import { useTabManager } from "../../components/useTabManager";
+import { routinesTabConfig } from "../../components/managerConfigs";
+import CreateRoutine from "../../components/CreateRoutine";
+import SearchRoutines from "../../components/SearchRoutines"; // Asignar a usuario
+import ViewRoutines from "../../components/ViewRoutines"; // 🔹 Nueva pestaña
 
 const RoutineManagerPage = () => {
-  const { activeTab, setActiveTab } = useTabManager('view'); // Cambiado de 'search' a 'view'
+  const { activeTab, setActiveTab } = useTabManager("create");
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'create':
+      case "create":
         return <CreateRoutine />;
-      case 'view':  
-        return <SearchRoutines />;
+      case "assign":
+        return <SearchRoutines mode="assign" />;
+      case "user":
+        return <SearchRoutines mode="view" />;
+      case "viewRoutines": // 🔹 Nueva pestaña
+        return <ViewRoutines />;
       default:
-        return null;
+        return <CreateRoutine />;
     }
   };
 
   return (
     <TabManager
       title={routinesTabConfig.title}
-      tabs={routinesTabConfig.tabs}
+      tabs={[
+        { id: "create", label: "Crear rutina" },
+        { id: "assign", label: "Asignar a usuario" },
+        { id: "user", label: "Ver por usuario" },
+        { id: "viewRoutines", label: "Ver rutinas" }, // 🔹 Nueva pestaña
+      ]}
       activeTab={activeTab}
       onTabChange={setActiveTab}
     >

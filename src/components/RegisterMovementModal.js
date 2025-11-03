@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../AuthContext"; 
+import { useAuth } from "../AuthContext";
 import "./registermovement.css";
+
+const API_BASE = "https://backturnero-vvk6.onrender.com"; // cambialo si hace falta
 
 const RegisterMovementModal = ({ onClose, onSuccess }) => {
   const { getUserId } = useAuth();
+
   const [products, setProducts] = useState([]);
   const [type, setType] = useState("Ingreso"); // Ingreso | Egreso
   const [egresoMode, setEgresoMode] = useState("general"); // general | productos
@@ -14,12 +17,19 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Obtener productos al montar (solo si es ingreso o egreso con productos)
+  // 👉 NUEVO (solo aplica a ingresos)
+  const [useOtherUser, setUseOtherUser] = useState(false);
+  const [userQuery, setUserQuery] = useState("");
+  const [userResults, setUserResults] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isSearchingUser, setIsSearchingUser] = useState(false);
+
+  // cargar productos
   useEffect(() => {
     if (type === "Ingreso" || (type === "Egreso" && egresoMode === "productos")) {
       const token = localStorage.getItem("token");
       setIsLoading(true);
-      fetch("https://backturnero-vvk6.onrender.com/api/products/list", {
+      fetch(`${API_BASE}/api/products/list`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -28,6 +38,33 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
         .finally(() => setIsLoading(false));
     }
   }, [type, egresoMode]);
+
+  // buscar usuarios (solo si está activo y es INGRESO)
+  useEffect(() => {
+    if (type !== "Ingreso") return;
+    if (!useOtherUser) return;
+
+    const token = localStorage.getItem("token");
+    if (!userQuery || userQuery.trim().length < 2) {
+      setUserResults([]);
+      return;
+    }
+
+    setIsSearchingUser(true);
+    fetch(
+      `${API_BASE}/api/usuarios/buscar?nombre=${encodeURIComponent(userQuery)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : data.usuarios || [];
+        setUserResults(arr);
+      })
+      .catch((err) => console.error("Error buscando usuario:", err))
+      .finally(() => setIsSearchingUser(false));
+  }, [userQuery, useOtherUser, type]);
 
   const handleDetailChange = (index, field, value) => {
     const newDetails = [...details];
@@ -40,27 +77,32 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
   };
 
   const removeDetail = (index) => {
-    const newDetails = details.filter((_, i) => i !== index);
-    setDetails(newDetails);
+    setDetails(details.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     const token = localStorage.getItem("token");
-    const id_usuario = getUserId();
+    const loggedUserId = getUserId();
 
-    // 👉 Egreso general sin productos
+
+    const finalUserId =
+      type === "Ingreso" && useOtherUser && selectedUser
+        ? selectedUser.id_usuario
+        : loggedUserId;
+
+    // === EGRESO GENERAL ===
     if (type === "Egreso" && egresoMode === "general") {
       const payload = {
-        metodo_pago: paymentMethod.toLowerCase(), 
-        id_usuario,
+        metodo_pago: paymentMethod.toLowerCase(),
+        id_usuario: loggedUserId, // 👈 fuerza que sea el profe/admin
         concepto: concept,
         monto: parseFloat(amount),
         pagado: paid ? 1 : 0,
       };
 
-      fetch("https://backturnero-vvk6.onrender.com/api/cash-movements/egreso", {
+      fetch(`${API_BASE}/api/cash-movements/egreso`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,42 +115,43 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
           return res.json();
         })
         .then(() => {
-          onSuccess(); 
+          onSuccess();
           onClose();
         })
         .catch((err) => alert(err.message))
         .finally(() => setIsLoading(false));
 
-    } else {
-      // 👉 Ingreso o Egreso con productos
-      const payload = {
-        type,
-        payment_method: paymentMethod,
-        concept,
-        user_id: id_usuario,
-        details,
-        paid: paid ? 1 : 0,
-      };
-
-      fetch("https://backturnero-vvk6.onrender.com/api/cash-movements/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error al registrar movimiento");
-          return res.json();
-        })
-        .then(() => {
-          onSuccess(); 
-          onClose();
-        })
-        .catch((err) => alert(err.message))
-        .finally(() => setIsLoading(false));
+      return;
     }
+
+    // === INGRESO o EGRESO CON PRODUCTOS ===
+    const payload = {
+      type,
+      payment_method: paymentMethod,
+      concept,
+      user_id: type === "Egreso" ? loggedUserId : finalUserId, // 👈 acá también
+      details,
+      paid: paid ? 1 : 0,
+    };
+
+    fetch(`${API_BASE}/api/cash-movements/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error al registrar movimiento");
+        return res.json();
+      })
+      .then(() => {
+        onSuccess();
+        onClose();
+      })
+      .catch((err) => alert(err.message))
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -116,25 +159,37 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
       <div className="modal-box-cash">
         <div className="modal-header">
           <h2>Registrar Movimiento</h2>
-          <button className="modal-close-btn" onClick={onClose}>×</button>
+          <button className="modal-close-btn" onClick={onClose}>
+            ×
+          </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="cash-movement-form">
           <div className="form-row">
             <div className="form-group">
               <label>Tipo de Movimiento</label>
               <div className="type-toggle">
-                <button 
+                <button
                   type="button"
                   className={`toggle-btn ${type === "Ingreso" ? "active" : ""}`}
-                  onClick={() => setType("Ingreso")}
+                  onClick={() => {
+                    setType("Ingreso");
+                    // al pasar a ingreso podemos volver a usar el selector de usuario
+                  }}
                 >
                   Ingreso
                 </button>
-                <button 
+                <button
                   type="button"
                   className={`toggle-btn ${type === "Egreso" ? "active" : ""}`}
-                  onClick={() => setType("Egreso")}
+                  onClick={() => {
+                    setType("Egreso");
+                    // al pasar a egreso limpiamos selección de alumno
+                    setUseOtherUser(false);
+                    setSelectedUser(null);
+                    setUserResults([]);
+                    setUserQuery("");
+                  }}
                 >
                   Egreso
                 </button>
@@ -154,6 +209,72 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
               </select>
             </div>
           </div>
+
+          {/* solo para INGRESO mostramos “registrar para otro usuario” */}
+          {type === "Ingreso" && (
+            <div className="form-group checkbox-paid">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={useOtherUser}
+                  onChange={(e) => {
+                    setUseOtherUser(e.target.checked);
+                    if (!e.target.checked) {
+                      setSelectedUser(null);
+                      setUserResults([]);
+                      setUserQuery("");
+                    }
+                  }}
+                />
+                <span className="checkbox-label">
+                  Registrar para otro usuario
+                </span>
+              </label>
+            </div>
+          )}
+
+          {type === "Ingreso" && useOtherUser && (
+            <div className="form-group">
+              <label>Buscar usuario</label>
+              <input
+                type="text"
+                value={userQuery}
+                onChange={(e) => {
+                  setUserQuery(e.target.value);
+                  setSelectedUser(null);
+                }}
+                placeholder="Escribí el nombre..."
+                className="form-input"
+              />
+              {isSearchingUser && <p>Buscando...</p>}
+              {!isSearchingUser && userResults.length > 0 && (
+                <div className="user-results-box">
+                  {userResults.map((u) => (
+                    <div
+                      key={u.id_usuario}
+                      className={`user-result-item ${
+                        selectedUser &&
+                        selectedUser.id_usuario === u.id_usuario
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedUser(u)}
+                    >
+                      <strong>{u.nombre}</strong>{" "}
+                      <span style={{ fontSize: "0.8rem", color: "#555" }}>
+                        ({u.email})
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedUser && (
+                <p className="selected-user-chip">
+                  Registrando para: <strong>{selectedUser.nombre}</strong>
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="form-group">
             <label>Concepto</label>
@@ -178,7 +299,6 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
             </label>
           </div>
 
-          {/* 👉 Selector de modo cuando es egreso */}
           {type === "Egreso" && (
             <div className="form-group">
               <label>Tipo de egreso</label>
@@ -193,7 +313,6 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
             </div>
           )}
 
-          {/* 👉 Campo monto solo para egresos generales */}
           {type === "Egreso" && egresoMode === "general" && (
             <div className="form-group">
               <label>Monto del egreso</label>
@@ -209,16 +328,19 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
             </div>
           )}
 
-          {/* 👉 Sección productos para ingresos o egresos con productos */}
           {(type === "Ingreso" || (type === "Egreso" && egresoMode === "productos")) && (
             <div className="products-section">
               <div className="section-header">
                 <h3>Productos</h3>
-                <button type="button" className="btn-add-product" onClick={addDetail}>
+                <button
+                  type="button"
+                  className="btn-add-product"
+                  onClick={addDetail}
+                >
                   + Agregar producto
                 </button>
               </div>
-              
+
               {details.map((detail, i) => (
                 <div key={i} className="product-detail-row">
                   <select
@@ -236,7 +358,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
                       </option>
                     ))}
                   </select>
-                  
+
                   <div className="quantity-control">
                     <label>Cantidad</label>
                     <input
@@ -249,7 +371,7 @@ const RegisterMovementModal = ({ onClose, onSuccess }) => {
                       className="quantity-input"
                     />
                   </div>
-                  
+
                   {details.length > 1 && (
                     <button
                       type="button"

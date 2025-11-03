@@ -8,11 +8,24 @@ const ProductsManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ nombre: "", descripcion: "", precio: "", stock: "" });
+  const [form, setForm] = useState({
+    nombre: "",
+    descripcion: "",
+    precio: "",
+    costo: "",
+    stock: "",
+  });
+
+  // 🔑 obtener token del localStorage
+  const getToken = () => localStorage.getItem("token");
 
   const fetchProducts = () => {
     setLoading(true);
-    fetch(`${API_BASE}/list`)
+    const token = getToken();
+
+    fetch(`${API_BASE}/list`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => res.json())
       .then((data) => setProducts(data.productos || []))
       .catch((err) => setError(err.message))
@@ -25,20 +38,35 @@ const ProductsManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = getToken();
 
     const method = editing ? "PUT" : "POST";
     const url = editing ? `${API_BASE}/update-price` : `${API_BASE}/create`;
 
     const payload = editing
-      ? { id_producto: editing, precio: form.precio }
-      : form; // ahora incluye descripcion
+      ? {
+          id_producto: editing,
+          precio: form.precio ? Number(form.precio) : null,
+          costo: form.costo ? Number(form.costo) : null,
+        }
+      : {
+          nombre: form.nombre,
+          descripcion: form.descripcion,
+          precio: Number(form.precio),
+          costo: form.costo ? Number(form.costo) : null,
+          stock: form.stock ? Number(form.stock) : 0,
+        };
 
     try {
       const confirm = await Swal.fire({
-        title: editing ? "¿Actualizar precio?" : "¿Crear producto?",
+        title: editing ? "¿Actualizar producto?" : "¿Crear producto?",
         text: editing
-          ? `Nuevo precio: $${form.precio}`
-          : `Producto: ${form.nombre} - Precio: $${form.precio}`,
+          ? `Nuevo precio: $${form.precio}${
+              form.costo ? ` | Nuevo costo: $${form.costo}` : ""
+            }`
+          : `Producto: ${form.nombre} - Precio: $${form.precio}${
+              form.costo ? ` - Costo: $${form.costo}` : ""
+            }`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: editing ? "Actualizar" : "Crear",
@@ -49,22 +77,30 @@ const ProductsManager = () => {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // 👈 token aquí
+        },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Error en la petición");
-
       await res.json();
 
       Swal.fire({
-        title: editing ? "Precio actualizado" : "Producto creado",
+        title: editing ? "Producto actualizado" : "Producto creado",
         icon: "success",
         timer: 1500,
         showConfirmButton: false,
       });
 
-      setForm({ nombre: "", descripcion: "", precio: "", stock: "" });
+      setForm({
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        costo: "",
+        stock: "",
+      });
       setEditing(null);
       fetchProducts();
     } catch (err) {
@@ -75,36 +111,42 @@ const ProductsManager = () => {
   const handleEdit = (product) => {
     setEditing(product.id_producto);
     setForm({
-      nombre: product.nombre,
-      descripcion: product.descripcion,
-      precio: product.precio,
-      stock: product.stock,
+      nombre: product.nombre || "",
+      descripcion: product.descripcion || "",
+      precio: product.precio || "",
+      costo: product.costo || "",
+      stock: product.stock || "",
     });
   };
 
-const handleDelete = async (id, nombre) => {
-  const confirm = await Swal.fire({
-    title: "¿Eliminar producto?",
-    text: `Se eliminará "${nombre}"`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar",
-  });
+  const handleDelete = async (id, nombre) => {
+    const token = getToken();
 
-  if (!confirm.isConfirmed) return;
+    const confirm = await Swal.fire({
+      title: "¿Eliminar producto?",
+      text: `Se eliminará "${nombre}"`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
 
-  try {
-    const res = await fetch(`${API_BASE}/delete/${id}`, { method: "DELETE" }); 
-    if (!res.ok) throw new Error("Error al eliminar producto");
+    if (!confirm.isConfirmed) return;
 
-    Swal.fire("Eliminado", "El producto ha sido eliminado.", "success");
-    fetchProducts();
-  } catch (err) {
-    Swal.fire("Error", err.message, "error");
-  }
-};
+    try {
+      const res = await fetch(`${API_BASE}/delete/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
+      if (!res.ok) throw new Error("Error al eliminar producto");
+
+      Swal.fire("Eliminado", "El producto ha sido eliminado.", "success");
+      fetchProducts();
+    } catch (err) {
+      Swal.fire("Error", err.message, "error");
+    }
+  };
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -112,7 +154,7 @@ const handleDelete = async (id, nombre) => {
   return (
     <div className="products-manager">
       <h2>Gestión de Productos</h2>
-
+      {/* Formulario */}
       <form onSubmit={handleSubmit} className="product-form">
         {!editing && (
           <>
@@ -127,45 +169,64 @@ const handleDelete = async (id, nombre) => {
               type="text"
               placeholder="Descripción"
               value={form.descripcion}
-              onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-              required
+              onChange={(e) =>
+                setForm({ ...form, descripcion: e.target.value })
+              }
             />
             <input
               type="number"
               placeholder="Stock inicial"
               value={form.stock}
               onChange={(e) => setForm({ ...form, stock: e.target.value })}
-              required
             />
           </>
         )}
+
         <input
           type="number"
-          placeholder="Precio"
+          placeholder="Precio (venta)"
           value={form.precio}
           onChange={(e) => setForm({ ...form, precio: e.target.value })}
           required
         />
+        <input
+          type="number"
+          placeholder="Costo (compra)"
+          value={form.costo}
+          onChange={(e) => setForm({ ...form, costo: e.target.value })}
+        />
+
         <button type="submit">
-          {editing ? "Actualizar precio" : "Crear producto"}
+          {editing ? "Actualizar precio/costo" : "Crear producto"}
         </button>
         {editing && (
           <button
             type="button"
             className="btn-cancel"
-            onClick={() => setEditing(null)}
+            onClick={() => {
+              setEditing(null);
+              setForm({
+                nombre: "",
+                descripcion: "",
+                precio: "",
+                costo: "",
+                stock: "",
+              });
+            }}
           >
             Cancelar
           </button>
         )}
       </form>
 
+      {/* Tabla */}
       <table className="cash-table">
         <thead>
           <tr>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Precio</th>
+            <th>Costo</th>
             <th>Stock</th>
             <th>Acciones</th>
           </tr>
@@ -176,9 +237,12 @@ const handleDelete = async (id, nombre) => {
               <td>{p.nombre}</td>
               <td>{p.descripcion}</td>
               <td>${p.precio}</td>
+              <td>{p.costo ? `$${p.costo}` : "-"}</td>
               <td>{p.stock}</td>
               <td>
-                <button onClick={() => handleEdit(p)}>Editar precio</button>
+                <button onClick={() => handleEdit(p)}>
+                  Editar precio/costo
+                </button>
                 <button onClick={() => handleDelete(p.id_producto, p.nombre)}>
                   Eliminar
                 </button>

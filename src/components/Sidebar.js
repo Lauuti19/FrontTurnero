@@ -19,7 +19,10 @@ const menuConfig = {
           { path: "/manager/usuarios", label: "Usuarios" },
           { path: "/manager/rutinas", label: "Rutinas" },
           { path: "/registrar-cuota", label: "Cuotas" },
-          { path: "/manager/ejercicios", label: "Ejercicios" }
+          { path: "/manager/ejercicios", label: "Ejercicios" },
+          { path: "/manager/work_hours", label: "Profes" },
+          { path: "/manager/admins", label: "Administradores" }
+
         ]
       },
       { path: "/timer", label: "Timer" },
@@ -41,7 +44,7 @@ const menuConfig = {
           { path: "/manager/usuarios", label: "Usuarios" },
           { path: "/manager/rutinas", label: "Rutinas" },
           { path: "/registrar-cuota", label: "Cuotas" },
-          { path: "/manager/ejercicios", label: "Ejercicios" }
+          { path: "/manager/ejercicios", label: "Ejercicios" },
         ]
       },
       { path: "/timer", label: "Timer" }
@@ -53,7 +56,9 @@ const menuConfig = {
       { path: "/clasesUser", label: "Clases" },
       { path: "#", label: "Progreso" },
       { path: "/timer", label: "Timer" },
-      { path: "/rutina", label: "Mi Rutina" }
+      { path: "/rutina", label: "Mi Rutina" },
+      { path: "/mismovimientos", label: "Movimientos" }
+
     ]
   }
 };
