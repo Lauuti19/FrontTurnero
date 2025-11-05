@@ -28,6 +28,7 @@ import WorkHoursPage from "./pages/WorkHoursPage.js";
 import AdministradoresPage from "./pages/AdministradoresPage.js"; 
 import UserCashMovementsPage from "./pages/UserCashMovementsPage.js"; 
 import EditProfile from "./pages/EditProfile.js";
+import ExpiredTokenPage from "./pages/ExpiredTokenPage.js";
 import './App.css';
 
 function AppContent() {
@@ -63,6 +64,7 @@ function AppContent() {
           <Route path="/manager/admins" element={<AdministradoresPage />} />
           <Route path="/mismovimientos" element={<UserCashMovementsPage />} />
           <Route path="/Movimientos" element={<CashMovementsPage />} />
+          <Route path="/Expired" element={<ExpiredTokenPage />} />
         </Routes>
       </AnimatePresence>
       <Footer />

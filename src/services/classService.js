@@ -11,35 +11,22 @@ const buildQueryString = (params = {}) => {
   return searchParams.toString();
 };
 
-// En services/classService.js
 export const classService = {
-  /**
-   * Obtener todas las clases para una fecha
-   */
   getAllClasses: async (token, fecha) => {
     const query = buildQueryString({ fecha });
     return await fetchWithAuth(`/classes/all?${query}`, token);
   },
 
-  /**
-   * Obtener clases de un usuario en una fecha (CON verificación de créditos)
-   */
   getClassesByUser: async (token, userId, fecha) => {
     const query = buildQueryString({ userId, fecha });
     return await fetchWithAuth(`/classes/by-user?${query}`, token);
   },
 
-  /**
-   * Obtener clases de un usuario en una fecha (SIN verificación de créditos)
-   */
   getClassesByUserNoCredits: async (token, userId, fecha) => {
     const query = buildQueryString({ userId, fecha });
     return await fetchWithAuth(`/classes/by-user-no-credits?${query}`, token);
   },
 
-  /**
-   * Registrar usuario a clase
-   */
   registerToClass: async (token, registrationData) => {
     return await fetchWithAuth('/classes/register', token, {
       method: 'POST',
@@ -47,9 +34,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Desinscribir usuario de clase (con créditos)
-   */
   unregisterFromClass: async (token, registrationData) => {
     return await fetchWithAuth('/classes/unregister', token, {
       method: 'POST',
@@ -57,9 +41,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Desinscribir usuario de clase (SIN créditos - modo admin)
-   */
   unregisterFromClassNoCredits: async (token, registrationData) => {
     return await fetchWithAuth('/classes/unregister-no-credits', token, {
       method: 'POST',
@@ -67,17 +48,12 @@ export const classService = {
     });
   },
 
-  /**
-   * Obtener usuarios anotados en una clase
-   */
-  getUsersByClassAndDate: async (token, classId, classType, fecha) => {
+  // ✅ CORREGIDO - getUsersInClass funcionando
+  getUsersInClass: async (token, classId, classType, fecha) => {
     const query = buildQueryString({ classId, classType, fecha });
     return await fetchWithAuth(`/classes/users-by-class?${query}`, token);
   },
 
-  /**
-   * Crear clase
-   */
   createClass: async (token, classData) => {
     return await fetchWithAuth('/classes/create', token, {
       method: 'POST',
@@ -85,17 +61,11 @@ export const classService = {
     });
   },
 
-  /**
-   * Obtener clases por día de la semana
-   */
   getClassesByDay: async (token, id_dia) => {
     const query = buildQueryString({ id_dia });
     return await fetchWithAuth(`/classes/by-day?${query}`, token);
   },
 
-  /**
-   * Actualizar clase
-   */
   updateClass: async (token, classId, classData) => {
     return await fetchWithAuth('/classes/update', token, {
       method: 'PUT',
@@ -103,9 +73,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Eliminar clase (borrado lógico)
-   */
   deleteClass: async (token, classId) => {
     return await fetchWithAuth('/classes/delete', token, {
       method: 'PUT',
@@ -113,9 +80,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Actualizar asistencia
-   */
   updateAttendance: async (token, attendanceData) => {
     return await fetchWithAuth('/classes/update-attendance', token, {
       method: 'PUT',
@@ -123,9 +87,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Verificar asistencia por QR
-   */
   checkAttendanceQR: async (token, userId) => {
     return await fetchWithAuth('/classes/check', token, {
       method: 'POST',
@@ -133,9 +94,6 @@ export const classService = {
     });
   },
 
-  /**
-   * Registrar asistencia individual
-   */
   registerIndividualAttendance: async (token, attendanceData) => {
     return await fetchWithAuth('/classes/register-attendance', token, {
       method: 'PUT',
@@ -143,19 +101,14 @@ export const classService = {
     });
   },
 
-  /**
-   * Verificar si usuario está registrado en una clase
-   */
   checkUserRegistration: async (token, { classId, classType, userId, fecha }, isStaff = false) => {
     try {
-      // Usar endpoint según el rol
       const userClasses = isStaff
         ? await classService.getClassesByUserNoCredits(token, userId, fecha)
         : await classService.getClassesByUser(token, userId, fecha);
 
       const classesArray = Array.isArray(userClasses) ? userClasses : [];
 
-      // Buscar si está registrado en la clase específica
       const isRegistered = classesArray.some(clase => {
         if (classType === 'especial') {
           return clase.id_original === classId || clase.id_clase === classId;
