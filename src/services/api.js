@@ -45,7 +45,6 @@ export const fetchWithAuth = async (endpoint, token, options = {}) => {
   }
 };
 
-// 🔹 NUEVO: para endpoints que NO necesitan token
 export const fetchJson = async (endpoint, options = {}) => {
   const url = `${API_URL}${endpoint}`;
   const config = {

@@ -1,0 +1,129 @@
+/* /c:/Users/lauti/Desktop/turnero/FrontTurnero/src/styles/ExpiredTokenPage.css */
+
+:root{
+    --bg: #ffff;
+    --card-bg: #18181b;
+    --muted: #6b7280;
+    --accent: #fbf106;
+    --accent-contrast: #ffffff;
+    --shadow: 0 6px 18px rgba(15,23,42,0.08);
+    --radius: 12px;
+    --max-width: 420px;
+    --gap: 18px;
+}
+
+/* Full-page centered layout */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: var(--bg);
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Centering container (coincide con la clase usada en el componente) */
+.expired-token-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+/* Card with subtle shadow */
+.expired-token-box {
+    width: 100%;
+    max-width: var(--max-width);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    animation: fadeIn 260ms ease;
+}
+
+/* Title and message */
+.expired-token-title {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    font-weight: 600;
+    color: white;
+}
+
+.expired-token-message {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Icon (coincide con la clase usada en el componente) */
+.expired-token-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(190, 20, 20);
+    font-size: 22px;
+}
+
+/* Actions / Button */
+.expired-token-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+    background: #fbf106;
+    color: black;
+    box-shadow: 0 6px 14px rgba(37,99,235,0.18);
+}
+
+.expired-token-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.03);
+}
+
+.expired-token-button:focus-visible {
+    outline: 3px solid rgba(37,99,235,0.18);
+    outline-offset: 2px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 420px) {
+    .expired-token-box {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .expired-token-title {
+        font-size: 1.1rem;
+    }
+
+    .expired-token-button {
+        padding: 9px 14px;
+        font-size: 0.92rem;
+    }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}

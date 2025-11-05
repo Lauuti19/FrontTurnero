@@ -31,15 +31,11 @@ const fetchClasses = useCallback(async () => {
   try {
     let classesData;
 
-    // CORRECCIÓN: Si es admin, siempre mostrar todas las clases
     if (adminMode) {
-      // Admin ve todas las clases, independientemente del userId
       classesData = await classService.getAllClasses(token, formattedDate);
     } else if (userId) {
-      // Usuario normal ve sus clases
       classesData = await classService.getClassesByUser(token, userId, formattedDate);
     } else {
-      // Sin usuario específico, mostrar todas
       classesData = await classService.getAllClasses(token, formattedDate);
     }
 

@@ -2,10 +2,24 @@
 import React from 'react';
 import '../styles/ClassUserModal.css';
 import { FiUser } from "react-icons/fi";
-import { useClassUsers } from '../hooks/otherHooks/useClassUsers';
+import { useRegisterMap } from '../hooks/otherHooks/useRegisterMap';
 
 const ClassUsersModal = ({ classId, classType, fecha, onClose, getToken }) => {
-  const { users, loading, error } = useClassUsers(classId, classType, fecha, getToken);
+  const { 
+    registeredUsers, 
+    loading, 
+    error 
+  } = useRegisterMap({
+    classId,
+    classType,
+    fecha,
+    getToken
+  });
+
+  // Función para obtener el nombre completo del usuario
+  const getUserFullName = (user) => {
+    return `${user.nombre || ''} ${user.apellido || ''}`.trim();
+  };
 
   return (
     <div className="modal-overlay">
@@ -15,19 +29,22 @@ const ClassUsersModal = ({ classId, classType, fecha, onClose, getToken }) => {
 
         {error && (
           <div className="error-message">
-            <p>⚠️ {error}</p>
+            <p>{error}</p>
           </div>
         )}
 
         {loading ? (
-          <div className="loading-container"><p>Cargando usuarios...</p></div>
-        ) : users.length > 0 ? (
+          <div className="loading-container-modal">
+            <div className="loader-modal"></div>
+            <p>Cargando usuarios...</p>
+          </div>
+        ) : registeredUsers.length > 0 ? (
           <div className="attendees-list-modal">
-            {users.map((u, i) => (
-              <div key={u.id_usuario || i} className="user-badge-modal">
+            {registeredUsers.map((user, index) => (
+              <div key={user.id_usuario || user.id || index} className="user-badge-modal">
                 <FiUser className="user-icon-modal" />
                 <span className="user-name-modal">
-                  {u.nombre} {u.apellido}
+                  {getUserFullName(user)}
                 </span>
               </div>
             ))}

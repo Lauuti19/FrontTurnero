@@ -1,13 +1,12 @@
-// components/ClassSchedule.jsx (refactorizado y corregido)
+// components/ClassSchedule.jsx (modificado)
 import React, { useState } from 'react';
 import {
   FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt,
-  FaDumbbell, FaRunning, FaHeart
+  FaDumbbell, FaRunning, FaHeart, FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
 import '../styles/ClassSchedule.css';
 import ClassUsersModal from './ClassUsersModal';
 import RegistrationManager from './RegisterButtonFiles/RegistrationManager';
-import RegisterButton from './RegisterButton';
 import SkeletonLoader from './SkeletonLoader';
 import { useAuth } from '../AuthContext';
 import { useClassSchedule } from '../hooks/otherHooks/useClassSchedule';
@@ -21,8 +20,8 @@ const ClassSchedule = ({
   customContainerStyle = {},
   customItemStyle = {},
   adminMode = false,
-  customTitle = "Horario de Clases", // Nueva prop
-  customSubtitle = "Entrena con nosotros" // Nueva prop
+  customTitle = "Horario de Clases",
+  customSubtitle = "Entrena con nosotros"
 }) => {
   const { getToken } = useAuth();
   const [expandedClassId, setExpandedClassId] = useState(null);
@@ -69,6 +68,18 @@ const ClassSchedule = ({
     return <FaDumbbell className="discipline-icon" />;
   };
 
+  // Función para crear la fecha completa de la clase
+  const getClassFullDate = (horaClase) => {
+    if (!horaClase) return null;
+    
+    // Crear fecha con la fecha actual + hora de la clase
+    const [hours, minutes] = horaClase.split(':');
+    const classDate = new Date(currentDate);
+    classDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+    
+    return classDate.toISOString();
+  };
+
   const getFormattedDate = () => {
     const dayIndex = currentDate.getDay();
     const adjusted = dayIndex === 0 ? 6 : dayIndex - 1;
@@ -89,16 +100,16 @@ const ClassSchedule = ({
     );
   };
 
-  // CORRECCIÓN: Usar != null para incluir 0 como valor válido
+  // Obtener usuario local
   const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
   const userId = propUserId != null ? propUserId : (usuarioLocal?.id_usuario || usuarioLocal?.id);
 
-  // CORRECCIÓN: Función unificada para determinar el tipo de clase
+  // Función unificada para determinar el tipo de clase
   const getClassType = (clase) => {
     return (clase.tipo === 'especial' || clase.is_especial) ? 'especial' : 'normal';
   };
 
-  // CORRECCIÓN: Función unificada para obtener el ID original
+  // Función unificada para obtener el ID original
   const getClassOriginalId = (clase) => {
     return clase.id_original || clase.specialClassOriginalId;
   };
@@ -112,10 +123,9 @@ const ClassSchedule = ({
         {showHeader && (
           <div className="schedule-header">
             <div className="schedule-title">
-              <h2>{customTitle}</h2> {/* Usar prop personalizada */}
-              <p>{customSubtitle}</p> {/* Usar prop personalizada */}
+              <h2>{customTitle}</h2>
+              <p>{customSubtitle}</p>
             </div>
-
 
             <div className="date-navigation">
               <button
@@ -173,16 +183,23 @@ const ClassSchedule = ({
               const capacityPercentage = getCapacityPercentage(disponibles, total);
               const capacityColor = getCapacityColor(capacityPercentage);
               const classType = getClassType(clase);
+              const isExpanded = expandedClassId === clase.id_clase;
+              const classFullDate = getClassFullDate(clase.hora);
 
               return (
                 <div
                   key={clase.id_clase}
-                  className={`class-item ${expandedClassId === clase.id_clase ? 'expanded' : ''}`}
+                  className={`class-item ${isExpanded ? 'expanded' : ''}`}
                   style={customItemStyle}
-                  onClick={() => toggleExpand(clase.id_clase)}
                 >
-                  <div className="class-main-info">
-                    <div className="class-icon">{getDisciplineIcon(clase.disciplina)}</div>
+                  {/* Header de la clase - Siempre visible */}
+                  <div 
+                    className="class-main-info"
+                    onClick={() => toggleExpand(clase.id_clase)}
+                  >
+                    <div className="class-icon">
+                      {getDisciplineIcon(clase.disciplina)}
+                    </div>
 
                     <div className="class-details">
                       <h3 className="class-discipline">{clase.disciplina}</h3>
@@ -199,44 +216,43 @@ const ClassSchedule = ({
                             background: `linear-gradient(90deg, ${capacityColor} ${capacityPercentage}%, #e5e7eb ${capacityPercentage}%)`,
                           }}
                         />
-                        <span className="capacity-text">
-                          {disponibles}/{total} cupos
-                        </span>
                       </div>
-                      {capacityPercentage >= 80 && <span className="capacity-alert">¡Últimos cupos!</span>}
+                      <span className="class-available">
+                          {disponibles}/{total} cupos
+                      </span>
+                    </div>
+
+                    <div className="expand-icon">
+                      {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                     </div>
                   </div>
 
-                  <div className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}>
-                    <div className="class-action-buttons">
-                      <button
-                        className="btn-view-users"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openUsersModal(clase);
-                        }}
-                        title="Ver Anotados anotados"
-                      >
-                        <FaUsers />
-                        <span>Ver Anotados</span>
-                      </button>
+                  {/* Contenido expandible - Solo visible cuando está expandido */}
+                  {isExpanded && (
+                    <div className="class-expanded-content">
+                      <div className="class-action-buttons">
+                        <button
+                          className="btn-view-users"
+                          onClick={() => openUsersModal(clase)}
+                          title="Ver usuarios anotados"
+                        >
+                          <FaUsers />
+                          <span>Ver Anotados</span>
+                        </button>
 
-                      <RegisterButton
-                      className="botonAnotarse"
-                        classId={clase.id_clase}
-                        classType={classType}
-                        specialClassOriginalId={getClassOriginalId(clase)}
-                        fecha={formattedDate}
-                        hora={clase.hora}
-                        disciplina={clase.disciplina}
-                        userId={userId}
-                        disabled={clase.inscripto || clase.disponibles === 0}
-                        disabledReason={clase.inscripto ? "Ya estás anotado" : "No hay cupos disponibles"}
-                        onSuccess={refetch}
-                        getToken={getToken}
-                      />
+                        <RegistrationManager
+                          classId={clase.id_clase}
+                          classType={classType}
+                          fecha={classFullDate} // ← CORREGIDO: Usar fecha completa
+                          hora={clase.hora} 
+                          getToken={getToken}
+                          userId={userId}
+                          isAdmin={adminMode}
+                          onRegistrationChange={refetch}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })
