@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/ExpiredTokenPage.css';
 import { useNavigate } from 'react-router-dom';
-import { FaExclamationTriangle } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
+import barquito from '../assets/barquito-drakkar.png';
 const ExpiredTokenPage = () => {
 
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const ExpiredTokenPage = () => {
     return (
     <div className="expired-token-container">
         <div className="expired-token-box">
-            <FaExclamationTriangle className="expired-token-icon" />
+            <img src={barquito} alt="Barquito Drakkar" className="expired-token-icon" />
             <h2 className="expired-token-title">Token Expirado</h2>
             <p className="expired-token-message">
                 Su sesión ha expirado. Por favor, inicie sesión nuevamente para continuar.

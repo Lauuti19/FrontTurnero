@@ -1,7 +1,5 @@
-/* /c:/Users/lauti/Desktop/turnero/FrontTurnero/src/styles/ExpiredTokenPage.css */
-
 :root{
-    --bg: #ffff;
+    --bg: #18181b;
     --card-bg: #18181b;
     --muted: #6b7280;
     --accent: #fbf106;
@@ -65,13 +63,12 @@ html, body {
 
 /* Icon (coincide con la clase usada en el componente) */
 .expired-token-icon {
-    width: 56px;
-    height: 56px;
+    width: 150px;
+    height: 130px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgb(190, 20, 20);
     font-size: 22px;
 }
 
