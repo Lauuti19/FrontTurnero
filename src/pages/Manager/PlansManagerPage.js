@@ -5,6 +5,7 @@ import { useTabManager } from '../../components/useTabManager';
 import { plansTabConfig } from '../../components/managerConfigs';
 import ModifierPlan from "../../components/ModifierPlan";
 import ManagePlans from "../../components/ManagePlans";
+import ManagePlanes from '../../components/ManagePlanes';
 
 const PlansManagerPage = () => {
   const { activeTab, setActiveTab } = useTabManager('create');
@@ -13,8 +14,8 @@ const PlansManagerPage = () => {
     switch (activeTab) {
       case 'create':
         return <ModifierPlan mode="create" />;
-      case 'modify':
-        return <ManagePlans />;
+      case 'update':
+        return <ManagePlanes />;
       default:
         return null;
     }

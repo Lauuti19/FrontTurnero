@@ -1,79 +1,357 @@
+/* Buscador.css - Estilos Modernos y Profesionales */
+
 .buscador-container {
-  position: relative;
-  width: 100%;
-  margin: 1rem 0;
-  font-family: 'inter', sans-serif;
+    position: relative;
+    width: 100%;
 }
 
-/* 🔍 Input principal */
+.buscador-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 .buscador-input {
-  background: #1e1e1e;
-  color: #eee;
-  border: 1px solid #444;
-  width: 100%;
-  box-sizing: border-box;
+    padding: 14px 16px;
+    padding-right: 48px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    color: #1a1a1a;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .buscador-input:focus {
-  border-color: #f04a3e;
-  box-shadow: 0 0 4px rgba(240, 74, 62, 0.4);
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+    background: #ffffff;
 }
 
-.buscador-suggestions {
-  background: #b6b6b656;
-  border-color: #444;
-  border-radius: 5px;
+.buscador-input:hover:not(:disabled) {
+    border-color: #dee2e6;
 }
 
-.buscador-suggestion-item:hover {
-  background: #f04a3e;
-  color: #fff;
-}
-.buscador-suggestion-item::marker{
-    color: black;
+.buscador-input:disabled {
+    background: #f8f9fa;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
-/* ⏳ Indicador de carga */
+.buscador-input::placeholder {
+    color: #adb5bd;
+    font-weight: 400;
+}
+
+.buscador-clear-btn {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.buscador-clear-btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    color: #dc3545;
+}
+
+.buscador-clear-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Loading State */
 .buscador-loading {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: #444;
-  font-family: 'Inter', sans-serif;
-  font-weight: lighter;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    color: #666;
+    font-weight: 500;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 8px;
+    animation: slideInDown 0.3s ease-out;
 }
 
-/* 🧍 Ítem individual */
+.buscador-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffd700;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Suggestions Dropdown */
+.buscador-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    animation: slideInDown 0.3s ease-out;
+}
+
+.buscador-suggestions-header {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Suggestion Items */
 .buscador-suggestion-item {
-  padding: 0px 20px;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+    padding: 0;
+    border-bottom: 1px solid #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.buscador-suggestion-item:last-child {
+    border-bottom: none;
 }
 
 .buscador-suggestion-item:hover {
-  background: #1e1e1e;
-  color: white;
-  border-radius: 5px;
+    background: linear-gradient(135deg, #fff9e6, #fff3cc);
 }
 
-/* 🧾 Nombre dentro del ítem */
+.buscador-suggestion-content {
+    padding: 16px;
+}
+
 .buscador-suggestion-name {
-  font-size: 15px;
+    display: block;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
 }
 
-/* ⚠️ No results */
+.buscador-suggestion-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.buscador-suggestion-email {
+    font-size: 0.85rem;
+    color: #666;
+    flex: 1;
+}
+
+.buscador-suggestion-role {
+    font-size: 0.75rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* No Results State */
 .buscador-no-results {
-  position: absolute;
-  width: 100%;
-  top: 105%;
-  background: #fff;
-  border-radius: 6px;
-  padding: 10px 0px;
-  text-align: center;
-  color: #888;
-  font-size: 14px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    color: #666;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-top: 8px;
+    animation: slideInDown 0.3s ease-out;
+}
+
+.buscador-no-results-icon {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.buscador-no-results-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.buscador-no-results-text p {
+    margin: 0;
+    font-weight: 600;
+    color: #495057;
+}
+
+.buscador-no-results-text span {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Scrollbar Styling */
+.buscador-suggestions::-webkit-scrollbar {
+    width: 6px;
+}
+
+.buscador-suggestions::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 12px 12px 0;
+}
+
+.buscador-suggestions::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 3px;
+}
+
+.buscador-suggestions::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
+
+/* Focus States for Accessibility */
+.buscador-input:focus {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+}
+
+.buscador-suggestion-item:focus {
+    outline: 2px solid #ffd700;
+    outline-offset: -2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .buscador-input {
+        padding: 12px 14px;
+        padding-right: 44px;
+        font-size: 0.95rem;
+    }
+    
+    .buscador-suggestion-content {
+        padding: 14px;
+    }
+    
+    .buscador-suggestion-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    
+    .buscador-suggestion-role {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .buscador-input {
+        padding: 10px 12px;
+        padding-right: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .buscador-suggestion-content {
+        padding: 12px;
+    }
+    
+    .buscador-suggestion-name {
+        font-size: 0.9rem;
+    }
+    
+    .buscador-suggestion-email {
+        font-size: 0.8rem;
+    }
+    
+    .buscador-loading,
+    .buscador-no-results {
+        padding: 16px;
+    }
+}
+
+/* Transitions */
+.buscador-input,
+.buscador-suggestion-item,
+.buscador-clear-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Selection State */
+.buscador-suggestion-item:active {
+    transform: scale(0.98);
+}
+
+/* Disabled State for Container */
+.buscador-container:has(.buscador-input:disabled) {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Hover effects for better UX */
+.buscador-suggestion-item:hover .buscador-suggestion-name {
+    color: #1a1a1a;
+}
+
+.buscador-suggestion-item:hover .buscador-suggestion-email {
+    color: #495057;
+}
+
+/* Loading text animation */
+.buscador-loading {
+    position: relative;
+}
+
+.buscador-loading::after {
+    content: '';
+    animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
 }

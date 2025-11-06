@@ -1,4 +1,4 @@
-/* CreateDiscipline.css - Estilos Modernos y Profesionales */
+/* CreatePlan.css - Estilos Modernos y Profesionales */
 
 /* Container Principal */
 .CreateClassContainer {
@@ -12,7 +12,7 @@
 }
 
 /* Título Principal */
-#Title-Disciplinas {
+#Title-Planes {
   font-size: 2.5rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-#Title-Disciplinas::after {
+#Title-Planes::after {
   content: '';
   position: absolute;
   bottom: -12px;
@@ -30,34 +30,11 @@
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: #ffd700;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
   border-radius: 2px;
 }
 
-/* Mensajes de Error y Warning */
-.error-message {
-  background: linear-gradient(135deg, #f8d7da, #f1aeb5);
-  border: 1px solid #dc3545;
-  border-radius: 12px;
-  padding: 30px;
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-  animation: slideInDown 0.5s ease-out;
-}
-
-.error-message h2 {
-  color: #dc3545;
-  margin-bottom: 15px;
-  font-size: 1.5rem;
-}
-
-.error-message p {
-  color: #721c24;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
+/* Mensaje de Warning */
 .warning-message {
   background: linear-gradient(135deg, #fff3cd, #ffeaa7);
   border: 1px solid #ffd700;
@@ -67,9 +44,6 @@
   width: 100%;
   max-width: 600px;
   animation: slideInDown 0.5s ease-out;
-  display: flex;
-  justify-content: between;
-  align-items: center;
 }
 
 .warning-message p {
@@ -79,27 +53,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
-}
-
-.dismiss-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #856404;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.dismiss-btn:hover {
-  background-color: rgba(133, 100, 4, 0.1);
 }
 
 /* Formulario */
@@ -115,7 +68,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-bottom: 30px;
 }
 
 /* Labels del Formulario */
@@ -128,13 +80,13 @@
 }
 
 .form-group-class label::after {
-  content: "*";
+  content: "";
   color: #ff6b6b;
-  margin-left: 4px;
 }
 
-/* Inputs */
-.form-group-class input {
+/* Inputs y Textarea */
+.form-group-class input,
+.form-group-class textarea {
   padding: 14px 16px;
   border: 2px solid #e9ecef;
   border-radius: 12px;
@@ -147,15 +99,17 @@
   box-sizing: border-box;
 }
 
-.form-group-class input:focus {
+.form-group-class input:focus,
+.form-group-class textarea:focus {
   outline: none;
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
   background: #ffffff;
   color: #1a1a1a;
 }
 
-.form-group-class input:hover {
+.form-group-class input:hover,
+.form-group-class textarea:hover {
   border-color: #dee2e6;
 }
 
@@ -164,44 +118,108 @@
   font-weight: 400;
 }
 
-.form-group-class input:disabled {
+.form-group-class input:disabled,
+.form-group-class textarea:disabled {
   background: #f8f9fa;
   color: #999;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-/* Contador de caracteres */
-.character-counter {
-  text-align: right;
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 6px;
-  font-weight: 500;
+/* Textarea específico */
+.form-group-class textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
 }
-.btn-retry-discipline{
 
+/* Grupo de Checkboxes */
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-  color: #ffffff;
-  border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.checkbox-item:hover {
+  background: #ffd700;
+  border-color: #dee2e6;
+}
+
+.checkbox-item:has(.checkbox-input:checked) {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: white;
+  font-weight: bolder;
+}
+.checkbox-item:has(.checkbox-input:checked) label{
+    color: white;
+}
+.checkbox-item:has(.checkbox-input:checked) {
+    color: white;
+    font-weight: bolder;
+}
+.checkbox-item:has(.checkbox-input:checked):hover {
+  background: #333333;
+  border-color: #ffd700;
+  color: #ffd700;
+}
+.checkbox-item:has(.checkbox-input:checked):hover label{
+    color: #ffd700;
+}
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  background: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
-  margin-top: 16px;
 }
-/* Botón de Crear Disciplina */
-.btn-create-discipline {
+
+.checkbox-input:checked {
+  background: #ffd700;
+  border-color: #ffd700;
+}
+
+.checkbox-input:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkbox-label {
+  font-weight: 500;
+  color: #1a1a1a;
+  cursor: pointer;
+  margin: 0;
+  flex: 1;
+}
+
+/* Botón de Crear Plan */
+.btn-create-plan{
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   color: #ffffff;
   border: none;
   padding: 16px 32px;
@@ -215,17 +233,17 @@
   margin-top: 16px;
 }
 
-.btn-create-discipline:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff5252, #ff7b7b);
+.create-plan-btn:hover:not(:disabled) {
+  background:  #404040;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.btn-create-discipline:active:not(:disabled) {
+.create-plan-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.btn-create-discipline:disabled {
+.create-plan-btn:disabled {
   background: #e9ecef;
   color: #999;
   cursor: not-allowed;
@@ -233,81 +251,34 @@
   box-shadow: none;
 }
 
-.btn-create-discipline.loading {
+.create-plan-btn.loading {
   color: transparent;
 }
 
 /* Spinner para loading */
-
-.btn-icon {
-  font-size: 1rem;
-}
-
-/* Sección de Consejos */
-.discipline-tips {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border: 1px solid #dee2e6;
-  border-radius: 16px;
-  padding: 30px;
-  max-width: 600px;
-  width: 100%;
-  animation: slideInUp 0.6s ease-out;
-  margin: 0 auto;
-}
-
-.tips-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.tips-icon {
-  color: #495057;
-  font-size: 1.5rem;
-}
-
-.tips-header h4 {
-  margin: 0;
-  color: #1a1a1a;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.tips-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tip-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-}
-
-.tip-icon {
-  color: #999;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.tip-item span {
-  color: #495057;
-  font-weight: 500;
-  line-height: 1.4;
-  font-size: 0.8rem;
+.create-plan-btn:disabled::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #999;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 /* Estados de validación */
-.form-group-class input:invalid:not(:focus):not(:placeholder-shown) {
+.form-group-class input:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class textarea:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class number:invalid:not(:focus):not(:placeholder-shown)
+ {
   background: #fffbfb;
-  border-color: #ff6b6b;
+  border-color: #cec3a4;
   color: black;
 }
 
-.form-group-class input:valid:not(:focus):not(:placeholder-shown) {
+.form-group-class input:valid:not(:focus):not(:placeholder-shown),
+.form-group-class textarea:valid:not(:focus):not(:placeholder-shown) {
   border-color: #51cf66;
   background: #f8fff9;
   color: black;
@@ -343,13 +314,15 @@
 
 /* Focus states para accesibilidad */
 .form-group-class input:focus,
-.btn-create-discipline:focus {
-  outline: 2px solid #ff6b6b;
+.form-group-class textarea:focus,
+.checkbox-input:focus,
+.create-plan-btn:focus {
+  outline: 2px solid #ffd700;
   outline-offset: 2px;
 }
 
 /* Efecto de ripple en botones */
-.btn-create-discipline::before {
+.create-plan-btn::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -362,9 +335,20 @@
   transform: translate(-50%, -50%);
 }
 
-.btn-create-discipline:hover:not(:disabled)::before {
+.create-plan-btn:hover:not(:disabled)::before {
   width: 100px;
   height: 100px;
+}
+
+/* Mensaje de carga */
+.checkbox-group p {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 0;
 }
 
 /* Responsive Design */
@@ -373,7 +357,7 @@
     padding: 20px 16px;
   }
   
-  #Title-Disciplinas {
+  #Title-Planes {
     font-size: 2rem;
     margin-bottom: 30px;
   }
@@ -383,8 +367,8 @@
     border-radius: 16px;
   }
   
-  .discipline-tips {
-    padding: 24px;
+  .checkbox-group {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -393,7 +377,7 @@
     padding: 16px 12px;
   }
   
-  #Title-Disciplinas {
+  #Title-Planes {
     font-size: 1.7rem;
   }
   
@@ -402,17 +386,18 @@
     gap: 20px;
   }
   
-  .form-group-class input {
+  .form-group-class input,
+  .form-group-class textarea {
     padding: 12px 14px;
   }
   
-  .btn-create-discipline {
+  .create-plan-btn {
     padding: 14px 24px;
     font-size: 1rem;
   }
   
-  .tip-item {
-    padding: 6px 0;
+  .checkbox-item {
+    padding: 10px;
   }
 }
 
@@ -421,8 +406,22 @@
   scroll-behavior: smooth;
 }
 
+/* Mejoras de accesibilidad para checkboxes */
+.checkbox-input:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* Estados hover mejorados */
+.checkbox-item:hover .checkbox-label {
+  color: #1a1a1a;
+}
+
 /* Transiciones suaves para todos los elementos interactivos */
 .form-group-class input,
-.btn-create-discipline {
+.form-group-class textarea,
+.checkbox-item,
+.create-plan-btn,
+.checkbox-input {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

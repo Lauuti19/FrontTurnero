@@ -1,399 +1,623 @@
-/* ======== Contenedor general ======== */
-.registrar-cuota-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  background-color: #f5f6fa;
+/* RegistrarCuota.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
+.CreatePaymentContainer {
   min-height: 100vh;
-}
-
-/* ======== Caja principal ======== */
-.registrar-cuota-box {
-  background-color: #ffffff;
-  padding: 2.5rem 3rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  max-width: 500px;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.registrar-cuota-box:hover {
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-}
-
-/* ======== Título y descripción ======== */
-.registrar-cuota-title {
-  font-size: 1.9rem;
-  font-weight: 600;
-  text-align: center;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-.registrar-cuota-subtitle {
-  text-align: center;
-  font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 2rem;
-}
-
-/* ======== Formulario ======== */
-.registrar-cuota-form {
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-field label {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.95rem;
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.field-icon {
-  color: #3b82f6;
-  font-size: 0.9rem;
-}
-
-/* ======== Búsqueda de usuarios ======== */
-.search-container {
+/* Título Principal */
+#Title-Pagos {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
   position: relative;
 }
 
-.search-input {
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #f9fafb;
-  color: #111827;
-  transition: all 0.25s ease;
-  width: 100%;
-}
-
-.search-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  background-color: #fff;
-  outline: none;
-}
-
-.suggestions-dropdown {
+#Title-Pagos::after {
+  content: '';
   position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
-  margin-top: 0.25rem;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border-radius: 2px;
 }
 
-.suggestion-item {
+/* Mensajes de Estado */
+.warning-message {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 800px;
+  animation: slideInDown 0.5s ease-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.warning-message p {
+  margin: 0;
+  color: #856404;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 8px;
+  flex: 1;
+}
+
+.dismiss-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #856404;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
-.suggestion-item:hover {
-  background: #f8fafc;
+.dismiss-btn:hover {
+  background-color: rgba(133, 100, 4, 0.1);
 }
 
-.suggestion-item:last-child {
-  border-bottom: none;
-}
-
-.user-icon {
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.user-info {
+.loading-message {
+  text-align: center;
+  padding: 60px 40px;
+  color: #666;
+  font-size: 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  align-items: center;
+  gap: 16px;
 }
 
-.user-name {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.9rem;
+.spinner {
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #28a745;
 }
 
-.user-email {
+/* Formulario */
+.form-group-class {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  width: 100%;
+  animation: slideInUp 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+/* Fila de formulario */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Labels del Formulario */
+.form-group-class label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group-class label::after {
+  content: "*";
+  color: #ff6b6b;
+  margin-left: 4px;
+}
+
+/* Inputs y Select */
+.form-group-class input,
+.form-group-class select {
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group-class input:focus,
+.form-group-class select:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.form-group-class input:hover,
+.form-group-class select:hover {
+  border-color: #dee2e6;
+}
+
+.form-group-class input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.form-group-class input:disabled,
+.form-group-class select:disabled {
+  background: #f8f9fa;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Select específico */
+.plan-select,
+.payment-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 16px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 48px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.plan-select:focus,
+.payment-select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2328a745' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Texto de ayuda */
+.helper-text {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: #666;
+  margin-top: 6px;
+  font-style: italic;
 }
 
-/* ======== Usuario seleccionado ======== */
-.selected-user {
-  margin-top: -0.5rem;
+/* Información del usuario seleccionado */
+.selected-user-info {
+  margin: 10px 0;
 }
 
-.user-badge {
+.selected-user-card {
+  background: linear-gradient(135deg, #e8f5e8, #d4edda);
+  border: 2px solid #28a745;
+  border-radius: 12px;
+  padding: 20px;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.selected-user-card h4 {
+  margin: 0 0 12px 0;
+  color: #1a1a1a;
+  font-size: 1.1rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 6px;
+  gap: 8px;
 }
 
-.user-badge .user-icon {
-  color: #3b82f6;
+.selected-user-card h4::before {
+  content: '👤';
+  font-size: 1rem;
 }
 
 .user-details {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 8px;
 }
 
-/* ======== Campos de formulario ======== */
-.form-field select {
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid #d1d5db;
+.user-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.user-detail strong {
+  color: #1a1a1a;
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.user-detail span {
+  color: #495057;
+}
+
+/* Descripciones */
+.plan-description,
+.payment-description {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
   border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #f9fafb;
-  color: #111827;
-  transition: all 0.25s ease;
+  border-left: 3px solid #28a745;
+}
+
+.plan-description strong,
+.payment-description strong {
+  color: #28a745;
+}
+
+/* Campo checkbox */
+.checkbox-fees-field {
+  margin: 16px 0;
+}
+
+.checkbox-fees-container {
+  display: flex;
+  flex-direction: row !important;
+  gap: 12px;
   cursor: pointer;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.form-field select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  background-color: #fff;
-  outline: none;
+.checkbox-container-fees:hover {
+  background: #e9ecef;
 }
 
-.form-field select:disabled {
-  background-color: #f3f4f6;
-  color: #9ca3af;
-  cursor: not-allowed;
+.checkbox-fees-input {
+  width: 20px !important;
+  color: yellow;
 }
 
-/* ======== Checkbox personalizado ======== */
-.checkbox-field {
-  margin: 0.5rem 0;
+.checkbox-custom {
+  width: 100px;
+  height: 20px;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background: #28a745;
+  border-color: #28a745;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  font-weight: 500;
-  color: #374151;
-  padding: 0.5rem 0;
-}
-
-.checkbox-input {
-  display: none;
-}
-
-.checkmark {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid #d1d5db;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.checkbox-input:checked + .checkmark {
-  background: #10b981;
-  border-color: #10b981;
-}
-
-.checkbox-input:checked + .checkmark + .check-icon {
-  opacity: 1;
-  transform: scale(1);
+  gap: 8px;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .check-icon {
-  color: white;
-  font-size: 0.7rem;
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.2s ease;
-  position: absolute;
+  color: #28a745;
+  font-size: 0.9rem;
 }
 
-.checkbox-text {
-  font-size: 0.95rem;
+.checkbox-helper {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
+  margin-left: 40px;
+  font-style: italic;
 }
 
-/* ======== Botón de envío ======== */
-.submit-btn {
-  margin-top: 1rem;
-  background-color: #18181b;
-  color: #fbf106;
-  font-size: 1.1rem;
-  font-weight: 500;
-  font-family: 'Brigends', sans-serif;
-  padding: 0.9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+/* Resumen de pago */
+.payment-summary {
+  background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  animation: slideInUp 0.3s ease-out;
 }
 
-.submit-btn:hover:not(:disabled) {
-  background-color: #fbf106;
-  color: black;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
-}
-
-.submit-btn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: none;
-}
-
-.submit-btn:disabled {
-  background-color: #d1d5db;
-  color: #6b7280;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* ======== Resumen de cuota ======== */
-.fee-summary {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-}
-
-.fee-summary h4 {
+.payment-summary h4 {
+  margin: 0 0 16px 0;
+  color: #1a1a1a;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 1rem 0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.summary-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.payment-summary h4::before {
+  font-size: 1rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.summary-item:last-child {
-  border-bottom: none;
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f9fa;
 }
 
 .summary-label {
-  font-weight: 500;
-  color: #64748b;
+  font-weight: 600;
+  color: #495057;
   font-size: 0.9rem;
 }
 
 .summary-value {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.summary-value.price {
+  color: #28a745;
+  font-weight: 700;
+}
+
+.summary-value.status.paid {
+  color: #28a745;
   font-weight: 600;
-  color: #1e293b;
+}
+
+.summary-value.status.pending {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+/* Botón de Registrar Pago */
+.btn-register-payment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.btn-register-payment:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #28a745);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.btn-register-payment:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-register-payment:disabled {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-register-payment.loading {
+  color: transparent;
+}
+
+/* Sección de Consejos */
+.payment-tips {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 800px;
+  width: 100%;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tips-icon {
+  font-size: 1.5rem;
+}
+
+.tips-header h4 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tips-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.tip-icon {
+  color: #28a745;
+  font-weight: bold;
   font-size: 0.9rem;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
 }
 
-.summary-value.paid {
-  color: #059669;
+.tip-item span:last-child {
+  color: #495057;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
-.summary-value.pending {
-  color: #dc2626;
+/* Estados de validación */
+.form-group-class input:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class select:invalid:not(:focus) {
+  background: #fffbfb;
+  border-color: #ff6b6b;
+  color: black;
 }
 
-/* ======== Responsive ======== */
-@media (max-width: 680px) {
-  .registrar-cuota-container {
-    padding: 1rem;
-  }
+.form-group-class input:valid:not(:focus):not(:placeholder-shown),
+.form-group-class select:valid:not(:focus) {
+  border-color: #51cf66;
+  background: #f8fff9;
+  color: black;
+}
 
-  .registrar-cuota-box {
-    padding: 2rem 1.5rem;
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
   }
-
-  .registrar-cuota-title {
-    font-size: 1.6rem;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  .registrar-cuota-subtitle {
-    font-size: 0.9rem;
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
   }
-
-  .registrar-cuota-form {
-    gap: 1.2rem;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  .form-field input,
-  .form-field select {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus states para accesibilidad */
+.form-group-class input:focus,
+.form-group-class select:focus,
+.btn-register-payment:focus,
+.checkbox-container:focus-within {
+  outline: 2px solid #28a745;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .CreatePaymentContainer {
+    padding: 20px 16px;
   }
-
-  .submit-btn {
-    font-size: 1rem;
-    padding: 0.8rem;
+  
+  #Title-Pagos {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .form-group-class {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-tips {
+    padding: 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .registrar-cuota-container {
-    padding: 0.5rem;
+  .CreatePaymentContainer {
+    padding: 16px 12px;
   }
+  
+  #Title-Pagos {
+    font-size: 1.7rem;
+  }
+  
+  .form-group-class {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+  
+  .form-group-class input,
+  .form-group-class select {
+    padding: 12px 14px;
+  }
+  
+  .btn-register-payment {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+  
+  .tip-item {
+    padding: 6px 0;
+  }
+  
+  .selected-user-card {
+    padding: 16px;
+  }
+  
+  .payment-summary {
+    padding: 20px;
+  }
+}
 
-  .registrar-cuota-box {
-    padding: 1.5rem 1rem;
-  }
-
-  .registrar-cuota-title {
-    font-size: 1.4rem;
-  }
-
-  .suggestion-item {
-    padding: 0.6rem 0.8rem;
-  }
-
-  .user-badge {
-    padding: 0.6rem 0.8rem;
-  }
-
-  .fee-summary {
-    padding: 1rem;
-  }
+/* Transiciones suaves */
+.form-group-class input,
+.form-group-class select,
+.btn-register-payment,
+.checkbox-container,
+.selected-user-card,
+.payment-summary {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

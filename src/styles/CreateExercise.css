@@ -1,313 +1,319 @@
-/* ======== Contenedor general ======== */
-.create-exercise-container {
+/* CreateExercise.css - Estilos Centrados y Simplificados */
+
+/* Container Principal Centrado */
+.CreateExerciseContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Título Principal */
+#Title-Ejercicios {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+#Title-Ejercicios::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: #ffd700;
+  border-radius: 2px;
+}
+
+/* Contenedor del formulario centrado */
+.form-container {
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  background-color: #f5f6fa;
-  min-height: 100vh;
+  align-items: center;
 }
 
-/* ======== Caja del formulario ======== */
-.create-exercise-box {
-  background-color: #ffffff;
-  padding: 2.5rem 3rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  max-width: 600px;
+/* Formulario Centrado */
+.form-group-class {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  animation: slideInUp 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   width: 100%;
-  transition: all 0.3s ease;
+  max-width: 500px;
 }
 
-.create-exercise-box:hover {
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-}
-
-/* ======== Título y descripción ======== */
-.create-exercise-title {
-  font-size: 1.9rem;
+/* Labels del Formulario */
+.form-group-class label {
   font-weight: 600;
-  text-align: center;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-.create-exercise-subtitle {
-  text-align: center;
+  color: #1a1a1a;
   font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 2rem;
+  margin-bottom: 6px;
+  display: block;
 }
 
-/* ======== Campos del formulario ======== */
-.create-exercise-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 2.5rem;
+.form-group-class label::after {
+  content: "*";
+  color: #ff6b6b;
+  margin-left: 4px;
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+/* Inputs */
+.form-group-class input {
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.form-field label {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.95rem;
-}
-
-.form-field input {
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #f9fafb;
-  color: #111827;
-  transition: all 0.25s ease;
-}
-
-.form-field input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  background-color: #fff;
+.form-group-class input:focus {
   outline: none;
+  border-color: #6c757d;
+  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.15);
+  background: #ffffff;
 }
 
-.form-field input:disabled {
-  background-color: #f3f4f6;
-  color: #9ca3af;
+.form-group-class input:hover {
+  border-color: #dee2e6;
+}
+
+.form-group-class input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.form-group-class input:disabled {
+  background: #f8f9fa;
+  color: #999;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
-/* ======== Botón ======== */
-.create-exercise-btn {
-  margin-top: 0.5rem;
-  background-color: #18181b;
-  color: #fbf106;
-  font-size: 1.1rem;
+/* Contador de caracteres */
+.character-counter {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
   font-weight: 500;
-  font-family: 'Brigends', sans-serif;
-  padding: 0.9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+}
+
+/* Texto de ayuda */
+.helper-text {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Botón de Crear Ejercicio */
+.btn-create-exercise {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 10px;
+  background: #ffd700;
+  color: #1a1a1a;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+  width: 100%;
 }
 
-.create-exercise-btn:hover:not(:disabled) {
-  background-color: #fbf106;
-  color: black;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+.btn-create-exercise:hover:not(:disabled) {
+  background: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+  color: white;
 }
 
-.create-exercise-btn:active:not(:disabled) {
+.btn-create-exercise:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: none;
 }
 
-.create-exercise-btn:disabled {
-  background-color: #d1d5db;
-  color: #6b7280;
+.btn-create-exercise:disabled {
+  background: #e9ecef;
+  color: #999;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.btn-icon {
-  font-size: 1.2rem;
+.btn-create-exercise.loading {
+  color: transparent;
 }
 
-/* ======== Sección de ejercicios existentes ======== */
-.exercises-section {
-  border-top: 2px solid #e5e7eb;
-  padding-top: 2rem;
+
+.spinner {
+  animation: spin 1s linear infinite;
 }
 
-.existing-exercises h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.exercises-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.exercise-item {
+/* Mensajes de Estado */
+.warning-message {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 500px;
+  animation: slideInDown 0.5s ease-out;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 1rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.exercise-item:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-}
-
-.exercise-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.exercise-icon {
-  color: #3b82f6;
-  font-size: 0.9rem;
-}
-
-.exercise-name {
-  font-weight: 500;
-  color: #374151;
-}
-
-.exercise-link {
-  color: #dc2626;
-  text-decoration: none;
-  font-size: 1.1rem;
-  padding: 0.3rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.exercise-link:hover {
-  background: #fecaca;
-  transform: scale(1.1);
-}
-
-.more-exercises {
-  text-align: center;
-  font-style: italic;
-  color: #6b7280;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-}
-
-/* ======== Estados vacíos y mensajes ======== */
-.no-exercises {
-  text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 2px dashed #e2e8f0;
-}
-
-.no-exercises p {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.loading-exercises {
-  text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-}
-
-.loading-exercises p {
-  margin: 0;
-}
-
-.warning-message {
-  background: #fef3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 6px;
-  padding: 0.75rem;
-  color: #856404;
-  text-align: center;
 }
 
 .warning-message p {
-  margin: 0 0 0.5rem 0;
+  margin: 0;
+  color: #856404;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
 }
 
-.retry-btn {
-  background: #dc3545;
-  color: white;
+.dismiss-btn {
+  background: none;
   border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: 1.5rem;
+  color: #856404;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
-.retry-btn:hover {
-  background: #c82333;
+.dismiss-btn:hover {
+  background-color: rgba(133, 100, 4, 0.1);
 }
 
-/* ======== Responsive ======== */
-@media (max-width: 680px) {
-  .create-exercise-container {
-    padding: 1rem;
-  }
+/* Estados de validación */
+.form-group-class input:invalid:not(:focus):not(:placeholder-shown) {
+  background: #fffbfb;
+  border-color: #ff6b6b;
+}
 
-  .create-exercise-box {
-    padding: 2rem 1.5rem;
-  }
+.form-group-class input:valid:not(:focus):not(:placeholder-shown) {
+  border-color: #51cf66;
+  background: #f8fff9;
+}
 
-  .create-exercise-title {
-    font-size: 1.6rem;
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
   }
-
-  .create-exercise-subtitle {
-    font-size: 0.9rem;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  .create-exercise-form {
-    gap: 1rem;
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
   }
-
-  .form-field input {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  .create-exercise-btn {
-    font-size: 1rem;
-    padding: 0.8rem;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus states para accesibilidad */
+.form-group-class input:focus,
+.btn-create-exercise:focus {
+  outline: 2px solid #6c757d;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .CreateExerciseContainer {
+    padding: 20px 16px;
   }
-
-  .exercise-item {
-    padding: 0.7rem 0.9rem;
+  
+  #Title-Ejercicios {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .form-group-class {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+  
+  .warning-message {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .create-exercise-container {
-    padding: 0.5rem;
+  .CreateExerciseContainer {
+    padding: 16px 12px;
   }
+  
+  #Title-Ejercicios {
+    font-size: 1.7rem;
+  }
+  
+  .form-group-class {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+  
+  .form-group-class input {
+    padding: 12px 14px;
+  }
+  
+  .btn-create-exercise {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}
 
-  .create-exercise-box {
-    padding: 1.5rem 1rem;
-  }
-
-  .create-exercise-title {
-    font-size: 1.4rem;
-  }
-
-  .exercise-info {
-    gap: 0.5rem;
-  }
-
-  .exercise-name {
-    font-size: 0.9rem;
-  }
+/* Transiciones suaves */
+.form-group-class input,
+.btn-create-exercise {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -1,121 +1,416 @@
-/* ======== Contenedor general ======== */
-.register-user-container {
+/* RegisterUser.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
+.CreateUserContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  
-  padding: 2rem;
-  background-color: #f5f6fa;
 }
 
-/* ======== Caja del formulario ======== */
-.register-user-box {
-  background-color: #ffffff;
-  padding: 2.5rem 3rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  max-width: 480px;
+/* Título Principal */
+#Title-Usuarios {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+#Title-Usuarios::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 2px;
+}
+
+/* Formulario */
+.form-group-class {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
   width: 100%;
+  animation: slideInUp 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+/* Fila de formulario */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Labels del Formulario */
+.form-group-class label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Inputs y Select */
+.form-group-class input,
+.form-group-class select {
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group-class input:focus,
+.form-group-class select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.form-group-class input:hover,
+.form-group-class select:hover {
+  border-color: #dee2e6;
+}
+
+.form-group-class input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.form-group-class input:disabled,
+.form-group-class select:disabled {
+  background: #f8f9fa;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Select específico para roles */
+.role-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 16px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 48px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.role-select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23007bff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Contador de caracteres */
+.character-counter {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Texto de ayuda */
+.helper-text {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Descripción del rol */
+.role-description {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #007bff;
+}
+
+.role-description strong {
+  color: #007bff;
+}
+
+/* Botón de Registrar Usuario */
+.btn-create-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffd700;
+  color: #1a1a1a;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
   transition: all 0.3s ease;
 }
 
-.register-user-box:hover {
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+.btn-create-user:hover:not(:disabled) {
+  background:#1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+  color: white;
 }
 
-/* ======== Título y descripción ======== */
-.register-user-title {
-  font-size: 1.9rem;
-  font-weight: 600;
-  text-align: center;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-.register-user-subtitle {
-  text-align: center;
-  font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 1.8rem;
-}
-
-/* ======== Campos del formulario ======== */
-.register-user-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.form-field label {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.95rem;
-}
-
-.form-field input,
-.form-field select {
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #f9fafb;
-  color: #111827;
-  transition: all 0.25s ease;
-}
-
-.form-field input:focus,
-.form-field select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  background-color: #fff;
-  outline: none;
-}
-
-/* ======== Botón ======== */
-.register-user-btn {
-  margin-top: 1rem;
-  background-color: #18181b;
-  color: #fbf106;
-  font-size: 1.2rem;
-  font-weight: lighter;
-  font-family: 'Brigends', sans-serif;
-  padding: 0.9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.register-user-btn:hover {
-  background-color: #fbf106;
-  color: black;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
-}
-
-.register-user-btn:active {
+.btn-create-user:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.btn-create-user:disabled {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
   box-shadow: none;
 }
 
-/* ======== Responsive ======== */
-@media (max-width: 680px) {
-  .register-user-box {
-    padding: 2rem 1.5rem;
-  }
-  .register-user-container{
-    padding: 0px;
-    height: auto;
-  }
+.btn-create-user.loading {
+  color: transparent;
+}
 
-  .register-user-title {
-    font-size: 1.6rem;
+/* Spinner para loading */
+.btn-create-user:disabled::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #999;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Sección de Consejos */
+.user-tips {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 800px;
+  width: 100%;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tips-icon {
+  font-size: 1.5rem;
+}
+
+.tips-header h4 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tips-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.tip-icon {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.tip-item span:last-child {
+  color: #495057;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Estados de validación */
+.form-group-class input:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class select:invalid:not(:focus) {
+  background: #fffbfb;
+  border-color: #ff6b6b;
+  color: black;
+}
+
+.form-group-class input:valid:not(:focus):not(:placeholder-shown),
+.form-group-class select:valid:not(:focus) {
+  border-color: #51cf66;
+  background: #f8fff9;
+  color: black;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus states para accesibilidad */
+.form-group-class input:focus,
+.form-group-class select:focus,
+.btn-create-user:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Efecto de ripple en botones */
+.btn-create-user::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.btn-create-user:hover:not(:disabled)::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .CreateUserContainer {
+    padding: 20px 16px;
+  }
+  
+  #Title-Usuarios {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .form-group-class {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .user-tips {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .CreateUserContainer {
+    padding: 16px 12px;
+  }
+  
+  #Title-Usuarios {
+    font-size: 1.7rem;
+  }
+  
+  .form-group-class {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+  
+  .form-group-class input,
+  .form-group-class select {
+    padding: 12px 14px;
+  }
+  
+  .btn-create-user {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+  
+  .tip-item {
+    padding: 6px 0;
+  }
+}
+
+/* Scroll suave para el contenedor */
+.CreateUserContainer {
+  scroll-behavior: smooth;
+}
+
+/* Transiciones suaves para todos los elementos interactivos */
+.form-group-class input,
+.form-group-class select,
+.btn-create-user {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mejoras para select en diferentes navegadores */
+.role-select::-ms-expand {
+  display: none;
+}
+
+/* Placeholder color para inputs */
+.form-group-class input::placeholder {
+  color: #adb5bd;
+}
+
+/* Estilos para inputs numéricos */
+.form-group-class input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form-group-class input[type="number"]::-webkit-outer-spin-button,
+.form-group-class input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
