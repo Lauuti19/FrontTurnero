@@ -30,6 +30,18 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
+  // ✅ Función para manejar errores de autenticación
+  const handleAuthError = useCallback((errorMessage) => {
+    if (errorMessage.includes('Email o contraseña incorrectos') || 
+        errorMessage.includes('email o contraseña incorrectos') ||
+        errorMessage.includes('contraseña incorrecta') ||
+        errorMessage.includes('Credenciales inválidas') ||
+        errorMessage.includes('Invalid credentials')) {
+      return "Email o contraseña incorrectos. Por favor, intentá de nuevo.";
+    }
+    return errorMessage;
+  }, []);
+
   // Efecto para manejar las etapas de la animación
   useEffect(() => {
     if (animationStage === 'collapsing') {
@@ -53,12 +65,13 @@ const LoginPage = () => {
     }
   }, [animationStage, isRegistering]);
 
-  // ✅ Efecto para manejar errores del hook
+  // ✅ Efecto para manejar errores del hook con el nuevo manejador
   useEffect(() => {
     if (authError) {
-      setError(authError);
+      const formattedError = handleAuthError(authError);
+      setError(formattedError);
     }
-  }, [authError]);
+  }, [authError, handleAuthError]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -92,8 +105,8 @@ const LoginPage = () => {
         return false;
       }
       
-      if (formData.password.length < 6) {
-        setError("La contraseña debe tener al menos 6 caracteres");
+      if (formData.password.length <7) {
+        setError("La contraseña debe tener al menos 7 caracteres");
         return false;
       }
     }
@@ -137,13 +150,14 @@ const LoginPage = () => {
       
     } catch (error) {
       console.error("Error en registro:", error);
-      setError(error.message || "Error al registrar usuario");
+      const formattedError = handleAuthError(error.message);
+      setError(formattedError);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ LOGIN CON HOOK (como estaba)
+  // ✅ LOGIN CON HOOK (actualizado con el nuevo manejador de errores)
   const handleLogin = async () => {
     if (!validateForm()) return;
     
@@ -166,7 +180,7 @@ const LoginPage = () => {
 
     } catch (error) {
       console.error("Error en login:", error);
-      // El error ya está manejado por el hook
+      // El error ya está manejado por el hook y el useEffect
     } finally {
       setIsLoading(false);
     }
@@ -303,6 +317,7 @@ const LoginPage = () => {
               onKeyPress={handleKeyPress}
               disabled={combinedLoading || isAnimating}
               required
+              className="login-email-input"
             />
             
             {isRegistering && (
@@ -339,8 +354,21 @@ const LoginPage = () => {
               disabled={combinedLoading || isAnimating}
               placeholder="Contraseña"
               required
+              className="login-password-input"
             />
           </div>
+          {!isRegistering && (
+            <div className="forgot-password-container">
+              <button
+                className="forgot-password-button"
+                onClick={() => navigate('/forgot-password')}
+                disabled={combinedLoading || isAnimating}
+                type="button"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+          )}
           
           {/* Botones de acción */}
           <ActionButtons
@@ -396,7 +424,7 @@ const PasswordField = ({ showPassword, value, onChange, onKeyPress, onToggle, di
 );
 
 const ActionButtons = ({ isRegistering, isLoading, isAnimating, onSubmit, onSwitchMode }) => (
-  <div className="action-buttons">
+  <div className="login-action-buttons">
     <button 
       className={`submit-login-button ${isLoading ? 'loading' : ''}`}
       onClick={onSubmit}

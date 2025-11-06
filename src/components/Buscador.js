@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import '../styles/Buscador.css';
-import { useAuth } from '../AuthContext'; // Importar el AuthContext
+import { useAuth } from '../AuthContext';
 
-const Buscador = ({ onUsuarioSeleccionado }) => {
+const Buscador = ({ onUsuarioSeleccionado, disabled = false }) => {
     const [nombreUsuario, setNombreUsuario] = useState('');
     const [usuarios, setUsuarios] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [usuarioSeleccionado, setUsuarioSeleccionado] = useState('');
     const [loading, setLoading] = useState(false);
     const suggestionsRef = useRef(null);
     const ignoreNextSearch = useRef(false);
-    const { getToken } = useAuth(); // Obtener la función getToken
+    const { getToken } = useAuth();
 
     useEffect(() => {
         if (ignoreNextSearch.current) {
             ignoreNextSearch.current = false;
-            return; 
-            }
-        if (nombreUsuario.length >= 1) {
+            return;
+        }
+        
+        if (nombreUsuario.length >= 2) {
             setLoading(true);
             const token = getToken();
             
@@ -27,7 +27,7 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
                 return;
             }
 
-            fetch(`https://backturnero-vvk6.onrender.com/api/usuarios/buscar?nombre=${nombreUsuario}`, {
+            fetch(`https://backturnero-vvk6.onrender.com/api/usuarios/buscar?nombre=${encodeURIComponent(nombreUsuario)}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -73,50 +73,98 @@ const Buscador = ({ onUsuarioSeleccionado }) => {
 
     const handleUsuarioClick = (usuario) => {
         ignoreNextSearch.current = true; 
-        setUsuarioSeleccionado(usuario.nombre);
         setNombreUsuario(usuario.nombre);
         setShowSuggestions(false);
-        onUsuarioSeleccionado(usuario); // Pasar el objeto completo del usuario
+        onUsuarioSeleccionado(usuario);
+    };
+
+    const handleInputChange = (e) => {
+        setNombreUsuario(e.target.value);
+        onUsuarioSeleccionado(null);
+    };
+
+    const handleInputFocus = () => {
+        if (nombreUsuario.length >= 2 && usuarios.length > 0) {
+            setShowSuggestions(true);
+        }
+    };
+
+    const handleClear = () => {
+        setNombreUsuario('');
+        setUsuarios([]);
+        setShowSuggestions(false);
+        onUsuarioSeleccionado(null);
     };
 
     return (
         <div className="buscador-container" ref={suggestionsRef}>
-            <input
-                name="nombre_usuario"
-                value={nombreUsuario}
-                onChange={e => {
-                setNombreUsuario(e.target.value);
-                onUsuarioSeleccionado(null);
-                }}
-                onFocus={() => nombreUsuario.length >= 1 && setShowSuggestions(true)}
-                placeholder="Buscar usuario..."
-                autoComplete="off"
-                className="buscador-input"
-            />
-
-            {loading && <div className="buscador-loading">Buscando...</div>}
-
-            {showSuggestions && usuarios.length > 0 && (
-                <ul className="buscador-suggestions">
-                {usuarios.map(u => (
-                    <li
-                    key={u.id_usuario}
-                    onClick={() => handleUsuarioClick(u)}
-                    className="buscador-suggestion-item"
+            <div className="buscador-input-wrapper">
+                <input
+                    name="nombre_usuario"
+                    value={nombreUsuario}
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
+                    placeholder="Buscar usuario por nombre..."
+                    autoComplete="off"
+                    className="buscador-input"
+                    disabled={disabled}
+                />
+                {nombreUsuario && (
+                    <button 
+                        type="button" 
+                        className="buscador-clear-btn"
+                        onClick={handleClear}
+                        disabled={disabled}
                     >
-                    <span className="buscador-suggestion-name">
-                        {u.nombre} {u.apellido && `- ${u.apellido}`}
-                    </span>
-                    </li>
-                ))}
-                </ul>
-            )}
-
-            {showSuggestions && !loading && usuarios.length === 0 && (
-                <div className="buscador-no-results">No se encontraron usuarios</div>
-            )}
+                        ×
+                    </button>
+                )}
             </div>
 
+            {loading && (
+                <div className="buscador-loading">
+                    <div className="buscador-spinner"></div>
+                    Buscando usuarios...
+                </div>
+            )}
+
+            {showSuggestions && usuarios.length > 0 && (
+                <div className="buscador-suggestions">
+                    <div className="buscador-suggestions-header">
+                        <span>{usuarios.length} usuario{usuarios.length !== 1 ? 's' : ''} encontrado{usuarios.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    {usuarios.map(usuario => (
+                        <div
+                            key={usuario.id_usuario}
+                            onClick={() => handleUsuarioClick(usuario)}
+                            className="buscador-suggestion-item"
+                        >
+                            <div className="buscador-suggestion-content">
+                                <span className="buscador-suggestion-name">
+                                    {usuario.nombre} {usuario.apellido || ''}
+                                </span>
+                                <div className="buscador-suggestion-details">
+                                    <span className="buscador-suggestion-email">{usuario.dni}</span>
+                                    {usuario.rol && (
+                                        <span className="buscador-suggestion-role">{usuario.rol.nombre}</span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {showSuggestions && !loading && usuarios.length === 0 && nombreUsuario.length >= 2 && (
+                <div className="buscador-no-results">
+                    <div className="buscador-no-results-icon">🔍</div>
+                    <div className="buscador-no-results-text">
+                        <p>No se encontraron usuarios</p>
+                        <span>Intenta con otro nombre</span>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 

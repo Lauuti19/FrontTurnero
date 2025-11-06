@@ -1,4 +1,4 @@
-/* ManageDisciplines.css - Estilos Modernos y Profesionales */
+/* ManagePlans.css - Estilos Modernos y Profesionales */
 
 /* Container Principal */
 .CreateClassContainer {
@@ -11,18 +11,8 @@
   align-items: center;
 }
 
-.CreateDisciplinesContainer {
-  min-height: 100vh;
-  background: #ffffff;
-  padding: 40px 20px;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* Título Principal */
-#Title-Disciplinas {
+#Title-Planes {
   font-size: 2.5rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -32,7 +22,7 @@
   position: relative;
 }
 
-#Title-Disciplinas::after {
+#Title-Planes::after {
   content: '';
   position: absolute;
   bottom: -12px;
@@ -40,7 +30,7 @@
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: linear-gradient(135deg, #ffd700, #e7b725);
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
   border-radius: 2px;
 }
 
@@ -54,9 +44,6 @@
   width: 100%;
   max-width: 800px;
   animation: slideInDown 0.5s ease-out;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .warning-message p {
@@ -66,27 +53,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
-}
-
-.dismiss-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #856404;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.dismiss-btn:hover {
-  background-color: rgba(133, 100, 4, 0.1);
 }
 
 .error-message {
@@ -117,35 +83,17 @@
   font-size: 1.1rem;
 }
 
-.loading-message {
-  text-align: center;
-  padding: 60px 40px;
-  color: #666;
-  font-size: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.spinner {
-  animation: spin 1s linear infinite;
-  font-size: 2rem;
-  color: #ff6b6b;
-}
-
-/* Lista de Disciplinas */
-.disciplines-list {
+/* Lista de Planes */
+.plans-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 24px;
   width: 100%;
   max-width: 1200px;
-  margin-bottom: 30px;
 }
 
-/* Item de Disciplina */
-.discipline-item {
+/* Item de Plan */
+.plan-item {
   background: #ffffff;
   border: 1px solid #e9ecef;
   border-radius: 16px;
@@ -156,18 +104,17 @@
   animation: slideInUp 0.5s ease-out;
 }
 
-.discipline-item:hover {
+.plan-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Modo Visualización */
 .view-mode {
-  padding: 24px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  justify-content: space-around;
 }
 
 .view-mode h3 {
@@ -179,25 +126,21 @@
   border-bottom: 2px solid #ffd700;
 }
 
-.discipline-meta {
-  margin-bottom: 20px;
+.view-mode p {
+  margin: 0 0 12px 0;
+  color: #555;
+  line-height: 1.5;
 }
 
-.status {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+.view-mode strong {
+  color: #1a1a1a;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
-
-
 
 /* Modo Edición */
 .edit-mode {
   padding: 24px;
-  background: linear-gradient(135deg, #fff5f5, #ffeaea);
+  background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
 }
 
 .edit-mode h3 {
@@ -220,6 +163,12 @@
   margin-bottom: 20px;
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .form-group label {
   font-weight: 600;
   color: #1a1a1a;
@@ -228,7 +177,8 @@
   display: block;
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea {
   padding: 12px 14px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
@@ -241,43 +191,34 @@
   box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
   background: #ffffff;
 }
 
-.form-group input:hover {
+.form-group input:hover,
+.form-group textarea:hover {
   border-color: #dee2e6;
 }
 
-/* Contador de caracteres */
-.character-counter {
-  text-align: right;
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 6px;
-  font-weight: 500;
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
 }
 
 /* Botones de Acción */
-.disciplines-action-buttons {
+.plans-action-buttons {
   display: flex;
   gap: 12px;
   margin-top: 20px;
   flex-wrap: wrap;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.disciplines-action-buttons button,
-.action-buttons button {
+.plans-action-buttons button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -294,14 +235,14 @@
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #404040, #495057);
-  color: #ffffff;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #1a1a1a;
 }
 
 .btn-edit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  background: linear-gradient(135deg, #ffed4e, #fff3a3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
 .btn-delete {
@@ -338,7 +279,7 @@
 }
 
 /* Botón de Reintentar */
-.create-discipline-btn {
+.create-plan-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -354,15 +295,14 @@
   transition: all 0.3s ease;
 }
 
-.create-discipline-btn:hover {
+.create-plan-btn:hover {
   background: linear-gradient(135deg, #2d2d2d, #404040);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Estados Deshabilitados */
-.action-buttons button:disabled,
-.disciplines-action-buttons button:disabled {
+.action-buttons button:disabled {
   background: #e9ecef;
   color: #999;
   cursor: not-allowed;
@@ -371,27 +311,9 @@
   opacity: 0.6;
 }
 
-/* Estadísticas */
-.disciplines-stats {
-  text-align: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-radius: 12px;
-  margin-top: 20px;
-  max-width: 400px;
-  width: 100%;
-}
-
-.disciplines-stats p {
-  margin: 0;
-  color: #495057;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.disciplines-stats strong {
-  color: #1a1a1a;
-  font-size: 1.2rem;
+/* Iconos */
+.action-buttons svg {
+  font-size: 0.9rem;
 }
 
 /* Animaciones */
@@ -417,76 +339,76 @@
   }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 /* Efectos de Hover Mejorados */
-.discipline-item {
+.plan-item {
   position: relative;
 }
 
-.discipline-item::before {
+.plan-item::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 3px;
-  background:  #ffd700;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
-.discipline-item:hover::before {
+.plan-item:hover::before {
   transform: scaleX(1);
 }
 
 /* Estados de Validación */
-.form-group input:invalid:not(:focus) {
+.form-group input:invalid:not(:focus),
+.form-group textarea:invalid:not(:focus) {
   border-color: #ff6b6b;
   background: #fff5f5;
 }
 
-.form-group input:valid:not(:focus) {
+.form-group input:valid:not(:focus),
+.form-group textarea:valid:not(:focus) {
   border-color: #51cf66;
   background: #f8fff9;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .CreateDisciplinesContainer {
+  .CreatePlanesContainer {
     padding: 20px 16px;
   }
   
-  #Title-Disciplinas {
+  #Title-Planes {
     font-size: 2rem;
     margin-bottom: 30px;
   }
   
-  .disciplines-list {
+  .plans-list {
     grid-template-columns: 1fr;
     gap: 20px;
   }
   
-  .action-buttons,
-  .disciplines-action-buttons {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .action-buttons {
     flex-direction: column;
   }
   
-  .action-buttons button,
-  .disciplines-action-buttons button {
+  .action-buttons button {
     min-width: auto;
   }
 }
 
 @media (max-width: 480px) {
-  .CreateDisciplinesContainer {
+  .CreateClassContainer {
     padding: 16px 12px;
   }
   
-  #Title-Disciplinas {
+  #Title-Planes {
     font-size: 1.7rem;
   }
   
@@ -499,13 +421,13 @@
     font-size: 1.2rem;
   }
   
-  .form-group input {
+  .form-group input,
+  .form-group textarea {
     padding: 10px 12px;
     font-size: 0.9rem;
   }
   
-  .action-buttons button,
-  .disciplines-action-buttons button {
+  .action-buttons button {
     padding: 8px 16px;
     font-size: 0.85rem;
   }
@@ -513,23 +435,23 @@
 
 /* Focus States para Accesibilidad */
 .action-buttons button:focus,
-.disciplines-action-buttons button:focus,
-.form-group input:focus {
-  outline: 2px solid #ff6b6b;
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: 2px solid #ffd700;
   outline-offset: 2px;
 }
 
 /* Transiciones Suaves */
-.discipline-item,
+.plan-item,
 .action-buttons button,
-.disciplines-action-buttons button,
-.form-group input {
+.form-group input,
+.form-group textarea {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Efectos de Loading */
-.disciplines-list:empty::before {
-  content: 'Cargando disciplinas...';
+.plans-list:empty::before {
+  content: 'Cargando planes...';
   text-align: center;
   color: #666;
   font-style: italic;
@@ -538,7 +460,17 @@
 }
 
 /* Mejoras Visuales para Estados de Edición */
-.edit-mode .form-group input:focus {
+.edit-mode .form-group input:focus,
+.edit-mode .form-group textarea:focus {
   border-color: #1a1a1a;
   box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+}
+
+/* Badge para Número de Disciplinas */
+.view-mode p:last-child {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 16px;
+  border-left: 3px solid #ffd700;
 }

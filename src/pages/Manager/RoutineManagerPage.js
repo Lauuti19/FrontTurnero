@@ -18,7 +18,7 @@ const RoutineManagerPage = () => {
         return <SearchRoutines mode="assign" />;
       case "user":
         return <SearchRoutines mode="view" />;
-      case "viewRoutines": // 🔹 Nueva pestaña
+      case "viewRoutines": 
         return <ViewRoutines />;
       default:
         return <CreateRoutine />;

@@ -109,11 +109,6 @@ const ClassSchedule = ({
     return (clase.tipo === 'especial' || clase.is_especial) ? 'especial' : 'normal';
   };
 
-  // Función unificada para obtener el ID original
-  const getClassOriginalId = (clase) => {
-    return clase.id_original || clase.specialClassOriginalId;
-  };
-
   return (
     <div
       className={`class-schedule-container ${isEmbedded ? 'embedded' : ''}`}
@@ -239,17 +234,21 @@ const ClassSchedule = ({
                           <FaUsers />
                           <span>Ver Anotados</span>
                         </button>
-
-                        <RegistrationManager
-                          classId={clase.id_clase}
-                          classType={classType}
-                          fecha={classFullDate} // ← CORREGIDO: Usar fecha completa
-                          hora={clase.hora} 
-                          getToken={getToken}
-                          userId={userId}
-                          isAdmin={adminMode}
-                          onRegistrationChange={refetch}
-                        />
+                          <RegistrationManager
+                            classId={clase.id_clase}
+                            classType={classType}
+                            fecha={classFullDate}
+                            hora={clase.hora}
+                            getToken={getToken}
+                            userId={userId}
+                            isAdmin={adminMode}
+                            onRegistrationChange={refetch}
+                            classInfo={{ // ← Nueva prop con información de la clase
+                              disciplina: clase.disciplina,
+                              hora: clase.hora,
+                              id_clase: clase.id_clase
+                            }}
+                          />
                       </div>
                     </div>
                   )}

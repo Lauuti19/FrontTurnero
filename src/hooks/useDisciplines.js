@@ -56,6 +56,22 @@ export const useDisciplines = () => {
       throw err;
     }
   }, [getDisciplinas]);
+  
+  const updateDiscipline = useCallback(async (token, disciplineId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await disciplineService.updateDiscipline(token, disciplineId);
+      // Recargar disciplinas después de eliminar
+      await getDisciplinas(token);
+      setLoading(false);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  }, [getDisciplinas]);
 
   return {
     // Estados
@@ -67,6 +83,7 @@ export const useDisciplines = () => {
     getDisciplinas,
     createDiscipline,
     deleteDiscipline,
+    updateDiscipline,
     
     // Utilidades
     clearError: () => setError(null),

@@ -3,7 +3,7 @@ import React from 'react';
 import TabManager from '../../components/TabManager';
 import { useTabManager } from '../../components/useTabManager';
 import { usersTabConfig } from '../../components/managerConfigs';
-import RegisterPage from "../RegisterPage";
+import RegisterUser from '../../components/RegisterUser';
 import UpdatePassword from '../../components/UpdatePassword';
 
 const UsersManagerPage = () => {
@@ -12,7 +12,7 @@ const UsersManagerPage = () => {
     const renderContent = () => {
         switch (activeTab) {
             case 'create':
-                return <RegisterPage />;
+                return <RegisterUser />;
             case 'view':
                 return <UpdatePassword />;
             default:

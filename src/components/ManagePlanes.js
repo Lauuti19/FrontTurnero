@@ -1,26 +1,72 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FaEdit, FaTrash, FaSave, FaTimes, FaSpinner } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import { usePlans } from '../hooks';
 import { useAuth } from '../AuthContext';
 import '../styles/ManagePlans.css';
 
-const ManagePlans = () => {
+const ManagePlanes = () => {
   const { getToken } = useAuth();
   const { 
-    getAllPlans, 
+    getPlanes, 
     updatePlan, 
     deletePlan, 
     loading: plansLoading, 
     error: plansError,
-    clearError 
+    clearError,
+    plans: plansFromHook
   } = usePlans(); 
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [planes, setPlanes] = useState([]);
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [editedPlan, setEditedPlan] = useState({});
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Función para mostrar alertas de éxito
+  const showSuccessAlert = (title, message, planName = '') => {
+    Swal.fire({
+      title: title,
+      html: planName 
+        ? `${message}<br><strong>${planName}</strong>`
+        : message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 3000,
+      timerProgressBar: true
+    });
+  };
+
+  // Función para mostrar alertas de error
+  const showErrorAlert = (title, errorMessage) => {
+    Swal.fire({
+      title: title,
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#dc3545',
+      background: '#ffffff'
+    });
+  };
+
+  // Función para mostrar confirmación de eliminación
+  const showDeleteConfirmation = (planName) => {
+    return Swal.fire({
+      title: '¿Eliminar Plan?',
+      html: `¿Estás seguro de que deseas eliminar el plan <strong>"${planName}"</strong>?<br><br>Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      background: '#ffffff',
+      reverseButtons: true
+    });
+  };
 
   const fetchPlanes = useCallback(async () => {
     try {
@@ -29,43 +75,51 @@ const ManagePlans = () => {
       clearError();
       
       const token = getToken();
-      if (!token) throw new Error('No hay token de autenticación disponible');
-
-      const data = await getAllPlans(token);
-      
-      // Asegurarnos de que siempre sea un array
-      if (Array.isArray(data)) {
-        setPlanes(data);
-      } else if (data && typeof data === 'object') {
-        // Intentar extraer el array de diferentes estructuras posibles
-        const planesArray = data.planes || data.data || Object.values(data).find(Array.isArray) || [];
-        setPlanes(planesArray);
-      } else {
-        setPlanes([]);
+      if (!token) {
+        throw new Error('No hay token de autenticación disponible');
       }
+
+      console.log('🔄 Solicitando planes al backend...');
+      await getPlanes(token);
       
     } catch (err) {
-      console.error('Error cargando planes:', err);
+      console.error('❌ Error cargando planes:', err);
       const errorMsg = err.message || 'Error al cargar los planes';
       setError(errorMsg);
-      setPlanes([]);
+      showErrorAlert('Error al cargar planes', errorMsg);
     } finally {
       setLoading(false);
     }
-  }, [getToken, getAllPlans, clearError]);
+  }, [getToken, getPlanes, clearError]);
 
   useEffect(() => {
-    fetchPlanes();
+    const token = getToken();
+    if (token) {
+      fetchPlanes();
+    }
   }, []);
 
-  const handleEditClick = (plan) => {
-    setEditingPlanId(plan.id_plan || plan.id);
-    setEditedPlan({
+  // Función para normalizar los datos del plan
+  const normalizePlanData = (plan) => {
+    return {
+      id: plan.id_plan || plan.id,
       name: plan.nombre || plan.name,
       description: plan.descripcion || plan.description,
       price: plan.monto || plan.price,
       totalCredits: plan.creditos_total || plan.totalCredits,
       disciplines: plan.disciplinas || plan.disciplines || []
+    };
+  };
+
+  const handleEditClick = (plan) => {
+    const normalizedPlan = normalizePlanData(plan);
+    setEditingPlanId(normalizedPlan.id);
+    setEditedPlan({
+      name: normalizedPlan.name,
+      description: normalizedPlan.description,
+      price: normalizedPlan.price,
+      totalCredits: normalizedPlan.totalCredits,
+      disciplines: normalizedPlan.disciplines
     });
   };
 
@@ -75,64 +129,101 @@ const ManagePlans = () => {
       const token = getToken();
       if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Preparar datos para la actualización
+      if (!editedPlan.name?.trim()) {
+        throw new Error('El nombre del plan es requerido');
+      }
+      if (!editedPlan.description?.trim()) {
+        throw new Error('La descripción del plan es requerida');
+      }
+
       const updateData = {
-        id_plan: planId,
-        name: editedPlan.name,
-        description: editedPlan.description,
-        price: parseFloat(editedPlan.price),
-        totalCredits: parseInt(editedPlan.totalCredits),
-        disciplines: editedPlan.disciplines
+        planId: planId,
+        name: editedPlan.name.trim(),
+        description: editedPlan.description.trim(),
+        price: parseFloat(editedPlan.price) || 0,
+        totalCredits: parseInt(editedPlan.totalCredits) || 0,
+        disciplines: editedPlan.disciplines || []
       };
 
+      console.log('📤 Enviando datos de actualización:', updateData);
       await updatePlan(token, updateData);
 
       setEditingPlanId(null);
       setEditedPlan({});
       
-      // Recargar la lista
-      await fetchPlanes();
+      // Mostrar alerta de éxito con información del plan
+      showSuccessAlert(
+        '¡Plan Actualizado!', 
+        'El plan ha sido actualizado exitosamente:',
+        editedPlan.name
+      );
       
-      // Mostrar alerta de éxito
-      alert('✅ Plan actualizado exitosamente');
     } catch (error) {
-      console.error("Error al editar:", error);
+      console.error("❌ Error al editar:", error);
       const errorMsg = error.message || "Error al guardar cambios";
       setError(errorMsg);
-      alert(errorMsg);
+      showErrorAlert('Error al actualizar plan', errorMsg);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleDeletePlan = async (planId) => {
-    const confirm = window.confirm("¿Seguro que deseas eliminar este plan?");
-    if (!confirm) return;
-
+  const handleDeletePlan = async (plan) => {
+    const normalizedPlan = normalizePlanData(plan);
+    
     try {
+      const result = await showDeleteConfirmation(normalizedPlan.name);
+      
+      if (!result.isConfirmed) {
+        return;
+      }
+
       setActionLoading(true);
       const token = getToken();
       if (!token) throw new Error('No hay token de autenticación disponible');
 
-      await deletePlan(token, planId);
-
-      // Actualizar estado local inmediatamente
-      setPlanes(prev => prev.filter(p => (p.id_plan || p.id) !== planId));
+      await deletePlan(token, normalizedPlan.id);
       
-      alert('✅ Plan eliminado exitosamente');
+      // Mostrar alerta de éxito
+      showSuccessAlert(
+        '¡Plan Eliminado!', 
+        'El plan ha sido eliminado exitosamente:',
+        normalizedPlan.name
+      );
+      
     } catch (error) {
-      console.error("Error eliminando:", error);
+      console.error("❌ Error eliminando:", error);
       const errorMsg = error.message || "Error al eliminar el plan";
       setError(errorMsg);
-      alert(errorMsg);
+      showErrorAlert('Error al eliminar plan', errorMsg);
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleCancelEdit = () => {
-    setEditingPlanId(null);
-    setEditedPlan({});
+    // Mostrar confirmación si hay cambios sin guardar
+    if (editedPlan.name || editedPlan.description) {
+      Swal.fire({
+        title: '¿Descartar cambios?',
+        text: 'Tienes cambios sin guardar. ¿Estás seguro de que quieres cancelar?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, descartar',
+        cancelButtonText: 'Seguir editando',
+        confirmButtonColor: '#6c757d',
+        cancelButtonColor: '#007bff',
+        background: '#ffffff'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setEditingPlanId(null);
+          setEditedPlan({});
+        }
+      });
+    } else {
+      setEditingPlanId(null);
+      setEditedPlan({});
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -142,10 +233,12 @@ const ManagePlans = () => {
     }));
   };
 
-  // Combinar errores del hook y del componente
+  // Combinar estados
+  const isLoading = loading || plansLoading;
   const displayError = error || plansError;
+  const planes = plansFromHook;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="CreateClassContainer">
         <div className="loading-message">
@@ -158,7 +251,7 @@ const ManagePlans = () => {
 
   if (displayError && planes.length === 0) {
     return (
-      <div className="CreateClassContainer">
+      <div className="CreatePlanesContainer">
         <div className="error-message">
           <h2>Error</h2>
           <p>{displayError}</p>
@@ -170,8 +263,8 @@ const ManagePlans = () => {
     );
   }
 
-  return (
-    <div className="CreateClassContainer">
+  return ( 
+    <div className="CreatePlanesContainer">
       <h2 id='Title-Planes'>Gestión de Planes</h2>
       
       {displayError && (
@@ -183,7 +276,7 @@ const ManagePlans = () => {
         </div>
       )}
 
-      {planes.length === 0 && !loading ? (
+      {planes.length === 0 && !isLoading ? (
         <div className="no-data-message">
           <p>No hay planes disponibles</p>
           <button onClick={fetchPlanes} className="create-plan-btn">
@@ -193,11 +286,11 @@ const ManagePlans = () => {
       ) : (
         <div className="plans-list">
           {planes.map((plan) => {
-            const planId = plan.id_plan || plan.id;
-            const isEditing = editingPlanId === planId;
+            const normalizedPlan = normalizePlanData(plan);
+            const isEditing = editingPlanId === normalizedPlan.id;
             
             return (
-              <div key={planId} className="plan-item">
+              <div key={normalizedPlan.id} className="plan-item">
                 {isEditing ? (
                   <div className="edit-mode">
                     <h3>Editando Plan</h3>
@@ -210,6 +303,7 @@ const ManagePlans = () => {
                         onChange={e => handleInputChange('name', e.target.value)}
                         required
                         disabled={actionLoading}
+                        placeholder="Ingrese el nombre del plan"
                       />
                     </div>
                     
@@ -221,6 +315,7 @@ const ManagePlans = () => {
                         required
                         rows="3"
                         disabled={actionLoading}
+                        placeholder="Ingrese la descripción del plan"
                       />
                     </div>
                     
@@ -254,8 +349,8 @@ const ManagePlans = () => {
                     <div className="action-buttons">
                       <button 
                         className="btn-save" 
-                        onClick={() => handleSaveEdit(planId)}
-                        disabled={!editedPlan.name || !editedPlan.description || actionLoading}
+                        onClick={() => handleSaveEdit(normalizedPlan.id)}
+                        disabled={!editedPlan.name?.trim() || !editedPlan.description?.trim() || actionLoading}
                       >
                         {actionLoading ? <FaSpinner className="spinner" /> : <FaSave />}
                         {actionLoading ? 'Guardando...' : 'Guardar'}
@@ -271,13 +366,12 @@ const ManagePlans = () => {
                   </div>
                 ) : (
                   <div className="view-mode">
-                    <h3>{plan.nombre || plan.name}</h3>
-                    <p><strong>Descripción:</strong> {plan.descripcion || plan.description}</p>
-                    <p><strong>Precio:</strong> ${plan.monto || plan.price}</p>
-                    <p><strong>Créditos:</strong> {plan.creditos_total || plan.totalCredits}</p>
-                    <p><strong>Disciplinas:</strong> {(plan.disciplinas || plan.disciplines || []).length} incluidas</p>
+                    <h3>{normalizedPlan.name}</h3>
+                    <p><strong>Descripción:</strong> {normalizedPlan.description}</p>
+                    <p><strong>Precio:</strong> ${normalizedPlan.price}</p>
+                    <p><strong>Créditos:</strong> {normalizedPlan.totalCredits}</p>
                     
-                    <div className="action-buttons">
+                    <div className="plans-action-buttons">
                       <button 
                         className="btn-edit" 
                         onClick={() => handleEditClick(plan)}
@@ -287,7 +381,7 @@ const ManagePlans = () => {
                       </button>
                       <button 
                         className="btn-delete" 
-                        onClick={() => handleDeletePlan(planId)}
+                        onClick={() => handleDeletePlan(plan)}
                         disabled={actionLoading}
                       >
                         {actionLoading ? <FaSpinner className="spinner" /> : <FaTrash />}
@@ -305,4 +399,4 @@ const ManagePlans = () => {
   );
 };
 
-export default ManagePlans;
+export default ManagePlanes;
