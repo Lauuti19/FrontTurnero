@@ -1,4 +1,4 @@
-/* ClassSchedule.css - Estilos Modernos con Blanco, Negro, Gris Oscuro y Amarillo */
+/* ClassSchedule.css - Estilos Actualizados para evitar conflictos */
 
 .class-schedule-container {
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -22,6 +22,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header Styles */
@@ -163,38 +165,6 @@
   cursor: not-allowed;
 }
 
-/* Error Message */
-.error-message {
-  background: #fee;
-  border: 1px solid #fcc;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 32px;
-  text-align: center;
-  color: #c33;
-}
-
-.error-message p {
-  margin: 0 0 12px 0;
-  font-weight: 500;
-}
-
-.retry-btn {
-  background: #1a1a1a;
-  color: #ffffff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.retry-btn:hover {
-  background: #2d2d2d;
-  transform: translateY(-1px);
-}
-
 /* Classes List */
 .classes-list {
   padding: 0;
@@ -234,7 +204,7 @@
 /* Main Class Info */
 .class-main-info {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 16px;
   padding: 20px 24px;
@@ -320,38 +290,49 @@
   border-radius: 10px;
 }
 
-/* Class Actions */
-.class-actions {
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
-  border-top: 1px solid transparent;
+.class-available {
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.class-actions.visible {
-  max-height: 150px;
-  border-top-color: #e9ecef;
+/* Expand Icon */
+.expand-icon {
+  color: #666;
+  font-size: 1rem;
+  transition: transform 0.3s ease;
 }
-.class-available{
-  color: white;
+
+.class-item.expanded .expand-icon {
+  transform: rotate(180deg);
 }
+
+/* Expanded Content */
+.class-expanded-content {
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}
+
 .class-action-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 2px solid #404040;
 }
-.btn-register {
-  background-color: #ffd700;
-  padding: 10px 20px;
-  font-size: 15px;
-  font-family: 'Brigends';
-  border-radius: 5px;
-  border: none;
-}
+
 .btn-view-users {
   display: flex;
   align-items: center;
@@ -359,11 +340,11 @@
   background: #2d2d2d;
   color: #ffffff;
   border: none;
-  padding: 17px 20px;
+  padding: 12px 20px;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: bolder;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
@@ -371,12 +352,32 @@
   background: #404040;
   transform: translateY(-1px);
 }
-.botonReservar, .botonAnotarse{
-  border-radius: 5px;
+
+.btn-register {
+  background-color: #ffd700;
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
   border: none;
-  font-family: 'Brigends';
-  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.btn-register:hover {
+  background: #ffdf40;
+  transform: translateY(-1px);
+}
+
+.botonReservar, .botonAnotarse {
+  border-radius: 10px;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
 /* No Classes State */
 .no-classes {
   text-align: center;
@@ -407,6 +408,72 @@
 /* Skeleton Loader */
 .class-schedule-skeleton {
   padding: 20px 24px;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA MENSAJES DE ERROR/INFO ===== */
+/* Estos estilos son específicos para ClassSchedule y no interferirán con Routines */
+
+.class-schedule-info-message {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px 32px;
+  margin: 0;
+  border-radius: 0;
+  gap: 16px;
+  border-bottom: 1px solid;
+}
+
+.class-schedule-info-message.error-type {
+  background-color: #fef2f2;
+  border-bottom-color: #fecaca;
+  color: #dc2626;
+}
+
+.class-schedule-info-message.info-type {
+  background-color: #f0f9ff;
+  border-bottom-color: #bae6fd;
+  color: #0369a1;
+}
+
+.class-schedule-message-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.class-schedule-message-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.class-schedule-message-content p {
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.class-schedule-retry-btn {
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.class-schedule-retry-btn:hover:not(:disabled) {
+  background-color: #2d2d2d;
+}
+
+.class-schedule-retry-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
 
 /* Responsive Design */
@@ -457,17 +524,29 @@
     align-items: center;
   }
   
-  .classes-action-buttons {
+  .class-action-buttons {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
   
   .class-item {
     margin: 12px 16px;
   }
   
-  .error-message {
-    margin: 16px 20px;
+  .class-schedule-info-message {
+    padding: 16px 20px;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .class-schedule-message-content {
+    align-items: center;
+  }
+  
+  .class-schedule-retry-btn {
+    align-self: center;
   }
   
   .current-date {
@@ -488,7 +567,7 @@
     padding: 16px;
   }
   
-  .classes-action-buttons {
+  .class-action-buttons {
     padding: 16px;
   }
   
@@ -508,6 +587,10 @@
     width: 36px;
     height: 36px;
   }
+  
+  .class-schedule-info-message {
+    padding: 12px 16px;
+  }
 }
 
 /* Dark mode support */
@@ -526,6 +609,10 @@
     color: #ffffff;
   }
   
+  .class-available {
+    color: #ffffff;
+  }
+  
   .no-classes h3 {
     color: #ffffff;
   }
@@ -534,8 +621,15 @@
     color: #999;
   }
   
-  .class-actions {
+  .class-expanded-content {
     background: #2d2d2d;
+    border-top-color: #404040;
+  }
+  
+  .class-schedule-info-message.info-type {
+    background-color: #1e3a5f;
+    border-bottom-color: #1e40af;
+    color: #bfdbfe;
   }
 }
 
@@ -559,7 +653,8 @@
 .nav-btn:focus,
 .today-btn:focus,
 .btn-view-users:focus,
-.retry-btn:focus {
+.class-schedule-retry-btn:focus,
+.btn-register:focus {
   outline: 2px solid #ffd700;
   outline-offset: 2px;
 }

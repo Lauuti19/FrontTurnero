@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
             await fetchCreditos(id);
           }
         } else {
-          console.log("No hay sesión guardada");
+          return;
         }
       } catch (error) {
         console.error("Error cargando estado inicial:", error);

@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import Swal from "sweetalert2"; // ✅ Importar SweetAlert
 import '../styles/Login.css';
 import loginImage from "../assets/login-image.jpg";
 import registerImage from "../assets/register-image.jpg";
@@ -10,7 +11,7 @@ import { useAuth as useAuthHook, useUsers } from "../hooks";
 
 const LoginPage = () => {
   const { login: authLogin } = useAuth();
-  const { login: loginUser, loading: authLoading, error: authError } = useAuthHook(); 
+  const { login: loginUser, registerUser, loading: authLoading, error: authError } = useAuthHook();
   const { getFullUserData, loading: usersLoading } = useUsers();
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -30,6 +31,27 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
+  // ✅ Función para mostrar SweetAlert de éxito
+  const showSuccessAlert = (title, message) => {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 4000,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp'
+      }
+    });
+  };
+
   // ✅ Función para manejar errores de autenticación
   const handleAuthError = useCallback((errorMessage) => {
     if (errorMessage.includes('Email o contraseña incorrectos') || 
@@ -46,21 +68,17 @@ const LoginPage = () => {
   useEffect(() => {
     if (animationStage === 'collapsing') {
       const timer = setTimeout(() => {
-        setAnimationStage('moving');
-      }, 300);
-      return () => clearTimeout(timer);
-    } else if (animationStage === 'moving') {
-      const timer = setTimeout(() => {
+        // Saltamos directamente de collapsing a expanding
         setIsRegistering(!isRegistering);
         setAnimationStage('expanding');
-      }, 400);
+      }, 400); // Tiempo que tarda en desaparecer
       return () => clearTimeout(timer);
     } else if (animationStage === 'expanding') {
       const timer = setTimeout(() => {
         setAnimationStage('idle');
         setIsAnimating(false);
         setAnimationDirection('');
-      }, 300);
+      }, 400); // Tiempo que tarda en aparecer
       return () => clearTimeout(timer);
     }
   }, [animationStage, isRegistering]);
@@ -119,35 +137,30 @@ const LoginPage = () => {
     
     setIsLoading(true);
     try {
-      const response = await fetch('http://backturnero-vvk6.onrender.com/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre: formData.nombre,
-          email: formData.email,
-          dni: formData.dni,
-          celular: formData.celular,
-          password: formData.password,
-          id_rol: 2, // Rol de cliente
-          id_estado: 2 // Estado pendiente por defecto
-        })
-      });
+      const userData = {
+        nombre: formData.nombre,
+        email: formData.email,
+        dni: formData.dni,
+        celular: formData.celular,
+        password: formData.password,
+        id_rol: 2, // cliente
+        id_estado: 2 // pendiente
+      };
 
-      const data = await response.json();
+      // 🚀 Usamos el hook registerUser (sin token porque es registro público)
+      await registerUser(null, userData);
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Error en el registro');
-      }
-
-      // ✅ Éxito - mostrar mensaje y cambiar a login
       setError("");
-      alert("✅ Registrado correctamente. Ahora podés iniciar sesión.");
       
-      // Cambiar automáticamente a modo login después del registro exitoso
+      // ✅ Mostrar SweetAlert de éxito en lugar de alert nativo
+      showSuccessAlert(
+        "¡Registro Exitoso!",
+        "Tu cuenta ha sido creada correctamente. Ahora podés iniciar sesión."
+      );
+
+      // Cambiar automáticamente a modo login
       startAnimation();
-      
+
     } catch (error) {
       console.error("Error en registro:", error);
       const formattedError = handleAuthError(error.message);
