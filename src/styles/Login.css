@@ -34,6 +34,7 @@
 
 .auth-container.register-mode {
   background-color: var(--accent-yellow);
+  height: 120vh;
 }
 
 /* Fondo de pantalla completa */
@@ -92,174 +93,102 @@
 .form-transform-container.register-form {
   left: 10%;
   width: 500px;
-  height: 720px;
+  height: auto;
+  padding: 10px 0px;
   background-color: var(--text-light);
 }
 
+/* ========== ANIMACIONES FADE DERECHA-IZQUIERDA ========== */
+
+/* Animación de entrada desde la derecha */
+@keyframes fadeInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Animación de salida hacia la izquierda */
+@keyframes fadeOutToLeft {
+  0% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-100px);
+  }
+}
+
+/* Animación de entrada desde la izquierda */
+@keyframes fadeInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Animación de salida hacia la derecha */
+@keyframes fadeOutToRight {
+  0% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(100px);
+  }
+}
+
+/* ========== ANIMACIONES LOGIN → REGISTER ========== */
+
+/* Login desaparece hacia izquierda */
 .form-transform-container.collapsing.to-register {
-  animation: collapseToRegister 0.4s ease-out forwards;
+  animation: fadeOutToLeft 0.6s ease-out forwards;
 }
 
-@keyframes collapseToRegister {
-  0% {
-    width: 420px;
-    height: 500px;
-    right: 10%;
-    background-color: var(--secondary-bg);
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(0.9);
-  }
-  100% {
-    width: 200px;
-    height: 80px;
-    right: 45%;
-    background-color: var(--text-light);
-    transform: translateY(-50%) scale(1);
-    border-radius: 40px;
-  }
-}
-
-/* Movimiento: Centro → Izquierda */
-.form-transform-container.moving.to-register {
-  animation: moveToRegister 0.4s ease-in-out forwards;
-}
-
-@keyframes moveToRegister {
-  0% {
-    width: 200px;
-    height: 80px;
-    right: 45%;
-    background-color: var(--text-light);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(0.95);
-  }
-  100% {
-    width: 200px;
-    height: 80px;
-    left: 45%;
-    background-color: var(--text-light);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-}
-
-/* Expansión: Pequeño rectángulo → Register */
+/* Register aparece desde derecha */
 .form-transform-container.expanding.to-register {
-  animation: expandToRegister 0.3s ease-out forwards;
-}
-
-@keyframes expandToRegister {
-  0% {
-    width: 200px;
-    height: 80px;
-    left: 45%;
-    background-color: var(--text-light);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(1.05);
-  }
-  100% {
-    width: 480px;
-    height: 720px;
-    left: 10%;
-    background-color: var(--text-light);
-    border-radius: 20px;
-    transform: translateY(-50%) scale(1);
-  }
+  animation: fadeInFromRight 0.6s ease-out forwards;
 }
 
 /* ========== ANIMACIONES REGISTER → LOGIN ========== */
 
-/* Contracción: Register → Pequeño rectángulo */
+/* Register desaparece hacia derecha */
 .form-transform-container.collapsing.to-login {
-  animation: collapseToLogin 0.3s ease-out forwards;
+  animation: fadeOutToRight 0.6s ease-out forwards;
 }
 
-@keyframes collapseToLogin {
-  0% {
-    width: 480px;
-    height: 720px;
-    left: 10%;
-    background-color: var(--text-light);
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(0.9);
-  }
-  100% {
-    width: 200px;
-    height: 80px;
-    left: 45%;
-    background-color: var(--secondary-bg);
-    transform: translateY(-50%) scale(1);
-    border-radius: 40px;
-  }
-}
-
-/* Movimiento: Centro → Derecha */
-.form-transform-container.moving.to-login {
-  animation: moveToLogin 0.4s ease-in-out forwards;
-}
-
-@keyframes moveToLogin {
-  0% {
-    width: 200px;
-    height: 80px;
-    left: 45%;
-    background-color: var(--secondary-bg);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(0.95);
-  }
-  100% {
-    width: 200px;
-    height: 80px;
-    right: 45%;
-    background-color: var(--secondary-bg);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-}
-
-/* Expansión: Pequeño rectángulo → Login */
+/* Login aparece desde izquierda */
 .form-transform-container.expanding.to-login {
-  animation: expandToLogin 0.3s ease-out forwards;
+  animation: fadeInFromLeft 0.6s ease-out forwards;
 }
 
-@keyframes expandToLogin {
-  0% {
-    width: 200px;
-    height: 80px;
-    right: 45%;
-    background-color: var(--secondary-bg);
-    border-radius: 40px;
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    transform: translateY(-50%) scale(1.05);
-  }
-  100% {
-    width: 420px;
-    height: 500px;
-    right: 10%;
-    background-color: var(--secondary-bg);
-    border-radius: 20px;
-    transform: translateY(-50%) scale(1);
-  }
+/* Estados iniciales cuando no hay animación */
+.form-transform-container.login-form:not(.collapsing):not(.expanding) {
+  animation: fadeInFromLeft 0.6s ease-out;
+}
+
+.form-transform-container.register-form:not(.collapsing):not(.expanding) {
+  animation: fadeInFromRight 0.6s ease-out;
+}
+
+/* Eliminamos la etapa moving ya que no la necesitamos más */
+.form-transform-container.moving {
+  display: none;
 }
 
 /* Contenido del formulario */
 .form-content {
-  padding: 20px 20px;
+  padding: 10px 20px;
   display: flex;
   width: 500px;
   flex-direction: column;
@@ -272,23 +201,24 @@
 
 /* Ocultar contenido durante animaciones */
 .form-transform-container.collapsing .form-content,
-.form-transform-container.moving .form-content,
 .form-transform-container.expanding .form-content {
   opacity: 0;
 }
 
 .form-transform-container.register-form .form-content {
   color: var(--text-dark);
-  margin-top: 80px;
+  padding: 40px 20px;
 }
-
+.form-transform-container.login-form .form-content{
+  padding: 40px 20px;
+}
 .form-title {
   text-align: center;
   font-size: 2.2rem;
   font-family: 'Brigends', sans-serif;
   font-weight: 300;
   letter-spacing: 0.1rem;
-  margin-bottom: 0.5rem;
+  margin: 0px;
   line-height: 1.2;
 }
 
@@ -320,8 +250,13 @@
   background-color: #18181b;
   color: #fee;
 }
+.form-input:focus.form-input:not(:placeholder-shown), .form-input:focus.form-input:valid ,.form-input:focus.form-input:not(:valid) {
+  background-color: #18181b !important;
+  color: white;
+}
 .form-input:not(:focus):valid:not(:placeholder-shown), .form-input:not(:focus).form-input:not(:valid) {
-  background-color: #18181b;
+  background-color: #18181b !important;
+  color: white;
 }
 .form-transform-container.register-form .form-input {
   background-color: var(--input-bg-light);
@@ -459,50 +394,26 @@
 }
 
 /* Media Queries para Responsive */
+/* Media Queries para Responsive */
 @media (max-width: 1024px) {
   .form-transform-container.login-form {
     right: 5%;
-    width: 380px;
+    width: 400px;
     height: 460px;
   }
-  
+  .auth-container.login-mode{
+    height: 90vh;
+  }
+  .auth-container.register-mode{
+    height: 90vh;
+  }
   .form-transform-container.register-form {
     left: 5%;
-    width: 440px;
+    width: 400px;
     height: 680px;
   }
-  
-  /* Ajustar posiciones de animación para tablet */
-  @keyframes collapseToRegister {
-    100% {
-      width: 180px;
-      height: 70px;
-      right: 40%;
-    }
-  }
-  
-  @keyframes moveToRegister {
-    100% {
-      width: 180px;
-      height: 70px;
-      left: 40%;
-    }
-  }
-  
-  @keyframes collapseToLogin {
-    100% {
-      width: 180px;
-      height: 70px;
-      left: 40%;
-    }
-  }
-  
-  @keyframes moveToLogin {
-    100% {
-      width: 180px;
-      height: 70px;
-      right: 40%;
-    }
+  .form-content{
+    width: 400px;
   }
 }
 
@@ -531,6 +442,84 @@
     height: auto !important;
     min-height: 500px;
   }
+  
+  /* ANIMACIONES MÓVIL DE ARRIBA HACIA ABAJO */
+  
+  /* Animación de entrada desde arriba */
+  @keyframes fadeInFromTopMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Animación de salida hacia arriba */
+  @keyframes fadeOutToTopMobile {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+  }
+  
+  /* Animación de entrada desde abajo */
+  @keyframes fadeInFromBottomMobile {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Animación de salida hacia abajo */
+  @keyframes fadeOutToBottomMobile {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+  }
+  
+  /* Aplicar animaciones móvil para LOGIN → REGISTER */
+  .form-transform-container.collapsing.to-register {
+    animation: fadeOutToTopMobile 0.6s ease-out forwards !important;
+  }
+  
+  .form-transform-container.expanding.to-register {
+    animation: fadeInFromBottomMobile 0.6s ease-out forwards !important;
+  }
+  
+  /* Aplicar animaciones móvil para REGISTER → LOGIN */
+  .form-transform-container.collapsing.to-login {
+    animation: fadeOutToBottomMobile 0.6s ease-out forwards !important;
+  }
+  
+  .form-transform-container.expanding.to-login {
+    animation: fadeInFromTopMobile 0.6s ease-out forwards !important;
+  }
+  
+  /* Estados iniciales para móvil */
+  .form-transform-container.login-form:not(.collapsing):not(.expanding) {
+    animation: fadeInFromTopMobile 0.6s ease-out !important;
+  }
+  
+  .form-transform-container.register-form:not(.collapsing):not(.expanding) {
+    animation: fadeInFromBottomMobile 0.6s ease-out !important;
+  }
+  
   .form-transform-container.register-form .form-content{
     margin-top: 30px;
   }
@@ -538,16 +527,9 @@
     min-height: 700px;
   }
   
-  /* Desactivar animaciones complejas en móviles */
-  .form-transform-container.collapsing,
-  .form-transform-container.moving,
-  .form-transform-container.expanding {
-    animation: none;
-    opacity: 1;
-  }
-  
   .form-content {
     padding: 30px 25px;
+    width: 400px;
   }
   
   .form-title {
@@ -565,7 +547,7 @@
   }
   
   .form-content {
-    padding: 25px 20px;
+    width: 350px;
     gap: 1.2rem;
   }
   

@@ -4,7 +4,6 @@ import TabManager from '../../components/TabManager';
 import { useTabManager } from '../../components/useTabManager';
 import { plansTabConfig } from '../../components/managerConfigs';
 import ModifierPlan from "../../components/ModifierPlan";
-import ManagePlans from "../../components/ManagePlans";
 import ManagePlanes from '../../components/ManagePlanes';
 
 const PlansManagerPage = () => {
