@@ -2,7 +2,7 @@
 
 .class-schedule-container {
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  max-width: 1200px;
+  width:100%;
   margin: 0 auto;
   padding: 0;
   background: #ffffff;
@@ -17,6 +17,7 @@
 }
 
 .class-schedule-box {
+  margin: 50px;
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
