@@ -15,7 +15,7 @@ const formatFecha = (iso) => {
   });
 };
 
-const UserDeudas = () => {
+const git switch UserDeudas = () => {
   const { getToken, getUserId } = useAuth();
   const [deudas, setDeudas] = useState([]);
   const [loading, setLoading] = useState(true);
