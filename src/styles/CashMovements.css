@@ -663,22 +663,17 @@
 }
 /* ===== Barra desplegable de meses ===== */
 .select-months {
-  padding: 10px 14px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  min-width: 150px;
-}
-
-.select-months:focus {
-  outline: none;
-  border-color: #fbf106;
-  box-shadow: 0 0 0 3px rgba(251, 241, 6, 0.2);
+  transition: all 0.2s ease;
 }
 
 .select-months:hover {
-  border-color: #fbf106;
+  border-color: #111;
+  background: #fff;
 }
