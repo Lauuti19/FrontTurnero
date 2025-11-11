@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
+// components/ClassSchedule.jsx (modificado)
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   FaUsers, FaChevronLeft, FaChevronRight, FaCalendarAlt,
-  FaDumbbell, FaRunning, FaHeart
+  FaDumbbell, FaRunning, FaHeart, FaChevronDown, FaChevronUp,
+  FaExclamationTriangle, FaInfoCircle
 } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import '../styles/ClassSchedule.css';
-import ClassUsersModal from '../components/ClassUsersModal';
-import RegisterButton from '../components/RegisterButton';
+import ClassUsersModal from './ClassUsersModal';
+import RegistrationManager from './RegisterButtonFiles/RegistrationManager';
+import SkeletonLoader from './SkeletonLoader';
 import { useAuth } from '../AuthContext';
-import { classService } from '../services/classService';
+import { useClassSchedule } from '../hooks/otherHooks/useClassSchedule';
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -18,35 +22,181 @@ const ClassSchedule = ({
   customContainerStyle = {},
   customItemStyle = {},
   adminMode = false,
+  customTitle = "Horario de Clases",
+  customSubtitle = "Entrena con nosotros"
 }) => {
-  const [currentDate, setCurrentDate] = useState(() => {
-    const today = new Date();
-    if (today.getDay() === 0) {
-      today.setDate(today.getDate() + 1); // saltear domingo
-    }
-    today.setHours(0, 0, 0, 0);
-    return today;
-  });
-
-  const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { getToken } = useAuth();
+  const [expandedClassId, setExpandedClassId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [displayError, setDisplayError] = useState("");
 
-  const { getToken } = useAuth();
+  const {
+    currentDate,
+    classes,
+    loading,
+    error,
+    formattedDate,
+    handlePreviousDay,
+    handleNextDay,
+    handleToday,
+    refetch,
+    getCapacityPercentage,
+    getCapacityColor
+  } = useClassSchedule({
+    userId: propUserId,
+    adminMode,
+    getToken
+  });
 
-  const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
-  const userId = propUserId !== null && propUserId !== undefined
-    ? propUserId
-    : (usuarioLocal?.id_usuario || usuarioLocal?.id);
+  // ✅ Función para mostrar SweetAlert de éxito
+  const showSuccessAlert = (title, message) => {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 4000,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp'
+      }
+    });
+  };
 
-  const [expandedClassId, setExpandedClassId] = useState(null);
+  // ✅ Función para manejar errores específicos del horario de clases
+  const handleScheduleError = useCallback((errorMessage) => {
+    if (!errorMessage) return "";
+    
+    // Intentar parsear si es un objeto JSON
+    let parsedMessage = errorMessage;
+    try {
+      if (typeof errorMessage === 'string' && errorMessage.includes('{')) {
+        const errorObj = JSON.parse(errorMessage);
+        parsedMessage = errorObj.error || errorObj.message || errorMessage;
+      }
+    } catch (e) {
+      // Si falla el parseo, usar el mensaje original
+    }
 
-  const formattedDate = useMemo(
-    () => currentDate.toISOString().split('T')[0],
-    [currentDate]
-  );
+    const lowerError = parsedMessage.toLowerCase();
+    
+    // ✅ Errores de cuotas/creditos - MOSTRAR COMO MENSAJE AMIGABLE
+    if (lowerError.includes('no hay cuotas válidas') || 
+        lowerError.includes('cuotas válidas') ||
+        lowerError.includes('créditos') ||
+        lowerError.includes('creditos') ||
+        lowerError.includes('cuota') ||
+        lowerError.includes('pago') ||
+        lowerError.includes('suscripción') ||
+        lowerError.includes('suscripcion')) {
+      return {
+        type: 'info',
+        message: "No posees clases disponibles en este momento. Si creés que es un error, comunicate con algún profesor o acercate al gimnasio.",
+        showAlert: false
+      };
+    }
+    
+    // Errores de conexión/red
+    if (lowerError.includes('network') || 
+        lowerError.includes('conexión') || 
+        lowerError.includes('fetch') ||
+        lowerError.includes('failed to fetch')) {
+      return {
+        type: 'error',
+        message: "Error de conexión. Verificá tu internet e intentá nuevamente.",
+        showAlert: true
+      };
+    }
+    
+    // Errores de autenticación
+    if (lowerError.includes('token') || 
+        lowerError.includes('auth') || 
+        lowerError.includes('no autorizado') ||
+        lowerError.includes('unauthorized')) {
+      return {
+        type: 'error',
+        message: "Sesión expirada. Por favor, volvé a iniciar sesión.",
+        showAlert: true
+      };
+    }
+    
+    // Errores de servidor
+    if (lowerError.includes('server') || 
+        lowerError.includes('servidor') || 
+        lowerError.includes('internal server error')) {
+      return {
+        type: 'error',
+        message: "Error temporal del servidor. Intentá nuevamente en unos minutos.",
+        showAlert: true
+      };
+    }
+    
+    // Errores de datos no encontrados
+    if (lowerError.includes('not found') || 
+        lowerError.includes('no encontrado') ||
+        lowerError.includes('no hay clases')) {
+      return {
+        type: 'info',
+        message: "No se encontraron clases para esta fecha.",
+        showAlert: false
+      };
+    }
+    
+    // Error genérico
+    return {
+      type: 'error',
+      message: parsedMessage || "Ocurrió un error inesperado. Intentá nuevamente.",
+      showAlert: true
+    };
+  }, []);
+
+  // ✅ Efecto para manejar errores del hook
+  useEffect(() => {
+    if (error) {
+      const errorInfo = handleScheduleError(error);
+      setDisplayError(errorInfo);
+      
+      // Mostrar SweetAlert solo para errores críticos que lo requieran
+      if (errorInfo.showAlert) {
+        Swal.fire({
+          title: "Error al cargar horario",
+          text: errorInfo.message,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#dc3545',
+          background: '#ffffff',
+          iconColor: '#dc3545',
+          showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+          },
+          hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+          }
+        });
+      }
+    } else {
+      setDisplayError("");
+    }
+  }, [error, handleScheduleError]);
+
+  // ✅ Función para manejar reintento con feedback
+  const handleRetry = async () => {
+    try {
+      setDisplayError("");
+      await refetch();
+      showSuccessAlert("¡Éxito!", "Horario actualizado correctamente");
+    } catch (error) {
+      // El error ya se maneja en el useEffect
+      console.error("Error al reintentar:", error);
+    }
+  };
 
   const toggleExpand = (id) => {
     setExpandedClassId(expandedClassId === id ? null : id);
@@ -70,6 +220,18 @@ const ClassSchedule = ({
     return <FaDumbbell className="discipline-icon" />;
   };
 
+  // Función para crear la fecha completa de la clase
+  const getClassFullDate = (horaClase) => {
+    if (!horaClase) return null;
+    
+    // Crear fecha con la fecha actual + hora de la clase
+    const [hours, minutes] = horaClase.split(':');
+    const classDate = new Date(currentDate);
+    classDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+    
+    return classDate.toISOString();
+  };
+
   const getFormattedDate = () => {
     const dayIndex = currentDate.getDay();
     const adjusted = dayIndex === 0 ? 6 : dayIndex - 1;
@@ -90,115 +252,14 @@ const ClassSchedule = ({
     );
   };
 
-  const getCapacityPercentage = (disponibles, total) => {
-    const t = Number(total) > 0 ? Number(total) : 20;
-    const d = Math.max(0, Number(disponibles) || 0);
-    return Math.round((1 - d / t) * 100);
+  // Obtener usuario local
+  const usuarioLocal = JSON.parse(localStorage.getItem('usuario'));
+  const userId = propUserId != null ? propUserId : (usuarioLocal?.id_usuario || usuarioLocal?.id);
+
+  // Función unificada para determinar el tipo de clase
+  const getClassType = (clase) => {
+    return (clase.tipo === 'especial' || clase.is_especial) ? 'especial' : 'normal';
   };
-
-  const getCapacityColor = (p) => {
-    if (p >= 80) return '#dc2626';
-    if (p >= 60) return '#f59e0b';
-    return '#16a34a';
-  };
-
-  const fetchClasses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const token = getToken();
-      if (!token) throw new Error('No hay token de autenticación disponible');
-
-      let data;
-      if (adminMode && userId) {
-        data = await classService.getClassesByUser(token, userId, formattedDate);
-      } else {
-        data = await classService.getClasses(token, formattedDate);
-      }
-
-      const clasesFormateadas = (Array.isArray(data) ? data : []).map((c) => {
-        const total = Number(c.capacidad_max ?? c.total ?? 20);
-        const disponibles = Number(c.disponibles ?? 0);
-        return {
-          ...c,
-          hora: c.hora ? String(c.hora).substring(0, 5) : c.hora,
-          total,
-          inscriptos: Math.max(0, total - disponibles),
-        };
-      });
-
-      setClasses(clasesFormateadas);
-    } catch (err) {
-      console.error('Error cargando clases:', err);
-      setError(err.message || 'Error al cargar las clases');
-      setClasses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDate, userId, adminMode, getToken]);
-
-  const handlePreviousDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - 1);
-    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() - 1);
-    newDate.setHours(0, 0, 0, 0);
-    setCurrentDate(newDate);
-  };
-
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + 1);
-    if (newDate.getDay() === 0) newDate.setDate(newDate.getDate() + 1);
-    newDate.setHours(0, 0, 0, 0);
-    setCurrentDate(newDate);
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-    if (today.getDay() === 0) today.setDate(today.getDate() + 1);
-    today.setHours(0, 0, 0, 0);
-    setCurrentDate(today);
-  };
-
-  const renderSkeletonItems = () =>
-    Array.from({ length: 4 }).map((_, i) => (
-      <div key={i} className="class-item skeleton-item">
-        <div className="class-main-info">
-          <div className="class-icon skeleton-icon" />
-          <div className="class-details">
-            <div className="class-discipline skeleton-text skeleton-title" />
-            <div className="class-meta">
-              <div className="class-time skeleton-text skeleton-time" />
-              <div className="class-trainer skeleton-text skeleton-trainer" />
-            </div>
-            <div className="class-description skeleton-text skeleton-description" />
-          </div>
-          <div className="class-capacity">
-            <div className="capacity-info">
-              <div className="capacity-bar skeleton-bar" />
-              <div className="capacity-text skeleton-text skeleton-capacity" />
-            </div>
-          </div>
-        </div>
-        <div className="class-actions skeleton-actions">
-          <div className="class-features">
-            <div className="feature-tag skeleton-tag" />
-            <div className="feature-tag skeleton-tag" />
-            <div className="feature-tag skeleton-tag" />
-          </div>
-          <div className="action-buttons">
-            <div className="btn-view-users skeleton-button" />
-            <div className="skeleton-register-button" />
-          </div>
-        </div>
-      </div>
-    ));
 
   return (
     <div
@@ -209,8 +270,8 @@ const ClassSchedule = ({
         {showHeader && (
           <div className="schedule-header">
             <div className="schedule-title">
-              <h2>Horario de Clases</h2>
-              <p>Entrena con nosotros</p>
+              <h2>{customTitle}</h2>
+              <p>{customSubtitle}</p>
             </div>
 
             <div className="date-navigation">
@@ -246,44 +307,60 @@ const ClassSchedule = ({
           </div>
         )}
 
-        {error && (
-          <div className="error-message">
-            <p>⚠️ {error}</p>
-            <button onClick={fetchClasses} className="retry-btn">
-              Reintentar
-            </button>
+        {/* ✅ Mensajes de error/información mejorados */}
+        {displayError && (
+          <div className={`info-message ${displayError.type === 'error' ? 'error-type' : 'info-type'}`}>
+            <div className="message-icon">
+              {displayError.type === 'error' ? <FaExclamationTriangle /> : <FaInfoCircle />}
+            </div>
+            <div className="message-content">
+              <p>{displayError.message}</p>
+              {displayError.type === 'error' && !displayError.message.includes("No se encontraron clases") && (
+                <button onClick={handleRetry} className="retry-btn" disabled={loading}>
+                  {loading ? 'Reintentando...' : 'Reintentar'}
+                </button>
+              )}
+            </div>
           </div>
         )}
 
         <div className="classes-list">
           {loading ? (
-            renderSkeletonItems()
+            <SkeletonLoader 
+              type="class-item" 
+              count={4}
+              className="class-schedule-skeleton"
+            />
           ) : classes.length > 0 ? (
             classes.map((clase) => {
               const total = Number(clase.total) || 20;
               const disponibles = Number(clase.disponibles) || 0;
               const capacityPercentage = getCapacityPercentage(disponibles, total);
               const capacityColor = getCapacityColor(capacityPercentage);
+              const classType = getClassType(clase);
+              const isExpanded = expandedClassId === clase.id_clase;
+              const classFullDate = getClassFullDate(clase.hora);
 
               return (
                 <div
                   key={clase.id_clase}
-                  className={`class-item ${expandedClassId === clase.id_clase ? 'expanded' : ''}`}
+                  className={`class-item ${isExpanded ? 'expanded' : ''}`}
                   style={customItemStyle}
-                  onClick={() => toggleExpand(clase.id_clase)}
                 >
-                  <div className="class-main-info">
-                    <div className="class-icon">{getDisciplineIcon(clase.disciplina)}</div>
+                  {/* Header de la clase - Siempre visible */}
+                  <div 
+                    className="class-main-info"
+                    onClick={() => toggleExpand(clase.id_clase)}
+                  >
+                    <div className="class-icon">
+                      {getDisciplineIcon(clase.disciplina)}
+                    </div>
 
                     <div className="class-details">
                       <h3 className="class-discipline">{clase.disciplina}</h3>
                       <div className="class-meta">
                         <span className="class-time">{clase.hora} Hs</span>
-                        <span className="class-trainer">Con {clase.entrenador || 'Nuestro equipo'}</span>
                       </div>
-                      <p className="class-description">
-                        {clase.descripcion || 'Clase grupal de alta intensidad'}
-                      </p>
                     </div>
 
                     <div className="class-capacity">
@@ -294,71 +371,70 @@ const ClassSchedule = ({
                             background: `linear-gradient(90deg, ${capacityColor} ${capacityPercentage}%, #e5e7eb ${capacityPercentage}%)`,
                           }}
                         />
-                        <span className="capacity-text">
-                          {disponibles}/{total} cupos
-                        </span>
                       </div>
-                      {capacityPercentage >= 80 && <span className="capacity-alert">¡Últimos cupos!</span>}
+                      <span className="class-available">
+                          {disponibles}/{total} cupos
+                      </span>
+                    </div>
+
+                    <div className="expand-icon">
+                      {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                     </div>
                   </div>
 
-                  <div className={`class-actions ${expandedClassId === clase.id_clase ? 'visible' : ''}`}>
-                    <div className="class-features">
-                      <span className="feature-tag">💪 Intensidad {clase.intensidad || 'Media'}</span>
-                      <span className="feature-tag">⏱️ {clase.duracion || '60'} min</span>
-                      <span className="feature-tag">🏋️‍♂️ {clase.nivel || 'Todos los niveles'}</span>
+                  {/* Contenido expandible - Solo visible cuando está expandido */}
+                  {isExpanded && (
+                    <div className="class-expanded-content">
+                      <div className="class-action-buttons">
+                        <button
+                          className="btn-view-users"
+                          onClick={() => openUsersModal(clase)}
+                          title="Ver usuarios anotados"
+                        >
+                          <FaUsers />
+                          <span>Ver Anotados</span>
+                        </button>
+                          <RegistrationManager
+                            classId={clase.id_clase}
+                            classType={classType}
+                            fecha={classFullDate}
+                            hora={clase.hora}
+                            getToken={getToken}
+                            userId={userId}
+                            isAdmin={adminMode}
+                            onRegistrationChange={refetch}
+                            classInfo={{
+                              disciplina: clase.disciplina,
+                              hora: clase.hora,
+                              id_clase: clase.id_clase
+                            }}
+                          />
+                      </div>
                     </div>
-
-                    <div className="action-buttons">
-                      <button
-                        className="btn-view-users"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openUsersModal(clase);
-                        }}
-                        title="Ver alumnos anotados"
-                      >
-                        <FaUsers />
-                        <span>Ver alumnos</span>
-                        <span className="badge">{clase.inscriptos ?? 0}</span>
-                      </button>
-
-                      <RegisterButton
-                        classId={clase.id_clase}
-                        classType={clase.tipo === 'especial' ? 'especial' : 'normal'}
-                        specialClassOriginalId={clase.id_original}
-                        fecha={formattedDate}
-                        hora={clase.hora}
-                        disciplina={clase.disciplina}
-                        userId={userId}
-                        disabled={clase.inscripto || clase.disponibles === 0}
-                        onSuccess={fetchClasses}
-                        getToken={getToken}
-                      />
-                    </div>
-                  </div>
+                  )}
                 </div>
               );
             })
           ) : (
-            <div className="no-classes">
-              <div className="no-classes-icon">🏋️‍♂️</div>
-              <h3>No hay clases programadas</h3>
-              <p>
-                {adminMode && userId
-                  ? 'El usuario no tiene clases para este día'
-                  : 'No hay clases programadas para este día. Revisa otros días.'}
-              </p>
-            </div>
+            !displayError && ( // Solo mostrar "no hay clases" si no hay error
+              <div className="no-classes">
+                <div className="no-classes-icon">🏋️‍♂️</div>
+                <h3>No hay clases programadas</h3>
+                <p>
+                  {adminMode && userId
+                    ? 'El usuario no tiene clases para este día'
+                    : 'No hay clases programadas para este día. Revisá otros días.'}
+                </p>
+              </div>
+            )
           )}
         </div>
       </div>
 
-      {/* 👇 acá va el modal, fuera del return de la lista */}
       {showModal && selectedClass && (
         <ClassUsersModal
           classId={selectedClass.id_clase}
-          classType={selectedClass.is_especial ? 'especial' : 'normal'}
+          classType={getClassType(selectedClass)}
           fecha={formattedDate}
           onClose={closeUsersModal}
           getToken={getToken}

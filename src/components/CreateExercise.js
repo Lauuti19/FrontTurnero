@@ -1,209 +1,186 @@
 import React, { useEffect, useState } from 'react';
-import { FaSave, FaDumbbell } from 'react-icons/fa';
+import { FaSave, FaSpinner } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import { exerciseService } from '../services/exerciseService';
-import { useAuth } from '../AuthContext';
+import { useExercises } from '../hooks/useExercises';
 import '../styles/CreateExercise.css';
 
 const CreateExercise = () => {
-  const { getToken } = useAuth();
-  const [exercises, setExercises] = useState([]);
-  const [formData, setFormData] = useState({
-    name: '',
-    link: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [fetchLoading, setFetchLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { 
+    exercises, 
+    fetchExercises, 
+    createExercise, 
+    loading, 
+    error, 
+    setError 
+  } = useExercises();
 
-  const fetchExercises = async () => {
-    try {
-      setFetchLoading(true);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
-
-      const data = await exerciseService.getExercises(token);
-      setExercises(data);
-      setError(null);
-    } catch (err) {
-      console.error('Error cargando ejercicios:', err);
-      setError(err.message || 'Error al cargar los ejercicios');
-      setExercises([]);
-    } finally {
-      setFetchLoading(false);
-    }
-  };
+  const [formData, setFormData] = useState({ name: '', link: '' });
 
   useEffect(() => {
     fetchExercises();
-  }, []);
+  }, [fetchExercises]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const showSuccessAlert = (title, message, exerciseName = '') => {
+    Swal.fire({
+      title,
+      html: exerciseName 
+        ? `${message}<br><strong>${exerciseName}</strong>`
+        : message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 4000,
+      timerProgressBar: true,
+      showClass: { popup: 'animate__animated animate__fadeInDown' },
+      hideClass: { popup: 'animate__animated animate__fadeOutUp' }
+    });
+  };
+
+  const showWarningAlert = (title, message) => {
+    Swal.fire({
+      title,
+      text: message,
+      icon: 'warning',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#ffc107',
+      background: '#ffffff',
+      iconColor: '#ffc107'
+    });
+  };
+
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      showWarningAlert('Nombre requerido', 'El nombre del ejercicio es obligatorio.');
+      return false;
+    }
+    if (formData.name.trim().length < 2) {
+      showWarningAlert('Nombre muy corto', 'El nombre debe tener al menos 2 caracteres.');
+      return false;
+    }
+    if (formData.name.trim().length > 100) {
+      showWarningAlert('Nombre muy largo', 'El nombre no puede exceder los 100 caracteres.');
+      return false;
+    }
+    if (formData.link && !isValidUrl(formData.link)) {
+      showWarningAlert('Enlace inválido', 'Por favor ingresa una URL válida.');
+      return false;
+    }
+    return true;
+  };
+
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const handleCreateExercise = async (e) => {
     e.preventDefault();
-    
-    if (!formData.name.trim()) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Nombre requerido',
-        text: 'El nombre del ejercicio es obligatorio.',
-      });
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
-      setLoading(true);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
-
-      await exerciseService.createExercise(token, {
-        name: formData.name.trim(),
-        link: formData.link.trim()
-      });
-
-      await Swal.fire({
-        icon: 'success',
-        title: 'Ejercicio creado exitosamente',
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-      // Resetear formulario y recargar lista
-      setFormData({
-        name: '',
-        link: ''
-      });
-      await fetchExercises();
-      
-    } catch (error) {
-      console.error("Error creando ejercicio:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.message || "Error al crear el ejercicio"
+        title: 'Creando Ejercicio...',
+        text: 'Por favor espera mientras creamos el ejercicio',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
       });
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const renderExercisesList = () => {
-    if (fetchLoading) {
-      return (
-        <div className="loading-exercises">
-          <p>Cargando ejercicios existentes...</p>
-        </div>
+      await createExercise({
+        name: formData.name.trim(),
+        link: formData.link.trim() || null,
+      });
+
+      Swal.close();
+
+      showSuccessAlert(
+        '¡Ejercicio Creado!',
+        'El ejercicio ha sido creado exitosamente:',
+        formData.name
       );
-    }
 
-    if (error) {
-      return (
-        <div className="warning-message">
-          <p>⚠️ No se pudieron cargar los ejercicios: {error}</p>
-          <button onClick={fetchExercises} className="retry-btn">
-            Reintentar
-          </button>
-        </div>
-      );
-    }
+      setFormData({ name: '', link: '' });
+      await fetchExercises();
 
-    if (exercises.length === 0) {
-      return (
-        <div className="no-exercises">
-          <p>No hay ejercicios creados aún.</p>
-        </div>
-      );
+    } catch (error) {
+      Swal.close();
+      console.error('Error creando ejercicio:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.message || 'Error al crear el ejercicio',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#dc3545'
+      });
     }
-
-    return (
-      <div className="existing-exercises">
-        <h3>Ejercicios existentes ({exercises.length})</h3>
-        <div className="exercises-list">
-          {exercises.slice(0, 5).map((exercise) => (
-            <div key={exercise.id_ejercicio} className="exercise-item">
-              <div className="exercise-info">
-                <FaDumbbell className="exercise-icon" />
-                <span className="exercise-name">{exercise.nombre}</span>
-              </div>
-              {exercise.link && (
-                <a 
-                  href={exercise.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="exercise-link"
-                  title="Ver video demostrativo"
-                >
-                  📹
-                </a>
-              )}
-            </div>
-          ))}
-          {exercises.length > 5 && (
-            <p className="more-exercises">... y {exercises.length - 5} ejercicios más</p>
-          )}
-        </div>
-      </div>
-    );
   };
 
   return (
-    <div className="create-exercise-container">
-      <div className="create-exercise-box">
-        <h2 className="create-exercise-title">Crear Nuevo Ejercicio</h2>
-        <p className="create-exercise-subtitle">
-          Agrega un nuevo ejercicio al sistema para utilizarlo en las rutinas.
-        </p>
+    <div className="CreateExerciseContainer">
+      <h2 id="Title-Ejercicios">Crear Ejercicio</h2>
 
-        <form className="create-exercise-form" onSubmit={handleCreateExercise}>
+      {error && (
+        <div className="warning-message">
+          <p>⚠️ {error}</p>
+          <button onClick={() => setError(null)} className="dismiss-btn">×</button>
+        </div>
+      )}
+
+      <div className="form-container">
+        <form className="form-group-class" onSubmit={handleCreateExercise}>
           <div className="form-field">
-            <label>Nombre del ejercicio</label>
+            <label>Nombre del Ejercicio:</label>
             <input
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               required
               placeholder="Ej: Press de banca, Sentadillas, Flexiones..."
               disabled={loading}
+              maxLength={100}
             />
+            <div className="character-counter">
+              {formData.name.length}/100 caracteres
+            </div>
           </div>
 
           <div className="form-field">
-            <label>Enlace de video demostrativo (opcional)</label>
+            <label>Enlace de Video Demostrativo (Opcional):</label>
             <input
-              type="text"
+              type="url"
               name="link"
               value={formData.link}
-              onChange={handleChange}
-              placeholder="https://youtube.com/ejemplo o https://vimeo.com/ejemplo"
+              onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
+              placeholder="https://youtube.com/ejemplo"
               disabled={loading}
             />
+            <div className="helper-text">
+              Enlace a YouTube.
+            </div>
           </div>
 
           <button 
             type="submit" 
-            className="create-exercise-btn"
+            className={`btn-create-exercise ${loading ? 'loading' : ''}`}
             disabled={loading || !formData.name.trim()}
           >
-            <FaSave className="btn-icon" />
-            {loading ? 'Creando ejercicio...' : 'Crear Ejercicio'}
+            {loading ? (
+              <>
+                Creando Ejercicio...
+              </>
+            ) : (
+              <>
+                <FaSave /> Crear Ejercicio
+              </>
+            )}
           </button>
         </form>
-
-        {/* Sección de ejercicios existentes */}
-        <div className="exercises-section">
-          {renderExercisesList()}
-        </div>
       </div>
     </div>
   );

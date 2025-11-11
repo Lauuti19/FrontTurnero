@@ -1,0 +1,427 @@
+/* CreatePlan.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
+.CreateClassContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título Principal */
+#Title-Planes {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+#Title-Planes::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 2px;
+}
+
+/* Mensaje de Warning */
+.warning-message {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 600px;
+  animation: slideInDown 0.5s ease-out;
+}
+
+.warning-message p {
+  margin: 0;
+  color: #856404;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Formulario */
+.form-group-class {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
+  animation: slideInUp 0.5s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Labels del Formulario */
+.form-group-class label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group-class label::after {
+  content: "";
+  color: #ff6b6b;
+}
+
+/* Inputs y Textarea */
+.form-group-class input,
+.form-group-class textarea {
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group-class input:focus,
+.form-group-class textarea:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.form-group-class input:hover,
+.form-group-class textarea:hover {
+  border-color: #dee2e6;
+}
+
+.form-group-class input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.form-group-class input:disabled,
+.form-group-class textarea:disabled {
+  background: #f8f9fa;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Textarea específico */
+.form-group-class textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Grupo de Checkboxes */
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.checkbox-item:hover {
+  background: #ffd700;
+  border-color: #dee2e6;
+}
+
+.checkbox-item:has(.checkbox-input:checked) {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: white;
+  font-weight: bolder;
+}
+.checkbox-item:has(.checkbox-input:checked) label{
+    color: white;
+}
+.checkbox-item:has(.checkbox-input:checked) {
+    color: white;
+    font-weight: bolder;
+}
+.checkbox-item:has(.checkbox-input:checked):hover {
+  background: #333333;
+  border-color: #ffd700;
+  color: #ffd700;
+}
+.checkbox-item:has(.checkbox-input:checked):hover label{
+    color: #ffd700;
+}
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.checkbox-input:checked {
+  background: #ffd700;
+  border-color: #ffd700;
+}
+
+.checkbox-input:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkbox-label {
+  font-weight: 500;
+  color: #1a1a1a;
+  cursor: pointer;
+  margin: 0;
+  flex: 1;
+}
+
+/* Botón de Crear Plan */
+.btn-create-plan{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.create-plan-btn:hover:not(:disabled) {
+  background:  #404040;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.create-plan-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.create-plan-btn:disabled {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.create-plan-btn.loading {
+  color: transparent;
+}
+
+/* Spinner para loading */
+.create-plan-btn:disabled::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #999;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Estados de validación */
+.form-group-class input:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class textarea:invalid:not(:focus):not(:placeholder-shown),
+.form-group-class number:invalid:not(:focus):not(:placeholder-shown)
+ {
+  background: #fffbfb;
+  border-color: #cec3a4;
+  color: black;
+}
+
+.form-group-class input:valid:not(:focus):not(:placeholder-shown),
+.form-group-class textarea:valid:not(:focus):not(:placeholder-shown) {
+  border-color: #51cf66;
+  background: #f8fff9;
+  color: black;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus states para accesibilidad */
+.form-group-class input:focus,
+.form-group-class textarea:focus,
+.checkbox-input:focus,
+.create-plan-btn:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* Efecto de ripple en botones */
+.create-plan-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.create-plan-btn:hover:not(:disabled)::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* Mensaje de carga */
+.checkbox-group p {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .CreateClassContainer {
+    padding: 20px 16px;
+  }
+  
+  #Title-Planes {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .form-group-class {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+  
+  .checkbox-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .CreateClassContainer {
+    padding: 16px 12px;
+  }
+  
+  #Title-Planes {
+    font-size: 1.7rem;
+  }
+  
+  .form-group-class {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+  
+  .form-group-class input,
+  .form-group-class textarea {
+    padding: 12px 14px;
+  }
+  
+  .create-plan-btn {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+  
+  .checkbox-item {
+    padding: 10px;
+  }
+}
+
+/* Scroll suave para el contenedor */
+.CreateClassContainer {
+  scroll-behavior: smooth;
+}
+
+/* Mejoras de accesibilidad para checkboxes */
+.checkbox-input:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* Estados hover mejorados */
+.checkbox-item:hover .checkbox-label {
+  color: #1a1a1a;
+}
+
+/* Transiciones suaves para todos los elementos interactivos */
+.form-group-class input,
+.form-group-class textarea,
+.checkbox-item,
+.create-plan-btn,
+.checkbox-input {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

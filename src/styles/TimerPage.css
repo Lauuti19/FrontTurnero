@@ -1,83 +1,318 @@
+/* TimerPage.css - Estilos Modernos con Blanco, Negro, Gris Oscuro y Amarillo */
+
+/* Container Principal */
 .timer-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background-color: #18181b !important; 
   min-height: 100vh;
-  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .timer-content {
-  background-color: #fff; 
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 900px;
-  width: 100%;
-  color: #18181b;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .timer-page-title {
-  font-size: 2rem;
-  font-family: 'Brigends', sans-serif;
-  text-align: center;
-  color: #18181b;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Botones de Modo */
 .timer-page-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-bottom: 50px;
+  padding: 0 20px;
 }
 
 .timer-mode-btn {
-  padding: 0.8rem 1.2rem;
-  background-color: transparent;
-  border: 2px solid #18181b; 
-  border-radius: 8px;
-  color: #18181b;
-  font-weight: bold;
-  font-family: 'Brigends', sans-serif;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 16px 12px;
+  border-radius: 16px;
   font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  min-width: 120px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .timer-mode-btn:hover {
-  background-color: #18181b;
-  color: #fbf106; 
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
 }
 
 .timer-mode-btn.active {
-  background-color: #18181b;
-  color: #fbf106;
+  background: #ffd700;
+  color: #1a1a1a;
+  border-color: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+}
+
+/* Container de Timer Seleccionado */
+.timer-selected {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos Generales para Todos los Timers */
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Controles del Timer */
+.timer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.timer-controls input {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.timer-controls input:focus {
+  outline: none;
+  border-color: #ffd700;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.timer-controls input::placeholder {
+  color: #666;
+  font-weight: 400;
+}
+
+/* Display del Timer */
+.timer-display {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  padding: 30px 50px;
+  border-radius: 20px;
+  margin: 20px 0;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.02em;
+  min-width: 300px;
+}
+
+/* Estados Especiales para Tabata */
+.timer-container .timer-display.work-phase {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  color: #ffffff;
+}
+
+.timer-container .timer-display.rest-phase {
+  background: linear-gradient(135deg, #4ecdc4, #6ae2d9);
+  color: #ffffff;
+}
+
+/* Botón Principal del Timer */
+.timer-btn {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  color: #ffffff;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  min-width: 180px;
+}
+
+.timer-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #2d2d2d, #404040);
+}
+
+.timer-btn:active {
+  transform: translateY(-1px);
+}
+
+.timer-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Información Adicional */
+.timer-container div:not(.timer-display):not(.timer-controls) {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+/* Estados de Alerta */
+.capacity-alert {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .timer-page-container {
+    padding: 20px 16px;
+  }
+  
+  .timer-page-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .timer-page-controls {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0;
+  }
+  
+  .timer-mode-btn {
+    padding: 14px 8px;
+    font-size: 1rem;
+  }
+  
+  .timer-selected {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+  
+  .timer-display {
+    font-size: 3rem;
+    padding: 25px 30px;
+    min-width: 250px;
+  }
+  
+  .timer-controls {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .timer-btn {
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer-page-title {
+    font-size: 1.8rem;
+  }
+  
+  .timer-page-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .timer-display {
+    font-size: 2.5rem;
+    padding: 20px;
+    min-width: 200px;
+  }
+  
+  .timer-selected {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+}
+
+/* Animaciones */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.timer-running .timer-display {
+  animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .timer-selected {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* ✅ Responsive */
-@media (max-width: 768px) {
-  .timer-content {
-    padding: 1rem;
-    gap: 1rem;
-    width: 95%; 
-  }
+/* Estados de Finalización */
+.timer-finished .timer-display {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  animation: pulse 1s infinite;
+}
 
-  .timer-page-title {
-    font-size: 1.5rem;
-  }
+/* Focus States para Accesibilidad */
+.timer-mode-btn:focus,
+.timer-btn:focus,
+.timer-controls input:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
 
-  .timer-mode-btn {
-    width: 100%;
-    font-size: 1rem;
-  }
+/* Scrollbar Personalizado */
+.timer-page-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.timer-page-container::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.timer-page-container::-webkit-scrollbar-thumb {
+  background: #ffd700;
+  border-radius: 4px;
+}
+
+.timer-page-container::-webkit-scrollbar-thumb:hover {
+  background: #ffdf40;
 }

@@ -14,8 +14,8 @@ const ClassesManagerPage = () => {
         switch (activeTab) {
             case 'create':
                 return <ModifierClass />;
-            case 'view':
-                return <ViewClasses />;
+            {/*case 'view':
+                return <ViewClasses />; */}
             case 'anotar':
                 return <AnotarUsuarioAClase />;
             default:

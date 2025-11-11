@@ -69,9 +69,9 @@ const WorkHoursPactadas = () => {
     const { value: formValues } = await Swal.fire({
       title: `Editar horas de ${row.user_name || "usuario"}`,
       html: `
-        <label style="display:block;text-align:left;margin-bottom:4px;">Horas pactadas</label>
+        <label className="label-form">Horas pactadas</label>
         <input id="swal-hours" type="number" min="0" value="${work_hours}" class="swal2-input" style="width:100%;margin:0 0 10px 0;" />
-        <label style="display:block;text-align:left;margin-bottom:4px;">Valor hora</label>
+        <label className="label-form">Valor hora</label>
         <input id="swal-rate" type="number" min="0" step="0.01" value="${rate}" class="swal2-input" style="width:100%;margin:0;" />
       `,
       focusConfirm: false,

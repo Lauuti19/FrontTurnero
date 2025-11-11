@@ -1,273 +1,366 @@
-import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaSave, FaDumbbell, FaTimes } from 'react-icons/fa';
+import React, { useEffect, useState, useCallback } from 'react';
+import { FaEdit, FaTrash, FaSave, FaTimes, FaSpinner } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import { disciplinaService } from '../services/disciplinaService';
+import { useDisciplines } from '../hooks';
 import { useAuth } from '../AuthContext';
 import '../styles/ManageDisciplines.css';
 
 const ManageDisciplines = () => {
   const { getToken } = useAuth();
+  const { 
+    getDisciplinas,
+    updateDiscipline,
+    deleteDiscipline,
+    loading: disciplinesLoading,
+    error: disciplinesError,
+    clearError 
+  } = useDisciplines();
+
   const [disciplinas, setDisciplinas] = useState([]);
-  const [editing, setEditing] = useState(null);
-  const [editName, setEditName] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingDisciplineId, setEditingDisciplineId] = useState(null);
+  const [editedDiscipline, setEditedDiscipline] = useState({});
+  const [actionLoading, setActionLoading] = useState(false);
 
-  const fetchDisciplinas = async () => {
+  // Función para mostrar alertas de éxito
+  const showSuccessAlert = (title, message, disciplineName = '') => {
+    Swal.fire({
+      title: title,
+      html: disciplineName 
+        ? `${message}<br><strong>${disciplineName}</strong>`
+        : message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 3000,
+      timerProgressBar: true
+    });
+  };
+
+  // Función para mostrar alertas de error
+  const showErrorAlert = (title, errorMessage) => {
+    Swal.fire({
+      title: title,
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#dc3545',
+      background: '#ffffff'
+    });
+  };
+
+  // Función para mostrar confirmación de eliminación
+  const showDeleteConfirmation = (disciplineName) => {
+    return Swal.fire({
+      title: '¿Eliminar Disciplina?',
+      html: `¿Estás seguro de que deseas eliminar la disciplina <strong>"${disciplineName}"</strong>?<br><br>Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      background: '#ffffff',
+      reverseButtons: true
+    });
+  };
+
+  const fetchDisciplinas = useCallback(async () => {
     try {
       setLoading(true);
-      const token = getToken();
+      setError(null);
+      clearError();
       
+      const token = getToken();
       if (!token) {
         throw new Error('No hay token de autenticación disponible');
       }
 
-      const data = await disciplinaService.getDisciplinas(token);
+      console.log('🔄 Solicitando disciplinas al backend...');
+      const data = await getDisciplinas(token);
       setDisciplinas(data);
-      setError(null);
+      
     } catch (err) {
-      console.error('Error cargando disciplinas:', err);
-      setError(err.message || 'Error al cargar las disciplinas');
-      setDisciplinas([]);
+      console.error('❌ Error cargando disciplinas:', err);
+      const errorMsg = err.message || 'Error al cargar las disciplinas';
+      setError(errorMsg);
+      showErrorAlert('Error al cargar disciplinas', errorMsg);
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken, getDisciplinas, clearError]);
 
   useEffect(() => {
-    fetchDisciplinas();
+    const token = getToken();
+    if (token) {
+      fetchDisciplinas();
+    }
   }, []);
 
+  // Función para normalizar los datos de la disciplina
+  const normalizeDisciplineData = (disciplina) => {
+    return {
+      id: disciplina.id_disciplina || disciplina.id,
+      name: disciplina.disciplina || disciplina.name || 'Sin nombre',
+      active: disciplina.activo !== undefined ? disciplina.activo : true
+    };
+  };
+
   const handleEditClick = (disciplina) => {
-    setEditing(disciplina.id_disciplina);
-    setEditName(disciplina.disciplina || disciplina.nombre || '');
+    const normalizedDiscipline = normalizeDisciplineData(disciplina);
+    setEditingDisciplineId(normalizedDiscipline.id);
+    setEditedDiscipline({
+      name: normalizedDiscipline.name,
+      active: normalizedDiscipline.active
+    });
   };
 
-  const handleEditSave = async (id) => {
-    if (!editName.trim()) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Nombre requerido',
-        text: 'El nombre de la disciplina es obligatorio.',
-      });
-      return;
-    }
+  const handleSaveEdit = async (disciplineId) => {
+    try {
+      setActionLoading(true);
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-    const result = await Swal.fire({
-      title: '¿Guardar cambios?',
-      text: 'Se actualizará el nombre de la disciplina.',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Guardar',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const token = getToken();
-        
-        if (!token) {
-          throw new Error('No hay token de autenticación disponible');
-        }
-
-        await disciplinaService.updateDisciplina(token, id, {
-          name: editName.trim()
-        });
-
-        await Swal.fire({
-          icon: 'success',
-          title: 'Disciplina actualizada',
-          showConfirmButton: false,
-          timer: 1500
-        });
-
-        setEditing(null);
-        await fetchDisciplinas();
-      } catch (error) {
-        console.error('Error actualizando disciplina:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message || 'No se pudo actualizar la disciplina'
-        });
+      if (!editedDiscipline.name?.trim()) {
+        throw new Error('El nombre de la disciplina es requerido');
       }
+
+      // Validar longitud del nombre
+      if (editedDiscipline.name.trim().length < 2) {
+        throw new Error('El nombre debe tener al menos 2 caracteres');
+      }
+
+      if (editedDiscipline.name.trim().length > 50) {
+        throw new Error('El nombre no puede exceder los 50 caracteres');
+      }
+
+      const updateData = {
+        name: editedDiscipline.name.trim()
+      };
+
+      console.log('📤 Enviando datos de actualización:', updateData);
+      await updateDiscipline(token, disciplineId, updateData);
+
+      setEditingDisciplineId(null);
+      setEditedDiscipline({});
+      
+      // Mostrar alerta de éxito con información de la disciplina
+      showSuccessAlert(
+        '¡Disciplina Actualizada!', 
+        'La disciplina ha sido actualizada exitosamente:',
+        editedDiscipline.name
+      );
+      
+      // Recargar la lista
+      await fetchDisciplinas();
+      
+    } catch (error) {
+      console.error("❌ Error al editar:", error);
+      const errorMsg = error.message || "Error al guardar cambios";
+      setError(errorMsg);
+      showErrorAlert('Error al actualizar disciplina', errorMsg);
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción eliminará la disciplina del sistema.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const token = getToken();
-        
-        if (!token) {
-          throw new Error('No hay token de autenticación disponible');
-        }
-
-        await disciplinaService.deleteDisciplina(token, id);
-
-        await Swal.fire({
-          icon: 'success',
-          title: 'Disciplina eliminada',
-          showConfirmButton: false,
-          timer: 1500
-        });
-
-        await fetchDisciplinas();
-      } catch (error) {
-        console.error('Error eliminando disciplina:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message || 'No se pudo eliminar la disciplina'
-        });
+  const handleDeleteDiscipline = async (disciplina) => {
+    const normalizedDiscipline = normalizeDisciplineData(disciplina);
+    
+    try {
+      const result = await showDeleteConfirmation(normalizedDiscipline.name);
+      
+      if (!result.isConfirmed) {
+        return;
       }
+
+      setActionLoading(true);
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
+
+      await deleteDiscipline(token, normalizedDiscipline.id);
+      
+      // Mostrar alerta de éxito
+      showSuccessAlert(
+        '¡Disciplina Eliminada!', 
+        'La disciplina ha sido eliminada exitosamente:',
+        normalizedDiscipline.name
+      );
+      
+      // Recargar la lista
+      await fetchDisciplinas();
+      
+    } catch (error) {
+      console.error("❌ Error eliminando:", error);
+      const errorMsg = error.message || "Error al eliminar la disciplina";
+      setError(errorMsg);
+      showErrorAlert('Error al eliminar disciplina', errorMsg);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const handleCancelEdit = () => {
-    setEditing(null);
-    setEditName('');
+    // Mostrar confirmación si hay cambios sin guardar
+    if (editedDiscipline.name) {
+      Swal.fire({
+        title: '¿Descartar cambios?',
+        text: 'Tienes cambios sin guardar. ¿Estás seguro de que quieres cancelar?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, descartar',
+        cancelButtonText: 'Seguir editando',
+        confirmButtonColor: '#6c757d',
+        cancelButtonColor: '#007bff',
+        background: '#ffffff'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setEditingDisciplineId(null);
+          setEditedDiscipline({});
+        }
+      });
+    } else {
+      setEditingDisciplineId(null);
+      setEditedDiscipline({});
+    }
   };
 
-  const getDisciplinaNombre = (disciplina) => {
-    return disciplina.disciplina || disciplina.nombre || 'Sin nombre';
+  const handleInputChange = (field, value) => {
+    setEditedDiscipline(prev => ({ 
+      ...prev, 
+      [field]: value 
+    }));
   };
 
-  //if (loading) {
-  //  return (
-  //    <div className="manage-disciplines-container">
-  //      <div className="manage-disciplines-box">
-  //        <div className="loading-container">
-  //          <p>Cargando disciplinas...</p>
-  //        </div>
-  //      </div>
-  //    </div>
-  //  );
-  //}
+  // Combinar estados
+  const isLoading = loading || disciplinesLoading;
+  const displayError = error || disciplinesError;
 
-  if (error && disciplinas.length === 0) {
+  if (isLoading) {
     return (
-      <div className="manage-disciplines-container">
-        <div className="manage-disciplines-box">
-          <div className="error-message">
-            <h2>Disciplinas</h2>
-            <p>{error}</p>
-            <button onClick={fetchDisciplinas} className="retry-btn">
-              Reintentar
-            </button>
-          </div>
+      <div className="CreateClassContainer">
+        <div className="loading-message">
+          <FaSpinner className="spinner" />
+          <p>Cargando disciplinas...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="manage-disciplines-container">
-      <div className="manage-disciplines-box">
-        <h2 className="manage-disciplines-title">Gestión de Disciplinas</h2>
-        <p className="manage-disciplines-subtitle">
-          Administra las disciplinas disponibles en el sistema. Edita o elimina según sea necesario.
-        </p>
+  if (displayError && disciplinas.length === 0) {
+    return (
+      <div className="CreateDisciplinesContainer">
+        <div className="error-message">
+          <h2>Error</h2>
+          <p>{displayError}</p>
+          <button onClick={fetchDisciplinas} className="create-discipline-btn" disabled={loading}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-        {error && (
-          <div className="warning-message">
-            <p>⚠️ {error}</p>
-          </div>
-        )}
+  return ( 
+    <div className="CreateDisciplinesContainer">
+      <h2 id='Title-Disciplinas'>Gestión de Disciplinas</h2>
+      
+      {displayError && (
+        <div className="warning-message">
+          <p>⚠️ {displayError}</p>
+          <button onClick={() => { setError(null); clearError(); }} className="dismiss-btn">
+            ×
+          </button>
+        </div>
+      )}
 
+      {disciplinas.length === 0 && !isLoading ? (
+        <div className="no-data-message">
+          <p>No hay disciplinas disponibles</p>
+          <button onClick={fetchDisciplinas} className="create-discipline-btn">
+            Reintentar
+          </button>
+        </div>
+      ) : (
         <div className="disciplines-list">
-          {disciplinas.length === 0 ? (
-            <div className="no-disciplines">
-              <p>No hay disciplinas disponibles</p>
-            </div>
-          ) : (
-            disciplinas.map((disciplina) => (
-              <div key={disciplina.id_disciplina} className="discipline-card">
-                {editing === disciplina.id_disciplina ? (
-                  <div className="discipline-edit">
-                    <div className="edit-header">
-                      <FaDumbbell className="edit-icon" />
-                      <span>Editando disciplina</span>
-                    </div>
+          {disciplinas.map((disciplina) => {
+            const normalizedDiscipline = normalizeDisciplineData(disciplina);
+            const isEditing = editingDisciplineId === normalizedDiscipline.id;
+            
+            return (
+              <div key={normalizedDiscipline.id} className="discipline-item">
+                {isEditing ? (
+                  <div className="edit-mode">
+                    <h3>Editando Disciplina</h3>
                     
-                    <div className="edit-form">
-                      <div className="form-field">
-                        <label>Nombre de la disciplina</label>
-                        <input
-                          type="text"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          placeholder="Nombre de la disciplina"
-                          required
-                          autoFocus
-                        />
+                    <div className="form-group">
+                      <label>Nombre de la disciplina:</label>
+                      <input
+                        type="text"
+                        value={editedDiscipline.name || ''}
+                        onChange={e => handleInputChange('name', e.target.value)}
+                        required
+                        disabled={actionLoading}
+                        placeholder="Ingrese el nombre de la disciplina"
+                        maxLength={50}
+                      />
+                      <div className="character-counter">
+                        {editedDiscipline.name?.length || 0}/50 caracteres
                       </div>
                     </div>
-
+                    
                     <div className="action-buttons">
                       <button 
                         className="btn-save" 
-                        onClick={() => handleEditSave(disciplina.id_disciplina)}
-                        disabled={!editName.trim()}
+                        onClick={() => handleSaveEdit(normalizedDiscipline.id)}
+                        disabled={!editedDiscipline.name?.trim() || actionLoading}
                       >
-                        <FaSave /> Guardar
+                        {actionLoading ? <FaSpinner className="spinner" /> : <FaSave />}
+                        {actionLoading ? 'Guardando...' : 'Guardar'}
                       </button>
-                      <button className="btn-cancel" onClick={handleCancelEdit}>
+                      <button 
+                        className="btn-cancel" 
+                        onClick={handleCancelEdit}
+                        disabled={actionLoading}
+                      >
                         <FaTimes /> Cancelar
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="discipline-view">
-                    <div className="discipline-header">
-                      <div className="discipline-info">
-                        <FaDumbbell className="discipline-icon" />
-                        <h3>{getDisciplinaNombre(disciplina)}</h3>
-                      </div>
-                      <div className="discipline-actions">
-                        <button 
-                          className="btn-edit" 
-                          onClick={() => handleEditClick(disciplina)}
-                          title="Editar disciplina"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button 
-                          className="btn-delete" 
-                          onClick={() => handleDelete(disciplina.id_disciplina)}
-                          title="Eliminar disciplina"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="discipline-meta">
-                      {disciplina.activo !== undefined && (
-                        <span className={`status ${disciplina.activo ? 'active' : 'inactive'}`}>
-                          {disciplina.activo ? 'Activa' : 'Inactiva'}
-                        </span>
-                      )}
+                  <div className="view-mode">
+                    <h3>{normalizedDiscipline.name}</h3>
+
+                    <div className="disciplines-action-buttons">
+                      <button 
+                        className="btn-edit" 
+                        onClick={() => handleEditClick(disciplina)}
+                        disabled={actionLoading}
+                      >
+                        <FaEdit /> Editar
+                      </button>
+                      <button 
+                        className="btn-delete" 
+                        onClick={() => handleDeleteDiscipline(disciplina)}
+                        disabled={actionLoading}
+                      >
+                        {actionLoading ? <FaSpinner className="spinner" /> : <FaTrash />}
+                        {actionLoading ? 'Eliminando...' : 'Eliminar'}
+                      </button>
                     </div>
                   </div>
                 )}
               </div>
-            ))
-          )}
+            );
+          })}
         </div>
+      )}
 
-        <div className="disciplines-stats">
-          <p>Total de disciplinas: <strong>{disciplinas.length}</strong></p>
-        </div>
+      <div className="disciplines-stats">
+        <p>Total de disciplinas: <strong>{disciplinas.length}</strong></p>
       </div>
     </div>
   );

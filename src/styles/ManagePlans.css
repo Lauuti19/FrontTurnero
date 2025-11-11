@@ -1,0 +1,476 @@
+/* ManagePlans.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
+.CreateClassContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título Principal */
+#Title-Planes {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+#Title-Planes::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 2px;
+}
+
+/* Mensajes de Estado */
+.warning-message {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 800px;
+  animation: slideInDown 0.5s ease-out;
+}
+
+.warning-message p {
+  margin: 0;
+  color: #856404;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #fee, #fdd);
+  border: 1px solid #fcc;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 24px;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.error-message h2 {
+  color: #c33;
+  margin-bottom: 12px;
+}
+
+.error-message p {
+  color: #c33;
+  margin-bottom: 20px;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 60px 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Lista de Planes */
+.plans-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Item de Plan */
+.plan-item {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: slideInUp 0.5s ease-out;
+}
+
+.plan-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Modo Visualización */
+.view-mode {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.view-mode h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffd700;
+}
+
+.view-mode p {
+  margin: 0 0 12px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.view-mode strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Modo Edición */
+.edit-mode {
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+}
+
+.edit-mode h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-mode h3::before {
+  content: '✏️';
+  font-size: 1.2rem;
+}
+
+/* Grupos de Formulario */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 14px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+  background: #ffffff;
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color: #dee2e6;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+/* Botones de Acción */
+.plans-action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.plans-action-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #1a1a1a;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffed4e, #fff3a3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc3545, #e74c3c);
+  color: #ffffff;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #dc3545);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #ffffff;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #28a745);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #6c757d, #868e96);
+  color: #ffffff;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a6268, #6c757d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+/* Botón de Reintentar */
+.create-plan-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-plan-btn:hover {
+  background: linear-gradient(135deg, #2d2d2d, #404040);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estados Deshabilitados */
+.action-buttons button:disabled {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Iconos */
+.action-buttons svg {
+  font-size: 0.9rem;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Efectos de Hover Mejorados */
+.plan-item {
+  position: relative;
+}
+
+.plan-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.plan-item:hover::before {
+  transform: scaleX(1);
+}
+
+/* Estados de Validación */
+.form-group input:invalid:not(:focus),
+.form-group textarea:invalid:not(:focus) {
+  border-color: #ff6b6b;
+  background: #fff5f5;
+}
+
+.form-group input:valid:not(:focus),
+.form-group textarea:valid:not(:focus) {
+  border-color: #51cf66;
+  background: #f8fff9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .CreatePlanesContainer {
+    padding: 20px 16px;
+  }
+  
+  #Title-Planes {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .plans-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .CreateClassContainer {
+    padding: 16px 12px;
+  }
+  
+  #Title-Planes {
+    font-size: 1.7rem;
+  }
+  
+  .view-mode,
+  .edit-mode {
+    padding: 20px;
+  }
+  
+  .view-mode h3 {
+    font-size: 1.2rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .action-buttons button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Focus States para Accesibilidad */
+.action-buttons button:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* Transiciones Suaves */
+.plan-item,
+.action-buttons button,
+.form-group input,
+.form-group textarea {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efectos de Loading */
+.plans-list:empty::before {
+  content: 'Cargando planes...';
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px;
+  display: block;
+}
+
+/* Mejoras Visuales para Estados de Edición */
+.edit-mode .form-group input:focus,
+.edit-mode .form-group textarea:focus {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+}
+
+/* Badge para Número de Disciplinas */
+.view-mode p:last-child {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 16px;
+  border-left: 3px solid #ffd700;
+}

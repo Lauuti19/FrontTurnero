@@ -4,7 +4,7 @@ import TabManager from "../../components/TabManager";
 import { useTabManager } from "../../components/useTabManager";
 import { routinesTabConfig } from "../../components/managerConfigs";
 import CreateRoutine from "../../components/CreateRoutine";
-import SearchRoutines from "../../components/SearchRoutines"; // Asignar a usuario
+import SearchRoutines from '../../components/SearchRoutines'
 import ViewRoutines from "../../components/ViewRoutines"; // 🔹 Nueva pestaña
 
 const RoutineManagerPage = () => {
@@ -18,7 +18,7 @@ const RoutineManagerPage = () => {
         return <SearchRoutines mode="assign" />;
       case "user":
         return <SearchRoutines mode="view" />;
-      case "viewRoutines": // 🔹 Nueva pestaña
+      case "viewRoutines": 
         return <ViewRoutines />;
       default:
         return <CreateRoutine />;

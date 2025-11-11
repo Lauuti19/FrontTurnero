@@ -1,116 +1,132 @@
-import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
-import { planService } from '../services/planService';
+import React, { useEffect, useState, useCallback } from 'react';
+import { FaEdit, FaTrash, FaSave, FaTimes, FaSpinner } from 'react-icons/fa';
+import { usePlans } from '../hooks';
 import { useAuth } from '../AuthContext';
-import '../styles/CreateClass.css';
+import '../styles/ManagePlans.css';
 
 const ManagePlans = () => {
   const { getToken } = useAuth();
+  const { 
+    getAllPlans, 
+    updatePlan, 
+    deletePlan, 
+    loading: plansLoading, 
+    error: plansError,
+    clearError 
+  } = usePlans(); 
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [planes, setPlanes] = useState([]);
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [editedPlan, setEditedPlan] = useState({});
+  const [actionLoading, setActionLoading] = useState(false);
 
-  // Función para cargar los planes (reutilizable)
-  const fetchPlanes = async () => {
+  const fetchPlanes = useCallback(async () => {
     try {
       setLoading(true);
-      const token = getToken();
+      setError(null);
+      clearError();
       
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      const token = getToken();
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      const data = await planService.getPlanes(token);
-      console.log('Datos recibidos de planes:', data); // DEBUG
+      const data = await getAllPlans(token);
       
       // Asegurarnos de que siempre sea un array
       if (Array.isArray(data)) {
         setPlanes(data);
-      } else if (data && Array.isArray(data.planes)) {
-        // Si viene como { planes: [...] }
-        setPlanes(data.planes);
-      } else if (data && Array.isArray(data.data)) {
-        // Si viene como { data: [...] }
-        setPlanes(data.data);
+      } else if (data && typeof data === 'object') {
+        // Intentar extraer el array de diferentes estructuras posibles
+        const planesArray = data.planes || data.data || Object.values(data).find(Array.isArray) || [];
+        setPlanes(planesArray);
       } else {
-        // Si no es un array, lo convertimos a array vacío
-        console.warn('Los datos no son un array:', data);
         setPlanes([]);
       }
       
-      setError(null);
     } catch (err) {
       console.error('Error cargando planes:', err);
-      setError(err.message || 'Error al cargar los planes');
-      setPlanes([]); // Asegurar que siempre sea array
+      const errorMsg = err.message || 'Error al cargar los planes';
+      setError(errorMsg);
+      setPlanes([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken, getAllPlans, clearError]);
 
   useEffect(() => {
     fetchPlanes();
-  }, [getToken]);
+  }, []);
 
   const handleEditClick = (plan) => {
-    setEditingPlanId(plan.id_plan);
+    setEditingPlanId(plan.id_plan || plan.id);
     setEditedPlan({
-      name: plan.nombre,
-      description: plan.descripcion,
-      price: plan.monto,
-      totalCredits: plan.creditos_total
+      name: plan.nombre || plan.name,
+      description: plan.descripcion || plan.description,
+      price: plan.monto || plan.price,
+      totalCredits: plan.creditos_total || plan.totalCredits,
+      disciplines: plan.disciplinas || plan.disciplines || []
     });
   };
 
-  const handleSaveEdit = async (id) => {
+  const handleSaveEdit = async (planId) => {
     try {
+      setActionLoading(true);
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Usar el servicio de planes en lugar de fetch directo
-      await planService.updatePlan(token, id, {
+      // Preparar datos para la actualización
+      const updateData = {
+        id_plan: planId,
         name: editedPlan.name,
         description: editedPlan.description,
         price: parseFloat(editedPlan.price),
-        totalCredits: parseInt(editedPlan.totalCredits)
-      });
+        totalCredits: parseInt(editedPlan.totalCredits),
+        disciplines: editedPlan.disciplines
+      };
+
+      await updatePlan(token, updateData);
 
       setEditingPlanId(null);
-      // Recargar la lista de planes
+      setEditedPlan({});
+      
+      // Recargar la lista
       await fetchPlanes();
       
+      // Mostrar alerta de éxito
       alert('✅ Plan actualizado exitosamente');
     } catch (error) {
       console.error("Error al editar:", error);
-      alert(error.message || "Error al guardar cambios");
+      const errorMsg = error.message || "Error al guardar cambios";
+      setError(errorMsg);
+      alert(errorMsg);
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const handleDeletePlan = async (id) => {
+  const handleDeletePlan = async (planId) => {
     const confirm = window.confirm("¿Seguro que deseas eliminar este plan?");
     if (!confirm) return;
 
     try {
+      setActionLoading(true);
       const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
+      if (!token) throw new Error('No hay token de autenticación disponible');
 
-      // Usar el servicio de planes en lugar de fetch directo
-      await planService.deletePlan(token, id);
+      await deletePlan(token, planId);
+
+      // Actualizar estado local inmediatamente
+      setPlanes(prev => prev.filter(p => (p.id_plan || p.id) !== planId));
       
-      // Actualizar el estado local
-      setPlanes(prev => prev.filter(p => p.id_plan !== id));
       alert('✅ Plan eliminado exitosamente');
     } catch (error) {
       console.error("Error eliminando:", error);
-      alert(error.message || "Error al eliminar el plan");
+      const errorMsg = error.message || "Error al eliminar el plan";
+      setError(errorMsg);
+      alert(errorMsg);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -126,26 +142,27 @@ const ManagePlans = () => {
     }));
   };
 
-  // Asegurarnos de que planes siempre sea un array para el render
-  const planesArray = Array.isArray(planes) ? planes : [];
+  // Combinar errores del hook y del componente
+  const displayError = error || plansError;
 
-  //if (loading) {
-  //  return (
-  //    <div className="CreateClassContainer">
-  //      <div className="loading-container">
-  //        <p>Cargando planes...</p>
-  //      </div>
-  //    </div>
-  //  );
-  //}
+  if (loading) {
+    return (
+      <div className="CreateClassContainer">
+        <div className="loading-message">
+          <FaSpinner className="spinner" />
+          <p>Cargando planes...</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (error && planesArray.length === 0) {
+  if (displayError && planes.length === 0) {
     return (
       <div className="CreateClassContainer">
         <div className="error-message">
           <h2>Error</h2>
-          <p>{error}</p>
-          <button onClick={fetchPlanes} className="create-plan-btn">
+          <p>{displayError}</p>
+          <button onClick={fetchPlanes} className="create-plan-btn" disabled={loading}>
             Reintentar
           </button>
         </div>
@@ -157,102 +174,131 @@ const ManagePlans = () => {
     <div className="CreateClassContainer">
       <h2 id='Title-Planes'>Gestión de Planes</h2>
       
-      {error && (
+      {displayError && (
         <div className="warning-message">
-          <p>⚠️ {error}</p>
+          <p>⚠️ {displayError}</p>
+          <button onClick={() => { setError(null); clearError(); }} className="dismiss-btn">
+            ×
+          </button>
         </div>
       )}
 
-      {planesArray.length === 0 && !loading ? (
+      {planes.length === 0 && !loading ? (
         <div className="no-data-message">
           <p>No hay planes disponibles</p>
+          <button onClick={fetchPlanes} className="create-plan-btn">
+            Reintentar
+          </button>
         </div>
       ) : (
         <div className="plans-list">
-          {planesArray.map((plan) => (
-            <div key={plan.id_plan} className="plan-item">
-              {editingPlanId === plan.id_plan ? (
-                <div className="edit-mode">
-                  <h3>Editando Plan</h3>
-                  
-                  <div className="form-group">
-                    <label>Nombre del plan:</label>
-                    <input
-                      type="text"
-                      value={editedPlan.name || ''}
-                      onChange={e => handleInputChange('name', e.target.value)}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Descripción:</label>
-                    <textarea
-                      value={editedPlan.description || ''}
-                      onChange={e => handleInputChange('description', e.target.value)}
-                      required
-                      rows="3"
-                    />
-                  </div>
-                  
-                  <div className="form-row">
+          {planes.map((plan) => {
+            const planId = plan.id_plan || plan.id;
+            const isEditing = editingPlanId === planId;
+            
+            return (
+              <div key={planId} className="plan-item">
+                {isEditing ? (
+                  <div className="edit-mode">
+                    <h3>Editando Plan</h3>
+                    
                     <div className="form-group">
-                      <label>Precio ($):</label>
+                      <label>Nombre del plan:</label>
                       <input
-                        type="number"
-                        value={editedPlan.price || ''}
-                        onChange={e => handleInputChange('price', e.target.value)}
+                        type="text"
+                        value={editedPlan.name || ''}
+                        onChange={e => handleInputChange('name', e.target.value)}
                         required
-                        min="0"
-                        step="0.01"
+                        disabled={actionLoading}
                       />
                     </div>
                     
                     <div className="form-group">
-                      <label>Créditos totales:</label>
-                      <input
-                        type="number"
-                        value={editedPlan.totalCredits || ''}
-                        onChange={e => handleInputChange('totalCredits', e.target.value)}
+                      <label>Descripción:</label>
+                      <textarea
+                        value={editedPlan.description || ''}
+                        onChange={e => handleInputChange('description', e.target.value)}
                         required
-                        min="1"
+                        rows="3"
+                        disabled={actionLoading}
                       />
                     </div>
+                    
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Precio ($):</label>
+                        <input
+                          type="number"
+                          value={editedPlan.price || ''}
+                          onChange={e => handleInputChange('price', e.target.value)}
+                          required
+                          min="0"
+                          step="0.01"
+                          disabled={actionLoading}
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>Créditos totales:</label>
+                        <input
+                          type="number"
+                          value={editedPlan.totalCredits || ''}
+                          onChange={e => handleInputChange('totalCredits', e.target.value)}
+                          required
+                          min="1"
+                          disabled={actionLoading}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="action-buttons">
+                      <button 
+                        className="btn-save" 
+                        onClick={() => handleSaveEdit(planId)}
+                        disabled={!editedPlan.name || !editedPlan.description || actionLoading}
+                      >
+                        {actionLoading ? <FaSpinner className="spinner" /> : <FaSave />}
+                        {actionLoading ? 'Guardando...' : 'Guardar'}
+                      </button>
+                      <button 
+                        className="btn-cancel" 
+                        onClick={handleCancelEdit}
+                        disabled={actionLoading}
+                      >
+                        <FaTimes /> Cancelar
+                      </button>
+                    </div>
                   </div>
-                  
-                  <div className="action-buttons">
-                    <button 
-                      className="btn-save" 
-                      onClick={() => handleSaveEdit(plan.id_plan)}
-                      disabled={!editedPlan.name || !editedPlan.description}
-                    >
-                      <FaSave /> Guardar
-                    </button>
-                    <button className="btn-cancel" onClick={handleCancelEdit}>
-                      <FaTimes /> Cancelar
-                    </button>
+                ) : (
+                  <div className="view-mode">
+                    <h3>{plan.nombre || plan.name}</h3>
+                    <p><strong>Descripción:</strong> {plan.descripcion || plan.description}</p>
+                    <p><strong>Precio:</strong> ${plan.monto || plan.price}</p>
+                    <p><strong>Créditos:</strong> {plan.creditos_total || plan.totalCredits}</p>
+                    <p><strong>Disciplinas:</strong> {(plan.disciplinas || plan.disciplines || []).length} incluidas</p>
+                    
+                    <div className="action-buttons">
+                      <button 
+                        className="btn-edit" 
+                        onClick={() => handleEditClick(plan)}
+                        disabled={actionLoading}
+                      >
+                        <FaEdit /> Editar
+                      </button>
+                      <button 
+                        className="btn-delete" 
+                        onClick={() => handleDeletePlan(planId)}
+                        disabled={actionLoading}
+                      >
+                        {actionLoading ? <FaSpinner className="spinner" /> : <FaTrash />}
+                        {actionLoading ? 'Eliminando...' : 'Eliminar'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="view-mode">
-                  <h3>{plan.nombre}</h3>
-                  <p><strong>Descripción:</strong> {plan.descripcion}</p>
-                  <p><strong>Precio:</strong> ${plan.monto}</p>
-                  <p><strong>Créditos:</strong> {plan.creditos_total}</p>
-                  <p><strong>Disciplinas:</strong> {plan.disciplinas?.length || 0} incluidas</p>
-                  
-                  <div className="action-buttons">
-                    <button className="btn-edit" onClick={() => handleEditClick(plan)}>
-                      <FaEdit /> Editar
-                    </button>
-                    <button className="btn-delete" onClick={() => handleDeletePlan(plan.id_plan)}>
-                      <FaTrash /> Eliminar
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -37,7 +37,7 @@ const CashDistribucionByCaja = () => {
         setCajas(rows);
         if (rows.length > 0) {
           const first = rows[0];
-          setSelectedCaja(first.id_caja || first.id_caja_mensual || first.id || "");
+          setSelectedCaja(first.id_caja || first.id_caja_mensual || "");
         }
       } catch (err) {
         console.error(err);
@@ -97,7 +97,7 @@ const CashDistribucionByCaja = () => {
                   caja.periodo || caja.mes || caja.descripcion || `Caja ${id}`;
                 return (
                   <option key={id} value={id}>
-                    {label} (id: {id})
+                    {label} 
                   </option>
                 );
               })}

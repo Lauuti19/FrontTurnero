@@ -1,118 +1,161 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaMoneyBillWave, FaCheck, FaUser } from 'react-icons/fa';
+import { FaMoneyBillWave, FaCheck, FaUser, FaSpinner } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
-import { userService } from '../services/userService';
-import { planService } from '../services/planService';
+import { useUsers, usePlans } from '../hooks';
 import { paymentService } from '../services/paymentService';
+import Buscador from './Buscador';
 
 const RegistrarCuota = () => {
-  const [nombreUsuario, setNombreUsuario] = useState('');
-  const [usuarios, setUsuarios] = useState([]);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
   const [planes, setPlanes] = useState([]);
   const [idPlan, setIdPlan] = useState('');
   const [metodoPago, setMetodoPago] = useState('');
   const [pagado, setPagado] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const { getPlanes } = usePlans();
 
-  // Guardrail: si no hay token
+  // Función para mostrar alertas de éxito
+  const showSuccessAlert = (title, message, userName = '', planName = '') => {
+    Swal.fire({
+      title: title,
+      html: userName && planName 
+        ? `${message}<br><strong>${userName}</strong> - <strong>${planName}</strong>`
+        : message,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#28a745',
+      background: '#ffffff',
+      iconColor: '#28a745',
+      timer: 4000,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp'
+      }
+    });
+  };
+
+  // Función para mostrar alertas de error
+  const showErrorAlert = (title, errorMessage) => {
+    Swal.fire({
+      title: title,
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#dc3545',
+      background: '#ffffff',
+      showClass: {
+        popup: 'animate__animated animate__headShake'
+      }
+    });
+  };
+
+  // Función para mostrar advertencias
+  const showWarningAlert = (title, message) => {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'warning',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#ffc107',
+      background: '#ffffff',
+      iconColor: '#ffc107'
+    });
+  };
+
+  // Verificar token
   useEffect(() => {
     if (!token) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Sesión requerida',
-        text: 'Iniciá sesión para operar. No se encontró token.',
-      });
+      showWarningAlert('Sesión requerida', 'Iniciá sesión para operar. No se encontró token.');
     }
   }, [token]);
 
-  // Buscar usuarios (con token)
-  useEffect(() => {
-    let abort = false;
-
-    const run = async () => {
-      if (!token) return;
-      if (nombreUsuario.trim().length < 1) {
-        setUsuarios([]);
-        setShowSuggestions(false);
-        return;
-      }
-      try {
-        const data = await userService.searchByName(token, nombreUsuario.trim());
-        if (abort) return;
-        const list = Array.isArray(data) ? data : (data.usuarios || []);
-        setUsuarios(list);
-        setShowSuggestions(true);
-      } catch (err) {
-        console.error('Buscar usuarios:', err);
-        setUsuarios([]);
-        setShowSuggestions(false);
-      }
-    };
-
-    run();
-    return () => { abort = true; };
-  }, [nombreUsuario, token]);
-
-  // Obtener planes (con token)
+  // Obtener planes
   useEffect(() => {
     let abort = false;
 
     const loadPlanes = async () => {
-      if (!token) return;
+      if (!token) {
+        setFetchLoading(false);
+        return;
+      }
+      
       try {
-        const data = await planService.getPlanes(token);
+        setFetchLoading(true);
+        setError("");
+        const data = await getPlanes(token);
         if (abort) return;
         const list = Array.isArray(data) ? data : (data.planes || []);
         setPlanes(list);
       } catch (err) {
         console.error('Obtener planes:', err);
+        const errorMsg = err.message || 'No se pudieron cargar los planes';
+        setError(errorMsg);
+        showErrorAlert('Error al cargar planes', errorMsg);
         setPlanes([]);
-        Swal.fire({
-          icon: 'error',
-          title: 'No se pudieron cargar los planes',
-          text: 'Revisá la conexión o tu sesión.',
-        });
+      } finally {
+        setFetchLoading(false);
       }
     };
 
     loadPlanes();
     return () => { abort = true; };
-  }, [token]);
+  }, []);
 
-  const handleUsuarioClick = (usuario) => {
+  const handleUsuarioSeleccionado = (usuario) => {
     setUsuarioSeleccionado(usuario);
-    setNombreUsuario(usuario.nombre);
-    setShowSuggestions(false);
+  };
+
+  const validateForm = () => {
+    if (!token) {
+      showWarningAlert('Sesión requerida', 'Iniciá sesión para registrar la cuota.');
+      return false;
+    }
+
+    if (!usuarioSeleccionado) {
+      showWarningAlert('Usuario requerido', 'Debes seleccionar un usuario para registrar la cuota.');
+      return false;
+    }
+
+    if (!idPlan) {
+      showWarningAlert('Plan requerido', 'Debes seleccionar un plan de pago.');
+      return false;
+    }
+
+    if (!metodoPago) {
+      showWarningAlert('Método de pago requerido', 'Debes seleccionar un método de pago.');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Sesión requerida',
-        text: 'Iniciá sesión para registrar la cuota.',
-      });
-      return;
-    }
-
-    if (!usuarioSeleccionado || !idPlan || !metodoPago) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos incompletos',
-        text: 'Por favor completa todos los campos obligatorios.',
-      });
+    if (!validateForm()) {
       return;
     }
 
     try {
       setLoading(true);
+
+      // Mostrar alerta de carga
+      Swal.fire({
+        title: 'Registrando Cuota...',
+        text: 'Por favor espera mientras registramos el pago',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
 
       await paymentService.registerFee(token, {
         id_usuario: usuarioSeleccionado.id_usuario,
@@ -121,29 +164,31 @@ const RegistrarCuota = () => {
         pagado: Boolean(pagado),
       });
 
-      await Swal.fire({
-        icon: 'success',
-        title: 'Cuota registrada exitosamente',
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      // Cerrar alerta de carga
+      Swal.close();
 
-      // Reset
-      setNombreUsuario('');
+      const planNombre = getPlanNombre(idPlan);
+      showSuccessAlert(
+        '¡Cuota Registrada!', 
+        'La cuota ha sido registrada exitosamente:',
+        usuarioSeleccionado.nombre,
+        planNombre
+      );
+
+      // Resetear formulario
       setUsuarioSeleccionado(null);
       setIdPlan('');
       setMetodoPago('');
       setPagado(false);
-      setUsuarios([]);
-      setShowSuggestions(false);
 
     } catch (error) {
+      // Cerrar alerta de carga si existe
+      Swal.close();
+      
       console.error('Registrar cuota:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: (error?.message || 'No se pudo registrar la cuota. Inténtalo de nuevo.'),
-      });
+      const errorMsg = error?.message || 'No se pudo registrar la cuota. Inténtalo de nuevo.';
+      setError(errorMsg);
+      showErrorAlert('Error al registrar cuota', errorMsg);
     } finally {
       setLoading(false);
     }
@@ -154,80 +199,82 @@ const RegistrarCuota = () => {
     return plan ? plan.nombre : 'Plan no encontrado';
   };
 
+  const getPlanPrecio = (planId) => {
+    const plan = planes.find(p => p.id_plan === Number(planId));
+    return plan ? plan.monto : 0;
+  };
+
+  const getMetodoPagoTexto = (metodo) => {
+    const metodos = {
+      'efectivo': '💵 Efectivo',
+      'transferencia': '🏦 Transferencia'
+    };
+    return metodos[metodo] || metodo;
+  };
+
+  if (fetchLoading) {
+    return (
+      <div className="CreatePaymentContainer">
+        <div className="loading-message">
+          <FaSpinner className="spinner" />
+          <p>Cargando planes disponibles...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="registrar-cuota-container">
-      <div className="registrar-cuota-box">
-        <h2 className="registrar-cuota-title">Registrar Cuota</h2>
-        <p className="registrar-cuota-subtitle">
-          Registra el pago de cuotas de los usuarios del sistema.
-        </p>
+    <div className="CreatePaymentContainer">
+      <h2 id="Title-Pagos">Registrar Cuota</h2>
 
-        <form className="registrar-cuota-form" onSubmit={handleSubmit}>
-          <div className="form-field">
-            <label>
-              <FaSearch className="field-icon" />
-              Buscar usuario
-            </label>
-            <div className="search-container">
-              <input
-                type="text"
-                value={nombreUsuario}
-                onChange={(e) => {
-                  setNombreUsuario(e.target.value);
-                  setUsuarioSeleccionado(null);
-                }}
-                placeholder="Escribe el nombre del usuario..."
-                required
-                autoComplete="off"
-                className="search-input"
-                disabled={!token || loading}
-              />
-              {showSuggestions && usuarios.length > 0 && (
-                <div className="suggestions-dropdown">
-                  {usuarios.map((usuario) => (
-                    <div
-                      key={usuario.id_usuario}
-                      className="suggestion-item"
-                      onClick={() => handleUsuarioClick(usuario)}
-                    >
-                      <FaUser className="user-icon" />
-                      <div className="user-info">
-                        <span className="user-name">{usuario.nombre}</span>
-                        {usuario.email && (
-                          <span className="user-email">{usuario.email}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+      {error && (
+        <div className="warning-message">
+          <p>⚠️ {error}</p>
+          <button onClick={() => setError("")} className="dismiss-btn">
+            ×
+          </button>
+        </div>
+      )}
+
+      <form className="form-group-class" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <label>Buscar Usuario:</label>
+          <Buscador 
+            onUsuarioSeleccionado={handleUsuarioSeleccionado}
+            disabled={loading || !token}
+          />
+          <div className="helper-text">
+            Busca y selecciona un usuario del sistema
           </div>
+        </div>
 
-          {usuarioSeleccionado && (
-            <div className="selected-user">
-              <div className="user-badge">
-                <FaUser className="user-icon" />
-                <div className="user-details">
-                  <span className="user-name">{usuarioSeleccionado.nombre}</span>
-                  {usuarioSeleccionado.email && (
-                    <span className="user-email">{usuarioSeleccionado.email}</span>
-                  )}
+        {usuarioSeleccionado && (
+          <div className="selected-user-info">
+            <div className="selected-user-card">
+              <h4>Usuario Seleccionado:</h4>
+              <div className="user-details">
+                <div className="user-detail">
+                  <strong>Nombre:</strong> {usuarioSeleccionado.nombre}
                 </div>
+                {usuarioSeleccionado.email && (
+                  <div className="user-detail">
+                    <strong>Email:</strong> {usuarioSeleccionado.email}
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
+        )}
 
+        <div className="form-row">
           <div className="form-field">
-            <label>
-              <FaMoneyBillWave className="field-icon" />
-              Plan de pago
-            </label>
+            <label>Plan de Pago:</label>
             <select
               value={idPlan}
               onChange={(e) => setIdPlan(e.target.value)}
               required
               disabled={loading || !token}
+              className="plan-select"
             >
               <option value="">Selecciona un plan</option>
               {planes.map((plan) => (
@@ -236,50 +283,56 @@ const RegistrarCuota = () => {
                 </option>
               ))}
             </select>
+            {idPlan && (
+              <div className="plan-description">
+                Plan seleccionado: <strong>{getPlanNombre(idPlan)}</strong> - ${getPlanPrecio(idPlan)}
+              </div>
+            )}
           </div>
 
           <div className="form-field">
-            <label>Método de pago</label>
+            <label>Método de Pago:</label>
             <select
               value={metodoPago}
               onChange={(e) => setMetodoPago(e.target.value)}
               required
               disabled={loading || !token}
+              className="payment-select"
             >
               <option value="">Selecciona un método</option>
               <option value="efectivo">💵 Efectivo</option>
               <option value="transferencia">🏦 Transferencia</option>
             </select>
+            {metodoPago && (
+              <div className="payment-description">
+                Método: <strong>{getMetodoPagoTexto(metodoPago)}</strong>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="checkbox-field">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={pagado}
-                onChange={(e) => setPagado(e.target.checked)}
-                disabled={loading || !token}
-                className="checkbox-input"
-              />
-              <span className="checkmark"></span>
-              <FaCheck className="check-icon" />
-              <span className="checkbox-text">¿Está pagado?</span>
-            </label>
+        <div className="checkbox-fees-field">
+          <label className="checkbox-fees-container">
+            <input
+              type="checkbox"
+              checked={pagado}
+              onChange={(e) => setPagado(e.target.checked)}
+              disabled={loading || !token}
+              className="checkbox-fees-input"
+            />
+            <span className="checkbox-fees-label">
+              ¿Está pagado?
+            </span>
+          </label>
+          <div className="checkbox-helper">
+            Marca esta opción si el pago ya fue realizado
           </div>
+        </div>
 
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={loading || !usuarioSeleccionado || !idPlan || !metodoPago || !token}
-          >
-            {loading ? 'Registrando...' : 'Registrar Cuota'}
-          </button>
-        </form>
-
-        {usuarioSeleccionado && idPlan && (
-          <div className="fee-summary">
-            <h4>Resumen de la cuota</h4>
-            <div className="summary-details">
+        {usuarioSeleccionado && idPlan && metodoPago && (
+          <div className="payment-summary">
+            <h4>Resumen de la Cuota</h4>
+            <div className="summary-grid">
               <div className="summary-item">
                 <span className="summary-label">Usuario:</span>
                 <span className="summary-value">{usuarioSeleccionado.nombre}</span>
@@ -289,21 +342,41 @@ const RegistrarCuota = () => {
                 <span className="summary-value">{getPlanNombre(idPlan)}</span>
               </div>
               <div className="summary-item">
+                <span className="summary-label">Monto:</span>
+                <span className="summary-value price">${getPlanPrecio(idPlan)}</span>
+              </div>
+              <div className="summary-item">
                 <span className="summary-label">Método:</span>
-                <span className="summary-value">
-                  {metodoPago === 'efectivo' ? '💵 Efectivo' : '🏦 Transferencia'}
-                </span>
+                <span className="summary-value">{getMetodoPagoTexto(metodoPago)}</span>
               </div>
               <div className="summary-item">
                 <span className="summary-label">Estado:</span>
-                <span className={`summary-value ${pagado ? 'paid' : 'pending'}`}>
+                <span className={`summary-value status ${pagado ? 'paid' : 'pending'}`}>
                   {pagado ? '✅ Pagado' : '⏳ Pendiente'}
                 </span>
               </div>
             </div>
           </div>
         )}
-      </div>
+
+        <button 
+          type="submit" 
+          className={`btn-register-payment ${loading ? 'loading' : ''}`}
+          disabled={loading || !usuarioSeleccionado || !idPlan || !metodoPago || !token}
+        >
+          {loading ? (
+            <>
+              <FaSpinner className="spinner" />
+              Registrando Cuota...
+            </>
+          ) : (
+            <>
+              <FaMoneyBillWave />
+              Registrar Cuota
+            </>
+          )}
+        </button>
+      </form>
     </div>
   );
 };

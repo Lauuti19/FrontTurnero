@@ -1,0 +1,404 @@
+/* styles/GestionClases.css */
+.gestion-clases {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 500px;
+  border-radius: 8px;
+}
+
+.gestion-clases-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.date-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-selector label {
+  font-weight: 600;
+  color: #333;
+}
+
+.date-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.calendar-icon {
+  color: #007bff;
+}
+
+.btn-add-class {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.btn-add-class:hover {
+  background: #218838;
+}
+
+/* Grid de clases */
+.classes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.class-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid #007bff;
+}
+
+.class-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.class-discipline {
+  margin: 0;
+  color: #333;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.class-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit, .btn-delete {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-edit {
+  color: #ffc107;
+}
+
+.btn-edit:hover {
+  background: #fff3cd;
+}
+
+.btn-delete {
+  color: #dc3545;
+}
+
+.btn-delete:hover {
+  background: #f8d7da;
+}
+
+.class-details {
+  margin-bottom: 15px;
+}
+
+.class-info {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.class-day, .class-time {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.class-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.class-description {
+  margin: 10px 0 0 0;
+  color: #555;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.class-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.class-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.class-status.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.class-status.inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.class-available {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* Estados vacío y loading */
+.no-classes {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.no-classes-icon {
+  font-size: 3em;
+  margin-bottom: 15px;
+}
+
+.no-classes h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.no-classes p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.btn-add-first {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.btn-add-first:hover {
+  background: #0056b3;
+}
+
+/* Skeleton loading */
+.classes-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.class-item-skeleton {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 70%;
+}
+
+.skeleton-time {
+  height: 16px;
+  width: 50%;
+}
+
+.skeleton-trainer {
+  height: 14px;
+  width: 60%;
+}
+
+.skeleton-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.skeleton-button {
+  height: 30px;
+  width: 30px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gestion-clases-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .date-selector {
+    justify-content: space-between;
+  }
+  
+  .classes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Agrega esto a GestionClases.css */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.capacity-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.capacity-bar-container {
+  width: 80px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.capacity-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Estilos para estados de capacidad */
+.capacity-bar.low {
+  background: #dc2626;
+}
+
+.capacity-bar.medium {
+  background: #f59e0b;
+}
+
+.capacity-bar.high {
+  background: #16a34a;
+}
+
+.class-available {
+  font-size: 0.9em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Mejoras para el header */
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-refresh {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.retry-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.retry-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.retry-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

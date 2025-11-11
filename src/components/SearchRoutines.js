@@ -274,7 +274,6 @@ const SearchRoutines = ({ mode = "assign" }) => {
 
         {message && (
           <div className="message-container">
-            <p className="routine-message">{message}</p>
           </div>
         )}
 

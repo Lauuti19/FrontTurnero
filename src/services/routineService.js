@@ -1,109 +1,131 @@
 import { fetchWithAuth } from './api';
 
 export const routineService = {
-  // Obtener rutinas de un usuario específico
-  getUserRoutines: async (token, userId) => {
-    try {
-      return await fetchWithAuth(`/routines/user/${userId}`, token);
-    } catch (error) {
-      console.error('Error en routineService.getUserRoutines:', error);
-      throw new Error(error.message || 'Error al obtener las rutinas del usuario');
-    }
+  /**
+   * Crear rutina plantilla con ejercicios
+   */
+  createRoutineTemplate: async (token, routineData) => {
+    return await fetchWithAuth('/routines/create-template', token, {
+      method: 'POST',
+      body: JSON.stringify(routineData),
+    });
   },
 
-  // Crear una nueva rutina
-  createRoutine: async (token, routineData) => {
-    try {
-      return await fetchWithAuth('/routines/create', token, {
-        method: 'POST',
-        body: JSON.stringify(routineData)
-      });
-    } catch (error) {
-      console.error('Error en routineService.createRoutine:', error);
-      throw new Error(error.message || 'Error al crear la rutina');
-    }
+  /**
+   * Asignar rutina a usuario
+   */
+  assignRoutineToUser: async (token, assignmentData) => {
+    return await fetchWithAuth('/routines/assign', token, {
+      method: 'POST',
+      body: JSON.stringify(assignmentData),
+    });
   },
 
-  // Actualizar una rutina existente
-  updateRoutine: async (token, routineId, routineData) => {
-    try {
-      return await fetchWithAuth(`/routines/update/${routineId}`, token, {
-        method: 'PUT',
-        body: JSON.stringify(routineData)
-      });
-    } catch (error) {
-      console.error('Error en routineService.updateRoutine:', error);
-      throw new Error(error.message || 'Error al actualizar la rutina');
-    }
+  /**
+   * Desactivar rutina de usuario
+   */
+  deactivateUserRoutine: async (token, deactivationData) => {
+    return await fetchWithAuth('/routines/deactivate-user', token, {
+      method: 'POST',
+      body: JSON.stringify(deactivationData),
+    });
   },
 
-  // Eliminar una rutina
-  deleteRoutine: async (token, routineId) => {
-    try {
-      return await fetchWithAuth(`/routines/delete/${routineId}`, token, {
-        method: 'DELETE'
-      });
-    } catch (error) {
-      console.error('Error en routineService.deleteRoutine:', error);
-      throw new Error(error.message || 'Error al eliminar la rutina');
-    }
+  /**
+   * Obtener rutinas activas de un usuario
+   */
+  getRoutinesByUser: async (token, userId) => {
+    return await fetchWithAuth(`/routines/user/${userId}`, token);
   },
 
-  // Obtener todas las rutinas (para administradores)
+  /**
+   * Obtener detalle completo de una rutina
+   */
+  getRoutineDetail: async (token, routineId) => {
+    return await fetchWithAuth(`/routines/${routineId}`, token);
+  },
+
+  /**
+   * Obtener ejercicios de una rutina (CORREGIDO)
+   */
+  getRoutineExercises: async (token, routineId) => {
+    return await fetchWithAuth(`/routines/detail/${routineId}`, token);
+  },
+
+  /**
+   * Obtener todas las rutinas plantilla
+   */
   getAllRoutines: async (token) => {
-    try {
-      return await fetchWithAuth('/routines/all', token);
-    } catch (error) {
-      console.error('Error en routineService.getAllRoutines:', error);
-      throw new Error(error.message || 'Error al obtener todas las rutinas');
-    }
+    return await fetchWithAuth('/routines', token);
   },
 
-  // Obtener rutinas por día específico
-  getRoutinesByDay: async (token, userId, day) => {
-    try {
-      return await fetchWithAuth(`/routines/user/${userId}/day/${day}`, token);
-    } catch (error) {
-      console.error('Error en routineService.getRoutinesByDay:', error);
-      throw new Error(error.message || 'Error al obtener las rutinas del día');
-    }
+  /**
+   * Activar/desactivar rutina
+   */
+  setRoutineActive: async (token, routineId, active) => {
+    return await fetchWithAuth(`/routines/${routineId}/active`, token, {
+      method: 'PUT',
+      body: JSON.stringify({ activa: active }),
+    });
   },
 
-  // Agregar ejercicio a una rutina existente
+  /**
+   * Agregar ejercicio a rutina
+   */
   addExerciseToRoutine: async (token, routineId, exerciseData) => {
-    try {
-      return await fetchWithAuth(`/routines/${routineId}/exercises`, token, {
-        method: 'POST',
-        body: JSON.stringify(exerciseData)
-      });
-    } catch (error) {
-      console.error('Error en routineService.addExerciseToRoutine:', error);
-      throw new Error(error.message || 'Error al agregar ejercicio a la rutina');
-    }
+    return await fetchWithAuth(`/routines/${routineId}/add-exercise`, token, {
+      method: 'POST',
+      body: JSON.stringify(exerciseData),
+    });
   },
 
-  // Actualizar ejercicio en una rutina
-  updateExerciseInRoutine: async (token, routineId, exerciseId, exerciseData) => {
-    try {
-      return await fetchWithAuth(`/routines/${routineId}/exercises/${exerciseId}`, token, {
-        method: 'PUT',
-        body: JSON.stringify(exerciseData)
-      });
-    } catch (error) {
-      console.error('Error en routineService.updateExerciseInRoutine:', error);
-      throw new Error(error.message || 'Error al actualizar el ejercicio');
-    }
+  /**
+   * Quitar ejercicio de rutina
+   */
+  removeExerciseFromRoutine: async (token, routineId, exerciseData) => {
+    return await fetchWithAuth(`/routines/${routineId}/remove-exercise`, token, {
+      method: 'DELETE',
+      body: JSON.stringify(exerciseData),
+    });
   },
 
-  // Eliminar ejercicio de una rutina
-  removeExerciseFromRoutine: async (token, routineId, exerciseId) => {
-    try {
-      return await fetchWithAuth(`/routines/${routineId}/exercises/${exerciseId}`, token, {
-        method: 'DELETE'
-      });
-    } catch (error) {
-      console.error('Error en routineService.removeExerciseFromRoutine:', error);
-      throw new Error(error.message || 'Error al eliminar el ejercicio');
+  /**
+   * Obtener rutinas para gestión (simplificado)
+   */
+  getRoutines: async (token) => {
+    return await fetchWithAuth('/routines', token);
+  },
+
+  /**
+   * Crear rutina básica (para gestión)
+   */
+  createRoutine: async (token, routineData) => {
+    return await fetchWithAuth('/routines/create-template', token, {
+      method: 'POST',
+      body: JSON.stringify(routineData),
+    });
+  },
+
+  /**
+   * Actualizar rutina básica (para gestión)
+   */
+  updateRoutine: async (token, routineData) => {
+    // Para rutinas, la actualización puede ser cambiar el estado activo
+    if (routineData.activa !== undefined) {
+      return await routineService.setRoutineActive(token, routineData.id, routineData.activa);
     }
-  }
+    // Si necesitas más campos, puedes agregar un endpoint de update específico
+    throw new Error('Actualización de rutina no implementada completamente');
+  },
+
+  /**
+   * Eliminar rutina (borrado lógico cambiando estado)
+   */
+  deleteRoutine: async (token, routineId) => {
+    // En lugar de eliminar, desactivamos la rutina
+    return await fetchWithAuth(`/routines/${routineId}/active`, token, {
+      method: 'PUT',
+      body: JSON.stringify({ activa: false }),
+    });
+  },
 };

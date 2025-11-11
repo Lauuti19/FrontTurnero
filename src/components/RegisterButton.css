@@ -1,0 +1,200 @@
+/* Agregar a tu archivo CSS */
+
+.register-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.register-button {
+  font-family: "Brigends";
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estado: ANOTARSE (amarillo con letras negras) */
+.register-button.register {
+  background-color: #FFD700; /* Amarillo */
+  color: #000000; /* Negro */
+  border: 2px solid #FFC400;
+  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+.register-button.register:hover:not(:disabled) {
+  background-color: #FFC400;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4);
+}
+
+.register-button.register:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+/* Estado: DESANOTARSE (negro con letras blancas) */
+.register-button.unregister {
+  background-color: #000000; /* Negro */
+  color: #FFFFFF; /* Blanco */
+  border: 2px solid #333333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.register-button.unregister:hover:not(:disabled) {
+  background-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.register-button.unregister:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Estado: DESACTIVADO/LOADING */
+.register-button:disabled,
+.register-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.register-button.loading {
+  opacity: 0.8;
+  cursor: wait !important;
+}
+
+.register-button.disabled {
+  background-color: #6B7280; /* Gris */
+  color: #9CA3AF;
+  border: 2px solid #9CA3AF;
+}
+
+.register-button.disabled:hover {
+  background-color: #6B7280;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Spinner para loading */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.register-button.register .loading-spinner {
+  border-top-color: #000000;
+}
+
+.register-button.unregister .loading-spinner {
+  border-top-color: #FFFFFF;
+}
+
+.register-button.disabled .loading-spinner {
+  border-top-color: #9CA3AF;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Efectos de pulso para loading */
+.register-button.loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Estados de focus para accesibilidad */
+.register-button:focus {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+.register-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-button {
+    font-size: 14px;
+    padding: 10px 20px;
+    min-width: 100px;
+  }
+}
+
+/* Estilos para el error en RegistrationManager */
+.registration-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.registration-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 4px;
+  color: #DC2626;
+  font-size: 12px;
+  max-width: 200px;
+}
+
+.registration-error small {
+  flex: 1;
+}
+
+.registration-error .error-dismiss {
+  background: none;
+  border: none;
+  color: #DC2626;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.registration-error .error-dismiss:hover {
+  background-color: #FECACA;
+}

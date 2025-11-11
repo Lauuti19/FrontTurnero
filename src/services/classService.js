@@ -1,169 +1,126 @@
-// services/classService.js
-import { fetchWithAuth } from "./api";
+import { fetchWithAuth } from './api';
 
-// --- helpers ---
-const q = (obj = {}) =>
-  Object.entries(obj)
-    .filter(([, v]) => v !== undefined && v !== null && v !== "")
-    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-    .join("&");
+// Helper para construir query strings
+const buildQueryString = (params = {}) => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, value);
+    }
+  });
+  return searchParams.toString();
+};
 
-// Normaliza: si viene array -> array; si viene otra cosa -> []
-const normalizeArray = (data) => (Array.isArray(data) ? data : []);
-
-// -------------------------------------------------------------------
-
-/**
- * Service para clases: alinea con controllers/classesController.js
- * Rutas usadas:
- *  - GET  /classes/all?fecha
- *  - GET  /classes/by-user?userId&fecha
- *  - GET  /classes/by-user-no-credits?userId&fecha
- *  - GET  /classes/by-day?id_dia
- *  - GET  /classes/users-by-class?classId&classType&fecha
- *  - POST /classes/register
- *  - POST /classes/unregister
- *  - PUT  /classes/update-attendance
- *  - POST /classes/check
- *  - PUT  /classes/register-attendance
- */
 export const classService = {
-  /** Devuelve clases para una fecha (si hay especiales, el back devuelve esas). */
-  getClasses: async (token, fecha) => {
-    const endpoint = fecha ? `/classes/all?${q({ fecha })}` : "/classes/all";
-    const data = await fetchWithAuth(endpoint, token);
-    return normalizeArray(data);
+  getAllClasses: async (token, fecha) => {
+    const query = buildQueryString({ fecha });
+    return await fetchWithAuth(`/classes/all?${query}`, token);
   },
 
-  /**
-   * 🔎 Trae usuarios inscriptos a una clase (NORMAL o ESPECIAL) en una fecha.
-   * REQUIERE: classId, classType ("normal" | "especial"), fecha
-   * Controller: getUsersByClassAndDate
-   */
-  getClassUsers: async (token, { classId, classType, fecha }) => {
-    if (!classId || !classType || !fecha) {
-      throw new Error("classId, classType y fecha son obligatorios");
-    }
-    const endpoint = `/classes/users-by-class?${q({ classId, classType, fecha })}`;
-    const data = await fetchWithAuth(endpoint, token);
-    return normalizeArray(data);
+  getClassesByUser: async (token, userId, fecha) => {
+    const query = buildQueryString({ userId, fecha });
+    return await fetchWithAuth(`/classes/by-user?${query}`, token);
   },
 
-  /** Alias por compatibilidad: apunta a users-by-class (por defecto classType=normal). */
-  getAttendeesByClass: async (token, { classId, fecha, classType = "normal" }) => {
-    return await classService.getClassUsers(token, { classId, classType, fecha });
+  getClassesByUserNoCredits: async (token, userId, fecha) => {
+    const query = buildQueryString({ userId, fecha });
+    return await fetchWithAuth(`/classes/by-user-no-credits?${query}`, token);
   },
 
-  /**
-   * Inscribir a clase (enviar SOLO UNO: classId (normal) o specialClassId (especial)).
-   * Controller: registerToClass
-   */
-  registerUserToClass: async (token, { userId, fecha, classId, specialClassId }) => {
-    if (!userId || !fecha) throw new Error("userId y fecha son obligatorios");
-    if ((!classId && !specialClassId) || (classId && specialClassId)) {
-      throw new Error("Enviá SOLO uno: classId (normal) o specialClassId (especial)");
-    }
-    return await fetchWithAuth("/classes/register", token, {
-      method: "POST",
-      body: JSON.stringify({ userId, fecha, classId, specialClassId }),
+  registerToClass: async (token, registrationData) => {
+    return await fetchWithAuth('/classes/register', token, {
+      method: 'POST',
+      body: JSON.stringify(registrationData),
     });
   },
 
-  /**
-   * Desinscribir de clase (enviar SOLO UNO: classId o specialClassId).
-   * Controller: unregisterFromClass
-   */
-  unregisterUserFromClass: async (token, { userId, fecha, classId, specialClassId }) => {
-    if (!userId || !fecha) throw new Error("userId y fecha son obligatorios");
-    if ((!classId && !specialClassId) || (classId && specialClassId)) {
-      throw new Error("Enviá SOLO uno: classId (normal) o specialClassId (especial)");
-    }
-    return await fetchWithAuth("/classes/unregister", token, {
-      method: "POST",
-      body: JSON.stringify({ userId, fecha, classId, specialClassId }),
+  unregisterFromClass: async (token, registrationData) => {
+    return await fetchWithAuth('/classes/unregister', token, {
+      method: 'POST',
+      body: JSON.stringify(registrationData),
     });
   },
 
-  /** Crear clase regular. */
+  unregisterFromClassNoCredits: async (token, registrationData) => {
+    return await fetchWithAuth('/classes/unregister-no-credits', token, {
+      method: 'POST',
+      body: JSON.stringify(registrationData),
+    });
+  },
+
+  // ✅ CORREGIDO - getUsersInClass funcionando
+  getUsersInClass: async (token, classId, classType, fecha) => {
+    const query = buildQueryString({ classId, classType, fecha });
+    return await fetchWithAuth(`/classes/users-by-class?${query}`, token);
+  },
+
   createClass: async (token, classData) => {
-    return await fetchWithAuth("/classes/create", token, {
-      method: "POST",
+    return await fetchWithAuth('/classes/create', token, {
+      method: 'POST',
       body: JSON.stringify(classData),
     });
   },
 
-  /** Actualizar clase regular. */
-  updateClass: async (token, id, classData) => {
-    return await fetchWithAuth("/classes/update", token, {
-      method: "PUT",
-      body: JSON.stringify({ id_clase: id, ...classData }),
-    });
-  },
-
-  /** Borrado lógico de clase regular. */
-  deleteClass: async (token, id) => {
-    return await fetchWithAuth("/classes/delete", token, {
-      method: "PUT",
-      body: JSON.stringify({ classId: id }),
-    });
-  },
-
-  /** Listar clases del plantel regular por día de semana. */
   getClassesByDay: async (token, id_dia) => {
-    const data = await fetchWithAuth(`/classes/by-day?${q({ id_dia })}`, token);
-    return normalizeArray(data);
+    const query = buildQueryString({ id_dia });
+    return await fetchWithAuth(`/classes/by-day?${query}`, token);
   },
 
-  /** Traer clases del usuario en una fecha. */
-  getClassesByUser: async (token, userId, fecha) => {
-    const endpoint = `/classes/by-user?${q({ userId, fecha })}`;
-    const data = await fetchWithAuth(endpoint, token);
-    return normalizeArray(data);
+  updateClass: async (token, classId, classData) => {
+    return await fetchWithAuth('/classes/update', token, {
+      method: 'PUT',
+      body: JSON.stringify({ id_clase: classId, ...classData }),
+    });
   },
 
-  /** Traer clases del usuario en una fecha aunque no tenga créditos. */
-  getClassesByUserNoCredits: async (token, userId, fecha) => {
-    const endpoint = `/classes/by-user-no-credits?${q({ userId, fecha })}`;
-    const data = await fetchWithAuth(endpoint, token);
-    return normalizeArray(data);
+  deleteClass: async (token, classId) => {
+    return await fetchWithAuth('/classes/delete', token, {
+      method: 'PUT',
+      body: JSON.stringify({ classId }),
+    });
   },
 
-  /**
-   * Actualizar asistencia (NORMAL o ESPECIAL).
-   * Body: { tipo_clase: "normal" | "especial", id_clase, fecha, asistencias }
-   * Controller: updateAttendance
-   */
-  updateAttendance: async (token, { tipo_clase, id_clase, fecha, asistencias }) => {
-    if (!tipo_clase || !id_clase || !fecha || !asistencias) {
-      throw new Error("tipo_clase, id_clase, fecha y asistencias son obligatorios");
+  updateAttendance: async (token, attendanceData) => {
+    return await fetchWithAuth('/classes/update-attendance', token, {
+      method: 'PUT',
+      body: JSON.stringify(attendanceData),
+    });
+  },
+
+  checkAttendanceQR: async (token, userId) => {
+    return await fetchWithAuth('/classes/check', token, {
+      method: 'POST',
+      body: JSON.stringify({ id_usuario: userId }),
+    });
+  },
+
+  registerIndividualAttendance: async (token, attendanceData) => {
+    return await fetchWithAuth('/classes/register-attendance', token, {
+      method: 'PUT',
+      body: JSON.stringify(attendanceData),
+    });
+  },
+
+  checkUserRegistration: async (token, { classId, classType, userId, fecha }, isStaff = false) => {
+    try {
+      const userClasses = isStaff
+        ? await classService.getClassesByUserNoCredits(token, userId, fecha)
+        : await classService.getClassesByUser(token, userId, fecha);
+
+      const classesArray = Array.isArray(userClasses) ? userClasses : [];
+
+      const isRegistered = classesArray.some(clase => {
+        if (classType === 'especial') {
+          return clase.id_original === classId || clase.id_clase === classId;
+        } else {
+          return clase.id_clase === classId;
+        }
+      });
+
+      return { isRegistered };
+    } catch (error) {
+      console.warn("Error verificando registro:", error);
+      return { isRegistered: false };
     }
-    return await fetchWithAuth("/classes/update-attendance", token, {
-      method: "PUT",
-      body: JSON.stringify({ tipo_clase, id_clase, fecha, asistencias }),
-    });
-  },
-
-  /**
-   * Check QR (tu SP actual contempla solo clases normales).
-   * Controller: checkAttendanceQR
-   */
-  checkAttendanceQR: async (token, { id_usuario }) => {
-    return await fetchWithAuth("/classes/check", token, {
-      method: "POST",
-      body: JSON.stringify({ id_usuario }),
-    });
-  },
-
-  /**
-   * Registrar asistencia individual (normal).
-   * Controller: registerIndividualAttendance
-   */
-  registerIndividualAttendance: async (token, { classId, userId, date }) => {
-    return await fetchWithAuth("/classes/register-attendance", token, {
-      method: "PUT",
-      body: JSON.stringify({ classId, userId, date }),
-    });
   },
 };
-
-export default classService;

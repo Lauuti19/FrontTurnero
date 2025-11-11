@@ -2,23 +2,42 @@
 import { fetchWithAuth } from './api';
 
 export const planService = {
-  getPlanes: (token) => fetchWithAuth('/planes', token),
-
-  createPlan: (token, planData) =>
-    fetchWithAuth('/planes/create', token, {
+  getAllPlans: async (token) => {
+    const response = await fetchWithAuth('/planes', token);
+    // El backend devuelve { planes: [...] }, así que extraemos el array
+    return response.planes || response.data || response;
+  },
+  
+  createPlan: async (token, planData) => {
+    const response = await fetchWithAuth('/planes/create', token, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(planData),
-    }),
-
-  updatePlan: (token, id, planData) =>
-    fetchWithAuth('/planes/update', token, {
+    });
+    return response;
+  },
+  
+  updatePlan: async (token, planData) => {
+    const response = await fetchWithAuth('/planes/update', token, {
       method: 'PUT',
-      body: JSON.stringify({ id, ...planData }),
-    }),
-
-  deletePlan: (token, id) =>
-    fetchWithAuth('/planes/delete', token, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(planData),
+    });
+    return response;
+  },
+  
+  deletePlan: async (token, planId) => {
+    const response = await fetchWithAuth('/planes/delete', token, {
       method: 'PUT',
-      body: JSON.stringify({ id }),
-    }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ planId }),
+    });
+    return response;
+  },
 };

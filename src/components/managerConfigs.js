@@ -3,7 +3,7 @@ export const classesTabConfig = {
   title: "Gestion de Clases",
   tabs: [
     { id: 'create', label: 'Crear Clase' },
-    { id: 'view', label: 'Ver Clases Hoy' },
+    {/*{ id: 'view', label: 'Ver Clases Hoy' },*/},
     { id: 'anotar', label: 'Anotar Alumno' }
   ]
 };
@@ -12,7 +12,7 @@ export const disciplinesTabConfig = {
   title: "Gestion de Disciplinas",
   tabs: [
     { id: 'create', label: 'Crear Disciplina' },
-    { id: 'view', label: 'Modificar/Ver Disciplinas' }
+    { id: 'view', label: 'Gestionar Disciplinas' }
   ]
 };
 
@@ -20,7 +20,7 @@ export const exercisesTabConfig = {
   title: "Gestion de Ejercicios",
   tabs: [
     { id: 'create', label: 'Crear Ejercicio' },
-    { id: 'view', label: 'Modificar/Ver Ejercicios' }
+    { id: 'view', label: 'Gestionar Ejercicios' }
   ]
 };
 
@@ -28,7 +28,7 @@ export const plansTabConfig = {
   title: "Gestion de Planes",
   tabs: [
     { id: 'create', label: 'Crear Plan' },
-    { id: 'view', label: 'Modificar/Ver Planes' }
+    { id: 'update', label: 'Gestionar Planes' }
   ]
 };
 
@@ -44,6 +44,6 @@ export const routinesTabConfig = {
   title: "Gestion de Rutinas",
   tabs: [
     { id: 'create', label: 'Crear Rutina' },
-    { id: 'view', label: 'Modificar/Ver Rutinas' }
+    { id: 'view', label: 'Gestionar Rutinas' }
   ]
 };

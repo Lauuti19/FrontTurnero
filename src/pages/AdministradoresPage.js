@@ -15,7 +15,7 @@ const AdministradoresPage = () => {
         <div className="admins-title-wrap">
           <FaUserShield className="admins-icon" />
           <div>
-            <h1 className="admins-title">Administradores / Acciones de Caja</h1>
+            <h1 className="admins-title">Administradores y Acciones de Caja</h1>
             <p className="admins-subtitle">
               Gestioná las participaciones desde un solo lugar.
             </p>

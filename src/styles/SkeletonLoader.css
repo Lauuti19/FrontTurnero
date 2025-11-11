@@ -1,0 +1,256 @@
+/* styles/SkeletonLoader.css */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Animación base */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 12px;
+}
+
+.skeleton-text-container {
+  flex: 1;
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 70%;
+  margin-bottom: 6px;
+}
+
+.skeleton-subtitle {
+  height: 16px;
+  width: 50%;
+}
+
+.skeleton-content {
+  margin-bottom: 15px;
+}
+
+.skeleton-content .skeleton-line {
+  height: 14px;
+  width: 90%;
+}
+
+.skeleton-short {
+  width: 60% !important;
+}
+
+.skeleton-footer {
+  display: flex;
+  gap: 10px;
+}
+
+.skeleton-button {
+  height: 32px;
+  width: 80px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-button.small {
+  width: 30px;
+  height: 30px;
+}
+
+/* Skeleton Class Item */
+.skeleton-class-item {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.skeleton-class-main {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.skeleton-class-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 15px;
+}
+
+.skeleton-class-details {
+  flex: 1;
+}
+
+.skeleton-class-title {
+  height: 22px;
+  width: 60%;
+  margin-bottom: 8px;
+}
+
+.skeleton-class-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.skeleton-time, .skeleton-trainer {
+  height: 16px;
+  width: 100px;
+}
+
+.skeleton-description {
+  height: 14px;
+  width: 80%;
+}
+
+.skeleton-class-capacity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 120px;
+}
+
+.skeleton-capacity-bar {
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.skeleton-capacity-text {
+  height: 14px;
+  width: 80px;
+  margin-bottom: 0;
+}
+
+.skeleton-class-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton-class-features {
+  display: flex;
+  gap: 8px;
+}
+
+.skeleton-tag {
+  height: 24px;
+  width: 80px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Skeleton Table */
+.skeleton-table-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.skeleton-table-cell {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.skeleton-table-cell .skeleton-line {
+  height: 16px;
+  width: 90%;
+  margin-bottom: 0;
+}
+
+/* Skeleton List */
+.skeleton-list-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.skeleton-list-item .skeleton-line {
+  height: 18px;
+  margin-bottom: 6px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skeleton-class-main {
+    flex-direction: column;
+  }
+  
+  .skeleton-class-icon {
+    margin-bottom: 10px;
+  }
+  
+  .skeleton-class-capacity {
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+  
+  .skeleton-class-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .skeleton-table-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .skeleton-table-cell {
+    width: 100%;
+  }
+}

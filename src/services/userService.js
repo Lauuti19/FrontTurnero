@@ -1,79 +1,81 @@
 // services/userService.js
 import { fetchWithAuth } from "./api";
 
-// busca usuarios por nombre (requiere token)
-export const searchByName = async (token, nombre = "") => {
-  const q = encodeURIComponent(nombre || "");
-  const data = await fetchWithAuth(`/usuarios/buscar?nombre=${q}`, token);
-  return Array.isArray(data) ? data : data.usuarios || [];
-};
-
-// trae profes y admins SIN token (o con, si querés pasar uno)
-export const getProfesAndAdmins = async (token = null) => {
-  // GET /api/usuarios/profes-admins/buscar
-  const data = await fetchWithAuth(`/usuarios/profes-admins/buscar`, token);
-
-  // puede venir como array, o como [[rows]] si viene de CALL
-  if (Array.isArray(data)) {
-    if (Array.isArray(data[0])) {
-      return data[0];
+const buildQueryString = (params = {}) => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, value);
     }
-    return data;
-  }
-  return data.usuarios || [];
-};
-
-export const getFullUserData = async (token, userId) => {
-  let perfilData = {};
-  let userData = {};
-
-  // 1) Perfil
-  try {
-    const perfil = await fetchWithAuth("/auth/perfil", token);
-    if (perfil?.usuario) perfilData = perfil.usuario;
-  } catch (e) {
-    console.warn("No se pudo obtener perfil:", e?.message);
-  }
-
-  // 2) Resolver id si no vino por parámetro
-  const resolvedId =
-    userId ??
-    perfilData.id_usuario ??
-    perfilData.id ??
-    null;
-
-  // 3) Datos del usuario por id
-  if (resolvedId) {
-    try {
-      const usuario = await fetchWithAuth(`/usuarios/${resolvedId}`, token);
-      userData = usuario?.datos_usuario || usuario || {};
-    } catch (e) {
-      console.warn("No se pudo obtener datos de usuario:", e?.message);
-    }
-  }
-
-  // 4) Merge
-  const idFinal =
-    perfilData.id_usuario ??
-    perfilData.id ??
-    userData.id_usuario ??
-    userData.id ??
-    resolvedId;
-
-  return {
-    id_usuario: idFinal ?? null,
-    nombre: perfilData.nombre ?? userData.nombre ?? "",
-    email: perfilData.email ?? userData.email ?? "",
-    dni: userData.dni ?? "",
-    celular: userData.celular ?? "",
-    id_rol: perfilData.id_rol ?? userData.id_rol ?? 3,
-  };
+  });
+  return searchParams.toString();
 };
 
 export const userService = {
-  searchByName,
-  getProfesAndAdmins,
-  getFullUserData,
-};
+  /**
+   * Buscar usuarios por nombre
+   */
+  searchByName: async (token, nombre = '') => {
+    const query = buildQueryString({ nombre });
+    return await fetchWithAuth(`/usuarios/buscar?${query}`, token);
+  },
 
-export default userService;
+  /**
+   * Obtener información completa de un usuario
+   */
+  getUserFullInfo: async (token, userId) => {
+    return await fetchWithAuth(`/usuarios/${userId}`, token);
+  },
+
+  /**
+   * Actualizar información del usuario
+   */
+  updateUserInfo: async (token, userData) => {
+    return await fetchWithAuth('/usuarios/update', token, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  },
+
+  /**
+   * Obtener profesores y administradores
+   */
+  getProfesAndAdmins: async (token) => {
+    return await fetchWithAuth('/usuarios/profes-admins/buscar', token);
+  },
+
+  /**
+   * Obtener administradores
+   */
+  getAdmins: async (token) => {
+    return await fetchWithAuth('/usuarios/admins/buscar', token);
+  },
+
+  /**
+   * Obtener datos completos del usuario (combinación de endpoints)
+   */
+  getFullUserData: async (token, userId) => {
+    try {
+      // Obtener perfil básico
+      const perfil = await fetchWithAuth('/auth/perfil', token);
+      
+      // Obtener información extendida del usuario
+      const userInfo = await userService.getUserFullInfo(token, userId);
+
+      // Combinar datos
+      const combinedData = {
+        // Datos del perfil
+        ...perfil.usuario,
+        // Datos extendidos del usuario
+        ...userInfo.datos_usuario,
+        // Información de cuota si existe
+        cuota: userInfo.cuota || null,
+      };
+
+      return combinedData;
+    } catch (error) {
+      console.error('Error obteniendo datos completos del usuario:', error);
+      throw error;
+    }
+  },
+};

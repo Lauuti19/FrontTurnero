@@ -1,69 +1,372 @@
+/* AnotarUsuarioAClase.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
 .anotar-usuario-a-clase {
-  padding: 2rem;
-  background-color: #f8f9fb;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  max-width: 900px;
-  margin: 2rem auto;
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Header */
+.anotar-header {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 40px 32px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.anotar-title-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.anotar-icon-container {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.anotar-icon {
+  font-size: 2rem;
+  color: #1a1a1a;
+}
+
+.anotar-title-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.anotar-title-content p {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Content Area */
+.anotar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Sección Buscador */
+.anotar-buscador-section {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.section-header p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Tarjeta de Información del Usuario */
+.usuario-info-card {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  animation: slideInUp 0.4s ease-out;
+}
+
+.usuario-info-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.usuario-info-icon {
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.usuario-info-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.usuario-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
   transition: all 0.3s ease;
 }
 
-.anotar-usuario-a-clase:hover {
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+.info-item:hover {
+  border-color: #ffd700;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.anotar-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.info-icon {
+  font-size: 1.2rem;
+  color: #ffd700;
+  margin-top: 2px;
+  flex-shrink: 0;
 }
 
-.anotar-titulo {
-  font-size: 1.8rem;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-}
-
-.anotar-subtitulo {
-  color: #666;
-  font-size: 1rem;
-}
-
-.anotar-contenido {
+.info-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 4px;
 }
 
-.usuario-info-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem 1.5rem;
-  border-left: 4px solid #007bff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+.info-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.usuario-info-card h3 {
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+.info-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
-.usuario-info-datos p {
-  margin: 0.2rem 0;
-  color: #444;
+/* Sección de Clases */
+.clases-section {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  min-height: 400px;
 }
 
-.selecciona-usuario-message {
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
   text-align: center;
-  background: #f0f4f8;
-  padding: 1.2rem;
-  border-radius: 8px;
-  color: #555;
-  font-style: italic;
-  border: 1px dashed #ccd6dd;
+  color: #666;
 }
 
-.class-schedule-wrapper {
-  margin-top: 1rem;
-  border-top: 1px solid #eaeaea;
-  padding-top: 1rem;
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin: 0 0 12px 0;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.8;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.anotar-buscador-section,
+.clases-section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Estados de Transición */
+.usuario-info-card {
+  transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .anotar-content {
+    padding: 24px 0px;
+  }
+  
+  .usuario-info-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .anotar-header {
+    padding: 30px 4px;
+  }
+  
+  .anotar-title-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .anotar-icon-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .anotar-icon {
+    font-size: 1.5rem;
+  }
+  
+  .anotar-title-content h1 {
+    font-size: 2rem;
+  }
+  
+  .anotar-content {
+    padding: 20px 0px;
+    gap: 24px;
+  }
+  
+  .anotar-buscador-section,
+  .clases-section,
+  .usuario-info-card {
+    padding: 24px;
+    border-radius: 12px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+  .anotar-usuario-a-clase{
+    padding: 10px 0px;
+  }
+}
+
+@media (max-width: 480px) {
+  .anotar-header {
+    padding: 24px 16px;
+  }
+  .anotar-usuario-a-clase{
+    padding: 10px 0px;
+  }
+  
+  .anotar-content {
+    padding: 16px 0px;
+    gap: 20px;
+  }
+  
+  .anotar-buscador-section,
+  .clases-section,
+  .usuario-info-card {
+    padding: 20px;
+  }
+  
+  .anotar-title-content h1 {
+    font-size: 1.8rem;
+  }
+  
+  .empty-state {
+    padding: 60px 20px;
+  }
+  
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+/* Mejoras de Accesibilidad */
+.anotar-usuario-a-clase {
+  scroll-behavior: smooth;
+}
+
+/* Focus States */
+.info-item:focus-within {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* Scrollbar Personalizado */
+.clases-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.clases-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.clases-section::-webkit-scrollbar-thumb {
+  background: #ffd700;
+  border-radius: 4px;
+}
+
+.clases-section::-webkit-scrollbar-thumb:hover {
+  background: #ffdf40;
+}
+
+/* Efectos de Hover Mejorados */
+.anotar-buscador-section:hover,
+.clases-section:hover {
+  border-color: #dee2e6;
+}
+
+.usuario-info-card:hover {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
 }

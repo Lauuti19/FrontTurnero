@@ -1,412 +1,544 @@
-/* ======== Contenedor general ======== */
-.manage-disciplines-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  background-color: #f5f6fa;
+/* ManageDisciplines.css - Estilos Modernos y Profesionales */
+
+/* Container Principal */
+.CreateClassContainer {
   min-height: 100vh;
-}
-
-/* ======== Caja principal ======== */
-.manage-disciplines-box {
-  background-color: #ffffff;
-  padding: 2.5rem 3rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  max-width: 600px;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.manage-disciplines-box:hover {
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-}
-
-/* ======== Título y descripción ======== */
-.manage-disciplines-title {
-  font-size: 1.9rem;
-  font-weight: 600;
-  text-align: center;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-.manage-disciplines-subtitle {
-  text-align: center;
-  font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 2rem;
-}
-
-/* ======== Lista de disciplinas ======== */
-.disciplines-list {
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.discipline-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.discipline-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
-}
-
-/* ======== Vista de disciplina ======== */
-.discipline-view {
-  padding: 1.5rem;
-}
-
-.discipline-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.discipline-info {
-  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  flex: 1;
 }
 
-.discipline-icon {
-  color: #3b82f6;
-  font-size: 1.1rem;
-}
-
-.discipline-info h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0;
-}
-
-.discipline-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-edit,
-.btn-delete {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-edit {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.btn-edit:hover {
-  background-color: #2563eb;
-  transform: translateY(-1px);
-}
-
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-delete:hover {
-  background-color: #c82333;
-  transform: translateY(-1px);
-}
-
-.discipline-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.discipline-id {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-.status {
-  font-size: 0.8rem;
-  font-weight: 500;
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-}
-
-.status.active {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status.inactive {
-  background: #fecaca;
-  color: #dc2626;
-}
-
-/* ======== Edición de disciplina ======== */
-.discipline-edit {
-  padding: 1.5rem;
-  background: #f0f9ff;
-  border-left: 4px solid #3b82f6;
-}
-
-.edit-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.edit-icon {
-  color: #3b82f6;
-  font-size: 1.1rem;
-}
-
-.edit-form {
-  margin-bottom: 1.5rem;
-}
-
-.edit-form .form-field {
+.CreateDisciplinesContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-}
-
-.edit-form .form-field label {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.95rem;
-}
-
-.edit-form .form-field input {
-  padding: 0.7rem 0.9rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: white;
-  color: #111827;
-  transition: all 0.25s ease;
-}
-
-.edit-form .form-field input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  outline: none;
-}
-
-/* ======== Botones de acción ======== */
-.action-buttons {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-}
-
-.btn-save,
-.btn-cancel {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.btn-save {
-  background-color: #15803d;
-  color: white;
-}
-
-.btn-save:hover:not(:disabled) {
-  background-color: #166534;
-  transform: translateY(-1px);
-}
-
-.btn-save:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-cancel {
-  background-color: #6b7280;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background-color: #4b5563;
-  transform: translateY(-1px);
-}
-
-/* ======== Estados vacíos y mensajes ======== */
-.no-disciplines {
+/* Título Principal */
+#Title-Disciplinas {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
   text-align: center;
-  padding: 3rem 2rem;
-  color: #6b7280;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 2px dashed #e2e8f0;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
 }
 
-.no-disciplines p {
-  margin: 0;
-  font-size: 1.1rem;
+#Title-Disciplinas::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #ffd700, #e7b725);
+  border-radius: 2px;
 }
 
-.loading-container {
-  text-align: center;
-  padding: 3rem 2rem;
-  color: #6b7280;
-}
-
-.error-message {
-  text-align: center;
-  padding: 2rem;
-}
-
-.error-message h2 {
-  color: #1e293b;
-  margin-bottom: 1rem;
-}
-
-.error-message p {
-  color: #dc3545;
-  margin-bottom: 1rem;
-}
-
+/* Mensajes de Estado */
 .warning-message {
-  background: #fef3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 6px;
-  padding: 0.75rem;
-  color: #856404;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 800px;
+  animation: slideInDown 0.5s ease-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .warning-message p {
   margin: 0;
+  color: #856404;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
 }
 
-.retry-btn {
-  background: #dc3545;
-  color: white;
+.dismiss-btn {
+  background: none;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
+  color: #856404;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
-.retry-btn:hover {
-  background: #c82333;
+.dismiss-btn:hover {
+  background-color: rgba(133, 100, 4, 0.1);
 }
 
-/* ======== Estadísticas ======== */
+.error-message {
+  background: linear-gradient(135deg, #fee, #fdd);
+  border: 1px solid #fcc;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 24px;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.error-message h2 {
+  color: #c33;
+  margin-bottom: 12px;
+}
+
+.error-message p {
+  color: #c33;
+  margin-bottom: 20px;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 60px 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 60px 40px;
+  color: #666;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #ff6b6b;
+}
+
+/* Lista de Disciplinas */
+.disciplines-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 30px;
+}
+
+/* Item de Disciplina */
+.discipline-item {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: slideInUp 0.5s ease-out;
+}
+
+.discipline-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Modo Visualización */
+.view-mode {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.view-mode h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffd700;
+}
+
+.discipline-meta {
+  margin-bottom: 20px;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+
+/* Modo Edición */
+.edit-mode {
+  padding: 24px;
+  background: linear-gradient(135deg, #fff5f5, #ffeaea);
+}
+
+.edit-mode h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-mode h3::before {
+  content: '✏️';
+  font-size: 1.2rem;
+}
+
+/* Grupos de Formulario */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input {
+  padding: 12px 14px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+  background: #ffffff;
+}
+
+.form-group input:hover {
+  border-color: #dee2e6;
+}
+
+/* Contador de caracteres */
+.character-counter {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Botones de Acción */
+.disciplines-action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.disciplines-action-buttons button,
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #404040, #495057);
+  color: #ffffff;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc3545, #e74c3c);
+  color: #ffffff;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #dc3545);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #ffffff;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #28a745);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #6c757d, #868e96);
+  color: #ffffff;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a6268, #6c757d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+/* Botón de Reintentar */
+.create-discipline-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-discipline-btn:hover {
+  background: linear-gradient(135deg, #2d2d2d, #404040);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estados Deshabilitados */
+.action-buttons button:disabled,
+.disciplines-action-buttons button:disabled {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Estadísticas */
 .disciplines-stats {
   text-align: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #e5e7eb;
-  color: #6b7280;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  margin-top: 20px;
+  max-width: 400px;
+  width: 100%;
 }
 
 .disciplines-stats p {
   margin: 0;
-  font-size: 0.95rem;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .disciplines-stats strong {
-  color: #1e293b;
+  color: #1a1a1a;
+  font-size: 1.2rem;
 }
 
-/* ======== Responsive ======== */
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Efectos de Hover Mejorados */
+.discipline-item {
+  position: relative;
+}
+
+.discipline-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background:  #ffd700;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.discipline-item:hover::before {
+  transform: scaleX(1);
+}
+
+/* Estados de Validación */
+.form-group input:invalid:not(:focus) {
+  border-color: #ff6b6b;
+  background: #fff5f5;
+}
+
+.form-group input:valid:not(:focus) {
+  border-color: #51cf66;
+  background: #f8fff9;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .manage-disciplines-container {
-    padding: 1rem;
+  .CreateDisciplinesContainer {
+    padding: 20px 16px;
   }
-
-  .manage-disciplines-box {
-    padding: 2rem 1.5rem;
+  
+  #Title-Disciplinas {
+    font-size: 2rem;
+    margin-bottom: 30px;
   }
-
-  .manage-disciplines-title {
-    font-size: 1.6rem;
+  
+  .disciplines-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-
-  .discipline-header {
+  
+  .action-buttons,
+  .disciplines-action-buttons {
     flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
   }
-
-  .discipline-actions {
-    justify-content: flex-end;
-  }
-
-  .discipline-meta {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-
-  .action-buttons {
-    justify-content: stretch;
-  }
-
-  .btn-save,
-  .btn-cancel {
-    flex: 1;
-    justify-content: center;
+  
+  .action-buttons button,
+  .disciplines-action-buttons button {
+    min-width: auto;
   }
 }
 
 @media (max-width: 480px) {
-  .manage-disciplines-container {
-    padding: 0.5rem;
+  .CreateDisciplinesContainer {
+    padding: 16px 12px;
   }
-
-  .manage-disciplines-box {
-    padding: 1.5rem 1rem;
+  
+  #Title-Disciplinas {
+    font-size: 1.7rem;
   }
-
-  .manage-disciplines-title {
-    font-size: 1.4rem;
+  
+  .view-mode,
+  .edit-mode {
+    padding: 20px;
   }
-
-  .discipline-view,
-  .discipline-edit {
-    padding: 1rem;
+  
+  .view-mode h3 {
+    font-size: 1.2rem;
   }
-
-  .discipline-info h3 {
-    font-size: 1.1rem;
-  }
-
-  .edit-form .form-field input {
-    padding: 0.6rem 0.8rem;
+  
+  .form-group input {
+    padding: 10px 12px;
     font-size: 0.9rem;
   }
+  
+  .action-buttons button,
+  .disciplines-action-buttons button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Focus States para Accesibilidad */
+.action-buttons button:focus,
+.disciplines-action-buttons button:focus,
+.form-group input:focus {
+  outline: 2px solid #ff6b6b;
+  outline-offset: 2px;
+}
+
+/* Transiciones Suaves */
+.discipline-item,
+.action-buttons button,
+.disciplines-action-buttons button,
+.form-group input {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efectos de Loading */
+.disciplines-list:empty::before {
+  content: 'Cargando disciplinas...';
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px;
+  display: block;
+}
+
+/* Mejoras Visuales para Estados de Edición */
+.edit-mode .form-group input:focus {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
 }

@@ -1,7 +1,7 @@
 // src/services/workHoursService.js
 import { fetchWithAuth } from "./api";
 
-// helper de query igual que en classService
+// Helper para crear querystrings
 const q = (obj = {}) =>
   Object.entries(obj)
     .filter(([, v]) => v !== undefined && v !== null && v !== "")
@@ -11,7 +11,7 @@ const q = (obj = {}) =>
 const BASE = "/workhours";
 
 export const workHoursService = {
-  // --- horas pactadas ---
+  // --- CRUD de horas pactadas ---
   create: async (token, { user_id, work_hours, rate }) => {
     return await fetchWithAuth(`${BASE}/create`, token, {
       method: "POST",
@@ -38,7 +38,7 @@ export const workHoursService = {
     });
   },
 
-  // --- check in / out del día ---
+  // --- Check-in / Check-out ---
   checkIn: async (token, { id_usuario, fecha, hora }) => {
     return await fetchWithAuth(`${BASE}/checkin`, token, {
       method: "POST",
@@ -53,7 +53,7 @@ export const workHoursService = {
     });
   },
 
-  // estado de asistencia / check del día (para mostrar botones)
+  // --- Estado de asistencia / check del día ---
   getAttendanceStatus: async (token, { id_usuario, fecha }) => {
     const endpoint = `${BASE}/status?${q({ id_usuario, fecha })}`;
     return await fetchWithAuth(endpoint, token);
@@ -64,7 +64,7 @@ export const workHoursService = {
     return await fetchWithAuth(endpoint, token);
   },
 
-  // --- horas trabajadas ---
+  // --- Horas trabajadas ---
   getWorkedHours: async (token, { id_usuario, periodo }) => {
     const endpoint = `${BASE}/worked-hours?${q({ id_usuario, periodo })}`;
     return await fetchWithAuth(endpoint, token);
@@ -79,7 +79,7 @@ export const workHoursService = {
     return await fetchWithAuth(endpoint, token);
   },
 
-  // --- listados globales para administrar ---
+  // --- Listados globales (para administración) ---
   getAsistenciasProfes: async (token, { desde, hasta, periodo }) => {
     const endpoint = `${BASE}/asistencias?${q({ desde, hasta, periodo })}`;
     return await fetchWithAuth(endpoint, token);
@@ -90,7 +90,7 @@ export const workHoursService = {
     return await fetchWithAuth(endpoint, token);
   },
 
-  // --- pre-liquidación y liquidar ---
+  // --- Pre-liquidación y liquidar ---
   getPreLiquidacion: async (token, { id_usuario, periodo }) => {
     const endpoint = `${BASE}/pre-liquidacion?${q({ id_usuario, periodo })}`;
     return await fetchWithAuth(endpoint, token);
@@ -103,52 +103,10 @@ export const workHoursService = {
     });
   },
 
-  // --- liquidaciones por rango ---
+  // --- Liquidaciones por rango ---
   getLiquidacionesPorRango: async (token, { desde, hasta }) => {
     const endpoint = `${BASE}/liquidaciones?${q({ desde, hasta })}`;
     return await fetchWithAuth(endpoint, token);
-  },
-
-  // --- endpoints extras que tenés abajo en el .http de liquidaciones ---
-  getProfesYAdmins: async (token) => {
-    // esto es el endpoint que me pasaste en el mensaje
-    return await fetchWithAuth(
-      `/usuarios/profes-admins/buscar`,
-      token,
-      {}
-    );
-  },
-
-  // /api/detalle?periodo=YYYY-MM
-  getDetalleLiquidacionesByPeriod: async (token, { periodo }) => {
-    return await fetchWithAuth(
-      `/detalle?${q({ periodo })}`,
-      token
-    );
-  },
-
-  // /api/profesor?id_usuario=..&periodo=..
-  getLiquidacionesProfesor: async (token, { id_usuario, periodo }) => {
-    return await fetchWithAuth(
-      `/profesor?${q({ id_usuario, periodo })}`,
-      token
-    );
-  },
-
-  // /api/profesor/resumen?id_usuario=..&periodo=..
-  getResumenAsistenciaProfesor: async (token, { id_usuario, periodo }) => {
-    return await fetchWithAuth(
-      `/profesor/resumen?${q({ id_usuario, periodo })}`,
-      token
-    );
-  },
-
-  // /api/profesor/historial?id_usuario=..
-  getHistorialLiquidaciones: async (token, { id_usuario }) => {
-    return await fetchWithAuth(
-      `/profesor/historial?${q({ id_usuario })}`,
-      token
-    );
   },
 };
 

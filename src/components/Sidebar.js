@@ -21,7 +21,7 @@ const menuConfig = {
           { path: "/registrar-cuota", label: "Cuotas" },
           { path: "/manager/ejercicios", label: "Ejercicios" },
           { path: "/manager/work_hours", label: "Profes" },
-          { path: "/manager/admins", label: "Administradores" }
+          { path: "/manager/admins", label: "Admins" }
 
         ]
       },
@@ -50,15 +50,12 @@ const menuConfig = {
       { path: "/timer", label: "Timer" }
     ]
   },
-  3: { // Alumno
+  3: { 
     items: [
       { path: "/perfil", label: "Mi Perfil" },
       { path: "/clasesUser", label: "Clases" },
-      { path: "#", label: "Progreso" },
       { path: "/timer", label: "Timer" },
       { path: "/rutina", label: "Mi Rutina" },
-      { path: "/mismovimientos", label: "Movimientos" }
-
     ]
   }
 };

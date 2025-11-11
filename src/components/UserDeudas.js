@@ -1,3 +1,4 @@
+// src/components/UserDeudas.js
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import { getFullUserData } from "../services/userService";
@@ -31,10 +32,11 @@ const UserDeudas = () => {
       }
 
       try {
+        // opcional: trae info completa del usuario
         await getFullUserData(token, userId);
 
+        // ahora usamos el service en vez de hacer fetch directo
         const data = await getUserDeudas(token, userId);
-
         setDeudas(data.deudas || data || []);
       } catch (err) {
         setError(err.message || "Error al obtener las deudas.");
