@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import { getFullUserData } from "../services/userService";
 
-const API_BASE = process.env.REACT_APP_API_URL || "https://backturnero-vvk6.onrender.com/api";
+const API_BASE =
+  process.env.REACT_APP_API_URL ;
 
 const formatFecha = (iso) => {
   if (!iso) return "-";
@@ -15,7 +16,7 @@ const formatFecha = (iso) => {
   });
 };
 
-const git switch UserDeudas = () => {
+const UserDeudas = () => {
   const { getToken, getUserId } = useAuth();
   const [deudas, setDeudas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,10 +34,10 @@ const git switch UserDeudas = () => {
       }
 
       try {
-        // opcionalmente podés usar getFullUserData(token, userId)
+        // opcional: trae info completa del usuario
         await getFullUserData(token, userId);
 
-        const res = await fetch(`${API_BASE}/deudas/${userId}`, {
+        const res = await fetch(`${API_BASE}/api/deudas/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -78,7 +79,10 @@ const git switch UserDeudas = () => {
         <div className="cash-card card--egresos">
           <p className="card-title">Total pendiente</p>
           <p className="card-value">
-            ${totalPendiente.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+            $
+            {totalPendiente.toLocaleString("es-AR", {
+              minimumFractionDigits: 2,
+            })}
           </p>
         </div>
         <div className="cash-card card--saldo">
@@ -105,7 +109,9 @@ const git switch UserDeudas = () => {
             {deudas.length === 0 ? (
               <tr>
                 <td colSpan="8">
-                  <div className="empty-state">No tenés deudas pendientes 🎉</div>
+                  <div className="empty-state">
+                    No tenés deudas pendientes 🎉
+                  </div>
                 </td>
               </tr>
             ) : (

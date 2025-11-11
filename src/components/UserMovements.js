@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 
-const API_BASE = process.env.REACT_APP_API_URL || "https://backturnero-vvk6.onrender.com/api";
+const API_BASE = process.env.REACT_APP_API_URL;
 
 const formatFecha = (iso) => {
   if (!iso) return "-";
@@ -29,7 +29,7 @@ const UserMovements = () => {
       return;
     }
 
-    const url = `${API_BASE}/deudas/movimientos?meses=${meses}`;
+    const url = `${API_BASE}/api/deudas/movimientos?meses=${meses}`;
 
     fetch(url, {
       headers: {
