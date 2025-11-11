@@ -664,3 +664,83 @@
   outline: 2px solid #ffd700;
   outline-offset: 2px;
 }
+.class-schedule-container.embedded .class-schedule-box {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
+/* Reduce padding general dentro de clases en vista embebida */
+.class-schedule-container.embedded .class-item {
+  margin: 8px 0;
+}
+
+/* Evita que el header se desborde en pantallas pequeñas */
+.class-schedule-container.embedded .schedule-header {
+  border-radius: 12px 12px 0 0;
+  padding: 16px;
+  grid-template-columns: 1fr;
+  text-align: center;
+}
+
+/* Centrar navegación y fecha */
+.class-schedule-container.embedded .date-navigation {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.class-schedule-container.embedded .current-date {
+  min-width: auto;
+}
+
+/* Asegura que los botones se mantengan legibles */
+.class-schedule-container.embedded .today-btn {
+  width: 100%;
+  max-width: 220px;
+  margin: 8px auto 0;
+}
+
+/* Corrige disposición del contenido de clase en móviles */
+.class-schedule-container.embedded .class-main-info {
+  grid-template-columns: 1fr;
+  text-align: center;
+}
+
+.class-schedule-container.embedded .class-icon {
+  margin: 0 auto;
+}
+
+.class-schedule-container.embedded .class-capacity {
+  align-items: center;
+}
+
+/* Mantiene proporciones y evita scroll lateral */
+@media (max-width: 480px) {
+  .class-schedule-container.embedded {
+    padding: 8px;
+  }
+
+  .class-schedule-container.embedded .schedule-header {
+    padding: 12px;
+  }
+
+  .class-schedule-container.embedded .class-item {
+    margin: 6px 0;
+  }
+
+  .class-schedule-container.embedded .today-btn {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  .class-schedule-container.embedded .nav-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .class-schedule-container.embedded .class-discipline {
+    font-size: 1rem;
+  }
+}

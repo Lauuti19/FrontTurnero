@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from "../AuthContext";
-import ClassSchedule from './ClassSchedule'; // Ajusta la ruta según tu estructura
-
+import ClassSchedule from './ClassSchedule'; 
 const ClassesUserV2 = () => {
   const { getUserId } = useAuth();
   const userId = getUserId?.() || JSON.parse(localStorage.getItem('usuario'))?.id_usuario;

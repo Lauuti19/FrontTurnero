@@ -14,7 +14,8 @@ const RegistrationManager = ({
   userId,
   isAdmin = false,
   onRegistrationChange,
-  classInfo = {} // Nueva prop para información de la clase
+  classInfo = {},               // info de la clase (disciplina, hora, etc.)
+  ignoreTimeRestrictions = false // modo especial (profe anotando alumno desde otra pantalla)
 }) => {
   const {
     registeredUsers,
@@ -38,7 +39,7 @@ const RegistrationManager = ({
   const isLoading = usersLoading || actionLoading;
   const error = usersError || actionError;
 
-  // Función para mostrar alerta de éxito
+  // Alerta de éxito
   const showSuccessAlert = (isRegistration) => {
     const disciplina = classInfo.disciplina || 'la clase';
     const horaClase = classInfo.hora || hora || '';
@@ -56,7 +57,7 @@ const RegistrationManager = ({
     });
   };
 
-  // Función para mostrar alerta de error
+  // Alerta de error
   const showErrorAlert = (errorMessage) => {
     Swal.fire({
       title: 'Error',
@@ -67,27 +68,39 @@ const RegistrationManager = ({
     });
   };
 
+  // Construye un Date local usando "YYYY-MM-DD" sin el bug de UTC
+  const buildClassDateTime = (fechaClase, horaClase) => {
+    let dateObj;
+
+    if (fechaClase instanceof Date) {
+      dateObj = new Date(fechaClase);
+    } else if (fechaClase && typeof fechaClase === 'string') {
+      // Si viene en formato YYYY-MM-DD lo parseamos a mano
+      if (/^\d{4}-\d{2}-\d{2}$/.test(fechaClase)) {
+        const [year, month, day] = fechaClase.split('-').map(Number);
+        dateObj = new Date(year, month - 1, day);
+      } else {
+        // Otros formatos (ISO completo, etc.)
+        dateObj = new Date(fechaClase);
+      }
+    } else {
+      // Si no viene fecha, usamos hoy como base
+      dateObj = new Date();
+    }
+
+    if (horaClase) {
+      const [hoursStr, minutesStr] = horaClase.split(':');
+      const hours = parseInt(hoursStr, 10);
+      const minutes = parseInt(minutesStr || '0', 10);
+      dateObj.setHours(hours, minutes, 0, 0);
+    }
+
+    return dateObj;
+  };
+
   const getMinutesDifference = (fechaClase, horaClase) => {
     const now = new Date();
-    const today = new Date().toISOString().split('T')[0];
-    
-    let classDateTime;
-    
-    if (fechaClase && typeof fechaClase === 'string') {
-      if (horaClase) {
-        const [hours, minutes] = horaClase.split(':');
-        classDateTime = new Date(fechaClase);
-        classDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      } else {
-        classDateTime = new Date(fechaClase);
-      }
-    } else if (horaClase) {
-      const [hours, minutes] = horaClase.split(':');
-      classDateTime = new Date();
-      classDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-    } else {
-      classDateTime = new Date(fechaClase);
-    }
+    const classDateTime = buildClassDateTime(fechaClase, horaClase);
 
     const diffMs = classDateTime.getTime() - now.getTime();
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
@@ -98,6 +111,29 @@ const RegistrationManager = ({
   const getButtonState = () => {
     const minutesDiff = getMinutesDifference(fecha, hora);
 
+    // 🔓 MODO LIBRE:
+    // - ignoreTimeRestrictions: profe anotando a un alumno desde "AnotarUsuarioAClase"
+    // - isAdmin: cuando el propio profe/admin se anota a una clase
+    const freeMode = ignoreTimeRestrictions || isAdmin;
+
+    if (freeMode) {
+      if (isRegistered) {
+        return {
+          type: 'unregister',
+          disabled: false,
+          title: 'Desanotarse',
+          reason: ''
+        };
+      }
+      return {
+        type: 'register',
+        disabled: false,
+        title: 'Anotarse',
+        reason: ''
+      };
+    }
+
+    // 🔒 LÓGICA SOLO PARA ALUMNOS (isAdmin === false && !ignoreTimeRestrictions)
     if (minutesDiff < -5) {
       return {
         type: 'finished',
@@ -143,9 +179,7 @@ const RegistrationManager = ({
   };
 
   const handleRegistrationSuccess = (isRegistration) => {
-    // Mostrar alerta de éxito
     showSuccessAlert(isRegistration);
-    
     refetch();
     if (onRegistrationChange) {
       onRegistrationChange();
@@ -154,8 +188,9 @@ const RegistrationManager = ({
 
   const handleRegister = async () => {
     if (!classId || !userId || !fecha || !getToken) {
-      setActionError('Datos incompletos para el registro');
-      showErrorAlert('Datos incompletos para el registro');
+      const msg = 'Datos incompletos para el registro';
+      setActionError(msg);
+      showErrorAlert(msg);
       return;
     }
 
@@ -176,7 +211,7 @@ const RegistrationManager = ({
       console.log('Registrando con datos:', registrationData);
       
       await classService.registerToClass(token, registrationData);
-      handleRegistrationSuccess(true); // true = registro exitoso
+      handleRegistrationSuccess(true);
     } catch (err) {
       console.error('Error en registro:', err);
       const errorMsg = err.message || 'Error al registrar en la clase';
@@ -189,13 +224,17 @@ const RegistrationManager = ({
 
   const handleUnregister = async () => {
     if (!classId || !userId || !fecha || !getToken) {
-      setActionError('Datos incompletos para la desinscripción');
-      showErrorAlert('Datos incompletos para la desinscripción');
+      const msg = 'Datos incompletos para la desinscripción';
+      setActionError(msg);
+      showErrorAlert(msg);
       return;
     }
 
     const minutesDiff = getMinutesDifference(fecha, hora);
-    if (!isAdmin && minutesDiff <= 15 && minutesDiff > 0) {
+
+    // 🚫 Restricción de desanotarse cerca del inicio:
+    // solo aplica a alumnos (no admin) y solo si NO estamos en modo libre
+    if (!ignoreTimeRestrictions && !isAdmin && minutesDiff <= 15 && minutesDiff > 0) {
       const errorMsg = 'No puedes desanotarte a menos de 15 minutos del inicio';
       setActionError(errorMsg);
       showErrorAlert(errorMsg);
@@ -224,7 +263,7 @@ const RegistrationManager = ({
         await classService.unregisterFromClass(token, registrationData);
       }
       
-      handleRegistrationSuccess(false); // false = desregistro exitoso
+      handleRegistrationSuccess(false);
     } catch (err) {
       console.error('Error en desinscripción:', err);
       const errorMsg = err.message || 'Error al desinscribirse de la clase';
