@@ -1,8 +1,6 @@
-// src/components/UserMovements.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
-
-const API_BASE = process.env.REACT_APP_API_URL;
+import { getUserMovements } from "../services/deudasService";
 
 const formatFecha = (iso) => {
   if (!iso) return "-";
@@ -22,27 +20,28 @@ const UserMovements = () => {
   const [meses, setMeses] = useState(6);
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      setError("No se encontró el token de usuario.");
-      setLoading(false);
-      return;
-    }
+    const fetchMovs = async () => {
+      const token = getToken();
 
-    const url = `${API_BASE}/api/deudas/movimientos?meses=${meses}`;
+      if (!token) {
+        setError("No se encontró el token de usuario.");
+        setLoading(false);
+        return;
+      }
 
-    fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al obtener los movimientos.");
-        return res.json();
-      })
-      .then((data) => setMovs(data.movimientos || []))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      try {
+        const data = await getUserMovements(token, meses);
+        setMovs(data.movimientos || data || []);
+      } catch (err) {
+        setError(err.message || "Error al obtener los movimientos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    setLoading(true);
+    setError("");
+    fetchMovs();
   }, [meses, getToken]);
 
   if (loading)
@@ -63,15 +62,19 @@ const UserMovements = () => {
   return (
     <>
       <div className="date-filters" style={{ marginBottom: "1rem" }}>
-        <label>Últimos meses:</label>
-        <select
-          value={meses}
-          onChange={(e) => setMeses(Number(e.target.value))}
-        >
-          <option value={3}>3 meses</option>
-          <option value={6}>6 meses</option>
-          <option value={12}>12 meses</option>
-        </select>
+        <div className="date-filter-group">
+          <label htmlFor="meses">Últimos meses:</label>
+          <select
+            id="meses"
+            value={meses}
+            onChange={(e) => setMeses(Number(e.target.value))}
+            className="select-months"
+          >
+            <option value={3}>3 meses</option>
+            <option value={6}>6 meses</option>
+            <option value={12}>12 meses</option>
+          </select>
+        </div>
       </div>
 
       <div className="table-wrapper">
@@ -97,9 +100,9 @@ const UserMovements = () => {
                 </td>
               </tr>
             ) : (
-              movs.map((m) => (
+              movs.map((m, index) => (
                 <tr key={m.id_movimiento}>
-                  <td>{m.id_movimiento}</td>
+                  <td>{index + 1}</td>
                   <td>{formatFecha(m.fecha)}</td>
                   <td>{m.concepto || "-"}</td>
                   <td>{m.tipo_pago || "-"}</td>

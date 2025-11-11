@@ -1,10 +1,7 @@
-// src/components/UserDeudas.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import { getFullUserData } from "../services/userService";
-
-const API_BASE =
-  process.env.REACT_APP_API_URL ;
+import { getUserDeudas } from "../services/deudasService";
 
 const formatFecha = (iso) => {
   if (!iso) return "-";
@@ -34,18 +31,13 @@ const UserDeudas = () => {
       }
 
       try {
-        // opcional: trae info completa del usuario
         await getFullUserData(token, userId);
 
-        const res = await fetch(`${API_BASE}/api/deudas/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const data = await getUserDeudas(token, userId);
 
-        if (!res.ok) throw new Error("Error al obtener las deudas.");
-        const data = await res.json();
-        setDeudas(data.deudas || []);
+        setDeudas(data.deudas || data || []);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Error al obtener las deudas.");
       } finally {
         setLoading(false);
       }

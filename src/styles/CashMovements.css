@@ -661,3 +661,24 @@
   display: inline-block;
   font-size: 0.8rem;
 }
+/* ===== Barra desplegable de meses ===== */
+.select-months {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  min-width: 150px;
+}
+
+.select-months:focus {
+  outline: none;
+  border-color: #fbf106;
+  box-shadow: 0 0 0 3px rgba(251, 241, 6, 0.2);
+}
+
+.select-months:hover {
+  border-color: #fbf106;
+}
