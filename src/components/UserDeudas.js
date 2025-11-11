@@ -1,7 +1,7 @@
-// src/components/UserDeudas.js
+// src/components/UserDeudas.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
-import { getFullUserData } from "../services/userService";
+import { userService } from "../services/userService";
 import { getUserDeudas } from "../services/deudasService";
 
 const formatFecha = (iso) => {
@@ -33,10 +33,11 @@ const UserDeudas = () => {
 
       try {
         // opcional: trae info completa del usuario
-        await getFullUserData(token, userId);
+        await userService.getFullUserData(token, userId);
 
-        // ahora usamos el service en vez de hacer fetch directo
+        // ahora usamos el service en vez de fetch + process.env
         const data = await getUserDeudas(token, userId);
+
         setDeudas(data.deudas || data || []);
       } catch (err) {
         setError(err.message || "Error al obtener las deudas.");
