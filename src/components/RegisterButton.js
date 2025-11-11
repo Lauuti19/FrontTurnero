@@ -1,6 +1,6 @@
 // components/RegisterButton.jsx
 import React from 'react';
-import './RegisterButton.css';
+import "../styles/RegisterButton.css";
 
 const RegisterButton = ({
   type = 'register', // 'register' | 'unregister'

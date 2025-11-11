@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSave, FaLightbulb, FaCheckCircle } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaCheckCircle } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import { useDisciplines } from '../hooks';
 import { useAuth } from '../AuthContext';

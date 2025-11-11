@@ -1,8 +1,9 @@
+// src/components/RegistrarCuota.js
 import React, { useState, useEffect } from 'react';
-import { FaMoneyBillWave, FaCheck, FaUser, FaSpinner } from 'react-icons/fa';
+import { FaMoneyBillWave, FaSpinner } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../styles/RegistrarCuota.css';
-import { useUsers, usePlans } from '../hooks';
+import { usePlans } from '../hooks';
 import { paymentService } from '../services/paymentService';
 import Buscador from './Buscador';
 
@@ -16,16 +17,18 @@ const RegistrarCuota = () => {
   const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const { getPlanes } = usePlans();
 
-  // Función para mostrar alertas de éxito
+  // 🔹 Alerta de éxito
   const showSuccessAlert = (title, message, userName = '', planName = '') => {
     Swal.fire({
-      title: title,
-      html: userName && planName 
-        ? `${message}<br><strong>${userName}</strong> - <strong>${planName}</strong>`
-        : message,
+      title,
+      html:
+        userName && planName
+          ? `${message}<br><strong>${userName}</strong> - <strong>${planName}</strong>`
+          : message,
       icon: 'success',
       confirmButtonText: 'Aceptar',
       confirmButtonColor: '#28a745',
@@ -34,50 +37,53 @@ const RegistrarCuota = () => {
       timer: 4000,
       timerProgressBar: true,
       showClass: {
-        popup: 'animate__animated animate__fadeInDown'
+        popup: 'animate__animated animate__fadeInDown',
       },
       hideClass: {
-        popup: 'animate__animated animate__fadeOutUp'
-      }
+        popup: 'animate__animated animate__fadeOutUp',
+      },
     });
   };
 
-  // Función para mostrar alertas de error
+  // 🔹 Alerta de error
   const showErrorAlert = (title, errorMessage) => {
     Swal.fire({
-      title: title,
+      title,
       text: errorMessage,
       icon: 'error',
       confirmButtonText: 'Aceptar',
       confirmButtonColor: '#dc3545',
       background: '#ffffff',
       showClass: {
-        popup: 'animate__animated animate__headShake'
-      }
+        popup: 'animate__animated animate__headShake',
+      },
     });
   };
 
-  // Función para mostrar advertencias
+  // 🔹 Alerta de advertencia
   const showWarningAlert = (title, message) => {
     Swal.fire({
-      title: title,
+      title,
       text: message,
       icon: 'warning',
       confirmButtonText: 'Entendido',
       confirmButtonColor: '#ffc107',
       background: '#ffffff',
-      iconColor: '#ffc107'
+      iconColor: '#ffc107',
     });
   };
 
-  // Verificar token
+  // 🔹 Verificar token
   useEffect(() => {
     if (!token) {
-      showWarningAlert('Sesión requerida', 'Iniciá sesión para operar. No se encontró token.');
+      showWarningAlert(
+        'Sesión requerida',
+        'Iniciá sesión para operar. No se encontró token.'
+      );
     }
   }, [token]);
 
-  // Obtener planes
+  // 🔹 Obtener planes
   useEffect(() => {
     let abort = false;
 
@@ -86,13 +92,13 @@ const RegistrarCuota = () => {
         setFetchLoading(false);
         return;
       }
-      
+
       try {
         setFetchLoading(true);
-        setError("");
+        setError('');
         const data = await getPlanes(token);
         if (abort) return;
-        const list = Array.isArray(data) ? data : (data.planes || []);
+        const list = Array.isArray(data) ? data : data.planes || [];
         setPlanes(list);
       } catch (err) {
         console.error('Obtener planes:', err);
@@ -106,21 +112,31 @@ const RegistrarCuota = () => {
     };
 
     loadPlanes();
-    return () => { abort = true; };
-  }, []);
+    return () => {
+      abort = true;
+    };
+  }, [getPlanes, token]); // ✅ dependencias corregidas
 
+  // 🔹 Selección de usuario
   const handleUsuarioSeleccionado = (usuario) => {
     setUsuarioSeleccionado(usuario);
   };
 
+  // 🔹 Validaciones
   const validateForm = () => {
     if (!token) {
-      showWarningAlert('Sesión requerida', 'Iniciá sesión para registrar la cuota.');
+      showWarningAlert(
+        'Sesión requerida',
+        'Iniciá sesión para registrar la cuota.'
+      );
       return false;
     }
 
     if (!usuarioSeleccionado) {
-      showWarningAlert('Usuario requerido', 'Debes seleccionar un usuario para registrar la cuota.');
+      showWarningAlert(
+        'Usuario requerido',
+        'Debes seleccionar un usuario para registrar la cuota.'
+      );
       return false;
     }
 
@@ -130,31 +146,30 @@ const RegistrarCuota = () => {
     }
 
     if (!metodoPago) {
-      showWarningAlert('Método de pago requerido', 'Debes seleccionar un método de pago.');
+      showWarningAlert(
+        'Método de pago requerido',
+        'Debes seleccionar un método de pago.'
+      );
       return false;
     }
 
     return true;
   };
 
+  // 🔹 Registrar cuota
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
 
-      // Mostrar alerta de carga
       Swal.fire({
         title: 'Registrando Cuota...',
         text: 'Por favor espera mientras registramos el pago',
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
+        didOpen: () => Swal.showLoading(),
       });
 
       await paymentService.registerFee(token, {
@@ -164,29 +179,25 @@ const RegistrarCuota = () => {
         pagado: Boolean(pagado),
       });
 
-      // Cerrar alerta de carga
       Swal.close();
 
       const planNombre = getPlanNombre(idPlan);
       showSuccessAlert(
-        '¡Cuota Registrada!', 
+        '¡Cuota Registrada!',
         'La cuota ha sido registrada exitosamente:',
         usuarioSeleccionado.nombre,
         planNombre
       );
 
-      // Resetear formulario
       setUsuarioSeleccionado(null);
       setIdPlan('');
       setMetodoPago('');
       setPagado(false);
-
     } catch (error) {
-      // Cerrar alerta de carga si existe
       Swal.close();
-      
       console.error('Registrar cuota:', error);
-      const errorMsg = error?.message || 'No se pudo registrar la cuota. Inténtalo de nuevo.';
+      const errorMsg =
+        error?.message || 'No se pudo registrar la cuota. Inténtalo de nuevo.';
       setError(errorMsg);
       showErrorAlert('Error al registrar cuota', errorMsg);
     } finally {
@@ -194,20 +205,21 @@ const RegistrarCuota = () => {
     }
   };
 
+  // 🔹 Helpers
   const getPlanNombre = (planId) => {
-    const plan = planes.find(p => p.id_plan === Number(planId));
+    const plan = planes.find((p) => p.id_plan === Number(planId));
     return plan ? plan.nombre : 'Plan no encontrado';
   };
 
   const getPlanPrecio = (planId) => {
-    const plan = planes.find(p => p.id_plan === Number(planId));
+    const plan = planes.find((p) => p.id_plan === Number(planId));
     return plan ? plan.monto : 0;
   };
 
   const getMetodoPagoTexto = (metodo) => {
     const metodos = {
-      'efectivo': '💵 Efectivo',
-      'transferencia': '🏦 Transferencia'
+      efectivo: '💵 Efectivo',
+      transferencia: '🏦 Transferencia',
     };
     return metodos[metodo] || metodo;
   };
@@ -230,7 +242,7 @@ const RegistrarCuota = () => {
       {error && (
         <div className="warning-message">
           <p>⚠️ {error}</p>
-          <button onClick={() => setError("")} className="dismiss-btn">
+          <button onClick={() => setError('')} className="dismiss-btn">
             ×
           </button>
         </div>
@@ -239,7 +251,7 @@ const RegistrarCuota = () => {
       <form className="form-group-class" onSubmit={handleSubmit}>
         <div className="form-field">
           <label>Buscar Usuario:</label>
-          <Buscador 
+          <Buscador
             onUsuarioSeleccionado={handleUsuarioSeleccionado}
             disabled={loading || !token}
           />
@@ -285,7 +297,9 @@ const RegistrarCuota = () => {
             </select>
             {idPlan && (
               <div className="plan-description">
-                Plan seleccionado: <strong>{getPlanNombre(idPlan)}</strong> - ${getPlanPrecio(idPlan)}
+                Plan seleccionado:{' '}
+                <strong>{getPlanNombre(idPlan)}</strong> - $
+                {getPlanPrecio(idPlan)}
               </div>
             )}
           </div>
@@ -320,9 +334,7 @@ const RegistrarCuota = () => {
               disabled={loading || !token}
               className="checkbox-fees-input"
             />
-            <span className="checkbox-fees-label">
-              ¿Está pagado?
-            </span>
+            <span className="checkbox-fees-label">¿Está pagado?</span>
           </label>
           <div className="checkbox-helper">
             Marca esta opción si el pago ya fue realizado
@@ -335,7 +347,9 @@ const RegistrarCuota = () => {
             <div className="summary-grid">
               <div className="summary-item">
                 <span className="summary-label">Usuario:</span>
-                <span className="summary-value">{usuarioSeleccionado.nombre}</span>
+                <span className="summary-value">
+                  {usuarioSeleccionado.nombre}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="summary-label">Plan:</span>
@@ -343,15 +357,23 @@ const RegistrarCuota = () => {
               </div>
               <div className="summary-item">
                 <span className="summary-label">Monto:</span>
-                <span className="summary-value price">${getPlanPrecio(idPlan)}</span>
+                <span className="summary-value price">
+                  ${getPlanPrecio(idPlan)}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="summary-label">Método:</span>
-                <span className="summary-value">{getMetodoPagoTexto(metodoPago)}</span>
+                <span className="summary-value">
+                  {getMetodoPagoTexto(metodoPago)}
+                </span>
               </div>
               <div className="summary-item">
                 <span className="summary-label">Estado:</span>
-                <span className={`summary-value status ${pagado ? 'paid' : 'pending'}`}>
+                <span
+                  className={`summary-value status ${
+                    pagado ? 'paid' : 'pending'
+                  }`}
+                >
                   {pagado ? '✅ Pagado' : '⏳ Pendiente'}
                 </span>
               </div>
@@ -359,10 +381,12 @@ const RegistrarCuota = () => {
           </div>
         )}
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={`btn-register-payment ${loading ? 'loading' : ''}`}
-          disabled={loading || !usuarioSeleccionado || !idPlan || !metodoPago || !token}
+          disabled={
+            loading || !usuarioSeleccionado || !idPlan || !metodoPago || !token
+          }
         >
           {loading ? (
             <>

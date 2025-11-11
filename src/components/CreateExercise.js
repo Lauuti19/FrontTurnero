@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaSave, FaSpinner } from 'react-icons/fa';
+import { FaSave } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useExercises } from '../hooks/useExercises';
 import '../styles/CreateExercise.css';
