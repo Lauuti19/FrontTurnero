@@ -19,6 +19,8 @@ import RegistrationManager from './RegisterButtonFiles/RegistrationManager';
 import SkeletonLoader from './SkeletonLoader';
 import { useAuth } from '../AuthContext';
 import { useClassSchedule } from '../hooks/otherHooks/useClassSchedule';
+import { classService } from '../services/classService';
+import { disciplineService } from '../services/disciplinaService';
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
@@ -40,6 +42,7 @@ const ClassSchedule = ({
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [displayError, setDisplayError] = useState('');
+  const [disciplines, setDisciplines] = useState([]);
 
   const {
     currentDate,
@@ -208,6 +211,182 @@ const ClassSchedule = ({
     setSelectedClass(null);
   };
 
+  // ===== Helpers para edición / borrado =====
+
+  const loadDisciplinesIfNeeded = useCallback(async () => {
+    if (!adminMode) return [];
+    if (disciplines.length > 0) return disciplines;
+
+    try {
+      const token = await getToken();
+      const data = await disciplineService.getDisciplinas(token);
+      const list = Array.isArray(data) ? data : [];
+      setDisciplines(list);
+      return list;
+    } catch (err) {
+      console.error('Error cargando disciplinas:', err);
+      Swal.fire('Error', 'No se pudieron cargar las disciplinas.', 'error');
+      return [];
+    }
+  }, [adminMode, disciplines, getToken]);
+
+  const openEditClassModal = async (clase) => {
+    if (!adminMode) return;
+
+    const classType = getClassType(clase);
+
+    const list = await loadDisciplinesIfNeeded();
+    if (!list || list.length === 0) return;
+
+    const currentDiscipline = list.find(
+      (d) =>
+        d.disciplina?.toLowerCase() === clase.disciplina?.toLowerCase() ||
+        d.nombre?.toLowerCase() === clase.disciplina?.toLowerCase()
+    );
+
+    const initialDisciplineId =
+      currentDiscipline?.id_disciplina ?? list[0]?.id_disciplina ?? '';
+
+    const total =
+      clase.capacidad_total ??
+      clase.capacidad_max ??
+      clase.cupo_maximo ??
+      clase.cupos_totales ??
+      0;
+
+    const { value: formValues } = await Swal.fire({
+      title: `Editar clase ${classType === 'especial' ? 'especial / feriado' : 'normal'}`,
+      html: `
+        <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+          <label style="font-size:0.9rem;">Disciplina</label>
+          <select id="swal-disciplina" class="swal2-input" style="margin:0;">
+            ${list
+              .map(
+                (d) => `
+              <option value="${d.id_disciplina}" ${
+                  d.id_disciplina === initialDisciplineId ? 'selected' : ''
+                }>
+                ${d.disciplina || d.nombre}
+              </option>
+            `
+              )
+              .join('')}
+          </select>
+
+          <label style="font-size:0.9rem;margin-top:8px;">Hora</label>
+          <input id="swal-hora" type="time" class="swal2-input" value="${clase.hora || ''}" style="margin:0;">
+
+          <label style="font-size:0.9rem;margin-top:8px;">Capacidad máxima</label>
+          <input id="swal-capacidad" type="number" min="1" class="swal2-input"
+                 value="${total || ''}" style="margin:0;">
+        </div>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar cambios',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+    const disciplinaSelect = document.getElementById('swal-disciplina');
+    const horaInput = document.getElementById('swal-hora');
+    const capacidadInput = document.getElementById('swal-capacidad');
+
+    if (!disciplinaSelect || !horaInput || !capacidadInput) {
+      Swal.showValidationMessage('Error interno en el formulario.');
+      return null;
+    }
+
+    const disciplinaId = disciplinaSelect.value;
+    const hora = horaInput.value;
+    const capacidad = capacidadInput.value;
+
+    if (!disciplinaId || !hora) {
+      Swal.showValidationMessage('Disciplina y hora son obligatorias.');
+      return null;
+    }
+
+    return {
+      disciplinaId: Number(disciplinaId),
+      hora,
+      capacidad: capacidad ? Number(capacidad) : null,
+    };
+  },
+
+    });
+
+    if (!formValues) return;
+
+    try {
+      const token = await getToken();
+
+      if (classType === 'normal') {
+        // día de la semana: Lunes = 1 ... Sábado = 6 (según tu SP GetClassesByDay)
+        const dayIndex = currentDate.getDay(); // 0=Domingo, 1=Lunes...
+        const adjusted = dayIndex === 0 ? 6 : dayIndex - 1; // 0..5
+        const id_dia = adjusted + 1;
+
+        await classService.updateClass(token, clase.id_clase, {
+          id_disciplina: formValues.disciplinaId,
+          id_dia,
+          hora: formValues.hora,
+          capacidad_max: formValues.capacidad,
+        });
+      } else {
+        // Especial / feriado: usamos id_clase_especial si existe, o id_original, o id_clase
+        const specialId =
+          clase.id_clase_especial || clase.id_original || clase.id_clase;
+
+        await classService.updateSpecialClass(token, specialId, {
+          id_disciplina: formValues.disciplinaId,
+          hora: formValues.hora,
+          capacidad_max: formValues.capacidad,
+        });
+      }
+
+      await Swal.fire('OK', 'Clase actualizada correctamente.', 'success');
+      refetch();
+    } catch (err) {
+      console.error('Error actualizando clase:', err);
+      Swal.fire('Error', 'No se pudo actualizar la clase.', 'error');
+    }
+  };
+
+  const openDeleteClassConfirm = async (clase) => {
+    if (!adminMode) return;
+
+    const classType = getClassType(clase);
+
+    const result = await Swal.fire({
+      title: 'Eliminar clase',
+      text: `¿Seguro que querés eliminar esta clase ${
+        classType === 'especial' ? 'especial / feriado' : 'normal'
+      } de ${clase.disciplina} a las ${clase.hora} Hs?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const token = await getToken();
+
+      if (classType === 'normal') {
+        await classService.deleteClass(token, clase.id_clase);
+      } else {
+        const specialId =
+          clase.id_clase_especial || clase.id_original || clase.id_clase;
+        await classService.deleteSpecialClass(token, specialId);
+      }
+
+      await Swal.fire('OK', 'Clase eliminada correctamente.', 'success');
+      refetch();
+    } catch (err) {
+      console.error('Error eliminando clase:', err);
+      Swal.fire('Error', 'No se pudo eliminar la clase.', 'error');
+    }
+  };
+
   const renderHeader = () => {
     if (!showHeader) return null;
 
@@ -306,7 +485,6 @@ const ClassSchedule = ({
           const isExpanded = expandedClassId === clase.id_clase;
           const classType = getClassType(clase);
 
-          // Intentar calcular capacidad si existen campos
           const total =
             clase.capacidad_total ??
             clase.capacidad_max ??
@@ -384,6 +562,32 @@ const ClassSchedule = ({
                     >
                       <FaUsers /> Ver anotados
                     </button>
+
+                    {adminMode && (
+                      <>
+                        <button
+                          type="button"
+                          className="btn-edit-class"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEditClassModal(clase);
+                          }}
+                        >
+                          Editar clase
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn-delete-class"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDeleteClassConfirm(clase);
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </>
+                    )}
 
                     <RegistrationManager
                       classId={clase.id_clase}

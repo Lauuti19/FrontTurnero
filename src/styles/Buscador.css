@@ -165,11 +165,13 @@
 
 .buscador-suggestion-email {
     font-size: 0.85rem;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     color: #666;
     flex: 1;
 }
 
 .buscador-suggestion-role {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     font-size: 0.75rem;
     color: #ffffff;
     background: linear-gradient(135deg, #ffd700, #ffed4e);

@@ -1,267 +1,396 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { FaPlusCircle, FaDumbbell, FaCalendarDay, FaClock, FaUsers } from 'react-icons/fa';
-import Swal from 'sweetalert2';
-import { useAuth } from '../AuthContext';
-import { useClasses } from '../hooks';
-import { useDisciplines } from '../hooks';
-import '../styles/CreateClasses.css';
+// components/ModifierClass.jsx
+import React from 'react';
+import { FaCalendarPlus } from 'react-icons/fa';
+import { useModifierClass } from '../hooks/useModifierClass';
+import '../styles/CreateClasses.css'; 
 
-const CreateClass = ({ onClassCreated }) => {
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [formData, setFormData] = useState({
-    id_disciplina: '',
-    id_dia: '',
-    hora: '',
-    capacidad_max: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const { getToken } = useAuth();
-  const { getDisciplinas } = useDisciplines();
-  const { createClass } = useClasses();
-
-  const fetchDisciplinas = useCallback(async () => {
-    try {
-      setLoading(true);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
-
-      const data = await getDisciplinas(token);
-      setDisciplinas(data);
-      setError(null);
-    } catch (err) {
-      console.error("Error cargando disciplinas:", err);
-      setError(err.message || 'Error al cargar las disciplinas');
-      setDisciplinas([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken, getDisciplinas]);
-
-  useEffect(() => {
-    fetchDisciplinas();
-  }, [fetchDisciplinas]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ 
-      ...prev, 
-      [name]: name === 'capacidad_max' || name === 'id_dia' || name === 'id_disciplina' 
-        ? Number(value) 
-        : value 
-    }));
-  };
-
-  const handleCreateClass = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.id_disciplina || !formData.id_dia || !formData.hora || !formData.capacidad_max) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Campos incompletos',
-        text: 'Todos los campos son obligatorios.',
-        confirmButtonColor: '#1a1a1a'
-      });
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      const token = getToken();
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación disponible');
-      }
-
-      await createClass(token, formData);
-
-      await Swal.fire({
-        icon: 'success',
-        title: '¡Clase creada!',
-        text: 'La clase se ha creado exitosamente',
-        showConfirmButton: false,
-        timer: 2000,
-        background: '#ffffff',
-        iconColor: '#ffd700'
-      });
-
-      setFormData({ 
-        id_disciplina: '', 
-        id_dia: '', 
-        hora: '', 
-        capacidad_max: '' 
-      });
-      
-      if (onClassCreated) onClassCreated();
-      
-    } catch (error) {
-      console.error("Error creando clase:", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al crear clase',
-        text: error.message || "Ha ocurrido un error al crear la clase",
-        confirmButtonColor: '#1a1a1a'
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const getDisciplinaNombre = (disciplina) => {
-    return disciplina.nombre || disciplina.disciplina || disciplina.name || 'Sin nombre';
-  };
-
-  const isFormValid = formData.id_disciplina && formData.id_dia && formData.hora && formData.capacidad_max;
-
-  const diasSemana = [
-    { value: '1', label: 'Lunes' },
-    { value: '2', label: 'Martes' },
-    { value: '3', label: 'Miércoles' },
-    { value: '4', label: 'Jueves' },
-    { value: '5', label: 'Viernes' },
-    { value: '6', label: 'Sábado' }
-  ];
+const ModifierClass = () => {
+  const {
+    mode,
+    setMode,
+    classType,
+    setClassType,
+    disciplines,
+    selectedDiscipline,
+    setSelectedDiscipline,
+    selectedDay,
+    setSelectedDay,
+    selectedDate,
+    setSelectedDate,
+    hora,
+    setHora,
+    capacidad,
+    setCapacidad,
+    descripcion,
+    setDescripcion,
+    activa,
+    setActiva,
+    classesList,
+    loading,
+    message,
+    errorMsg,
+    handleCreate,
+    handleLoadClassesForEdit,
+    handleSelectClass,
+    handleUpdate,
+    handleDelete,
+    daysOptions,
+  } = useModifierClass();
 
   return (
     <div className="create-class-container">
       <div className="create-class-box">
+        {/* Header */}
         <div className="create-class-header">
           <div className="create-class-icon-container">
-            <FaPlusCircle className="create-class-icon" />
+            <span className="create-class-icon">
+              <FaCalendarPlus />
+            </span>
           </div>
           <div className="create-class-title-content">
-            <h1>Crear Nueva Clase</h1>
-            <p>Completa la información para programar una nueva clase</p>
+            <h1>Gestión de clases</h1>
+            <p>
+              Creá y administrá clases normales o especiales / feriados del gimnasio.
+            </p>
           </div>
         </div>
 
-        {error && (
+        {/* Mensajes */}
+        {errorMsg && (
           <div className="error-message">
             <div className="error-content">
-              <span className="error-icon">⚠️</span>
+              <div className="error-icon">⚠️</div>
               <div className="error-text">
-                <p>{error}</p>
-                <button onClick={fetchDisciplinas} className="retry-btn">
-                  Reintentar
-                </button>
+                <p>{errorMsg}</p>
               </div>
             </div>
           </div>
         )}
 
-        <form className="create-class-form" onSubmit={handleCreateClass}>
+        {message && (
+          <div className="error-message" style={{ background: '#f8fff9', borderColor: '#51cf66' }}>
+            <div className="error-content">
+              <div className="error-icon">✅</div>
+              <div className="error-text">
+                <p style={{ color: '#2f9e44' }}>{message}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Switches */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+          <button
+            type="button"
+            className="create-class-btn"
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              fontSize: '0.95rem',
+              background:
+                mode === 'create'
+                  ? 'linear-gradient(135deg, #1a1a1a, #2d2d2d)'
+                  : '#e9ecef',
+              color: mode === 'create' ? '#fff' : '#333',
+            }}
+            onClick={() => setMode('create')}
+          >
+            Crear
+          </button>
+          <button
+            type="button"
+            className="create-class-btn"
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              fontSize: '0.95rem',
+              background:
+                mode === 'edit'
+                  ? 'linear-gradient(135deg, #1a1a1a, #2d2d2d)'
+                  : '#e9ecef',
+              color: mode === 'edit' ? '#fff' : '#333',
+            }}
+            onClick={() => setMode('edit')}
+          >
+            Editar / Eliminar
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+          <button
+            type="button"
+            className="create-class-btn"
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              fontSize: '0.9rem',
+              background:
+                classType === 'normal'
+                  ? 'linear-gradient(135deg, #1a1a1a, #2d2d2d)'
+                  : '#e9ecef',
+              color: classType === 'normal' ? '#fff' : '#333',
+            }}
+            onClick={() => setClassType('normal')}
+          >
+            Clase normal
+          </button>
+          <button
+            type="button"
+            className="create-class-btn"
+            style={{
+              flex: 1,
+              padding: '10px 16px',
+              fontSize: '0.9rem',
+              background:
+                classType === 'especial'
+                  ? 'linear-gradient(135deg, #1a1a1a, #2d2d2d)'
+                  : '#e9ecef',
+              color: classType === 'especial' ? '#fff' : '#333',
+            }}
+            onClick={() => setClassType('especial')}
+          >
+            Especial / feriado
+          </button>
+        </div>
+
+        {/* Formulario principal */}
+        <form className="create-class-form" onSubmit={handleCreate}>
           <div className="form-grid">
+            {/* Disciplina */}
             <div className="form-field">
               <div className="field-header">
-                <FaDumbbell className="field-icon" />
+                <span className="field-icon">🏋️‍♀️</span>
                 <label>Disciplina</label>
               </div>
-              <select 
-                name="id_disciplina" 
-                value={formData.id_disciplina} 
-                onChange={handleChange} 
-                required
-                disabled={loading || isSubmitting}
+              <select
                 className="form-select"
-              >
-                <option value="">Selecciona una disciplina</option>
-                {disciplinas.length > 0 ? (
-                  disciplinas.map((disciplina) => (
-                    <option key={disciplina.id_disciplina || disciplina.id} value={disciplina.id_disciplina || disciplina.id}>
-                      {getDisciplinaNombre(disciplina)}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>
-                    {loading ? 'Cargando disciplinas...' : 'No hay disciplinas disponibles'}
-                  </option>
-                )}
-              </select>
-            </div>
-
-            <div className="form-field">
-              <div className="field-header">
-                <FaCalendarDay className="field-icon" />
-                <label>Día de la semana</label>
-              </div>
-              <select 
-                name="id_dia" 
-                value={formData.id_dia} 
-                onChange={handleChange} 
+                value={selectedDiscipline}
+                onChange={(e) => setSelectedDiscipline(e.target.value)}
                 required
-                disabled={isSubmitting}
-                className="form-select"
               >
-                <option value="">Selecciona un día</option>
-                {diasSemana.map((dia) => (
-                  <option key={dia.value} value={dia.value}>
-                    {dia.label}
+                <option value="">Seleccioná una disciplina</option>
+                {disciplines.map((d) => (
+                  <option key={d.id_disciplina} value={d.id_disciplina}>
+                    {d.disciplina}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* Día o fecha */}
+            {classType === 'normal' ? (
+              <div className="form-field">
+                <div className="field-header">
+                  <span className="field-icon">📅</span>
+                  <label>Día de la semana</label>
+                </div>
+                <select
+                  className="form-select"
+                  value={selectedDay}
+                  onChange={(e) => setSelectedDay(e.target.value)}
+                  required={mode === 'create'}
+                >
+                  <option value="">Seleccioná un día</option>
+                  {daysOptions.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="form-field">
+                <div className="field-header">
+                  <span className="field-icon">📆</span>
+                  <label>Fecha (especial / feriado)</label>
+                </div>
+                <input
+                  type="date"
+                  className="form-input"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  required={mode === 'create'}
+                />
+              </div>
+            )}
+
+            {/* Hora */}
             <div className="form-field">
               <div className="field-header">
-                <FaClock className="field-icon" />
-                <label>Hora de la clase</label>
+                <span className="field-icon">⏰</span>
+                <label>Hora</label>
               </div>
-              <input 
-                type="time" 
-                name="hora" 
-                value={formData.hora} 
-                onChange={handleChange} 
-                required 
-                disabled={isSubmitting}
+              <input
+                type="time"
                 className="form-input"
+                value={hora}
+                onChange={(e) => setHora(e.target.value)}
+                required
               />
             </div>
 
+            {/* Capacidad */}
             <div className="form-field">
               <div className="field-header">
-                <FaUsers className="field-icon" />
+                <span className="field-icon">👥</span>
                 <label>Capacidad máxima</label>
               </div>
-              <input 
-                type="number" 
-                name="capacidad_max" 
-                value={formData.capacidad_max} 
-                onChange={handleChange} 
-                required 
-                placeholder="Ej: 20" 
-                min="1"
-                disabled={isSubmitting}
+              <input
+                type="number"
                 className="form-input"
+                min="1"
+                value={capacidad}
+                onChange={(e) => setCapacidad(e.target.value)}
+                required
               />
             </div>
+
+            {/* Descripción solo para especial */}
+            {classType === 'especial' && (
+              <div className="form-field">
+                <div className="field-header">
+                  <span className="field-icon">📝</span>
+                  <label>Descripción / motivo (opcional)</label>
+                </div>
+                <textarea
+                  className="form-input"
+                  rows={3}
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                  placeholder="Por ejemplo: Feriado, clase temática, cierre de mes..."
+                />
+              </div>
+            )}
+
+            {/* Checkbox activa solo editable para especiales en modo edit */}
+            {mode === 'edit' && classType === 'especial' && (
+              <div className="form-field">
+                <div className="field-header">
+                  <span className="field-icon">✅</span>
+                  <label>Estado de la clase</label>
+                </div>
+                <label style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={activa}
+                    onChange={(e) => setActiva(e.target.checked)}
+                  />
+                  Activa
+                </label>
+              </div>
+            )}
           </div>
 
-          <button 
-            type="submit" 
-            className={`create-class-btn ${isSubmitting ? 'loading' : ''} ${!isFormValid ? 'disabled' : ''}`}
-            disabled={isSubmitting || loading || !isFormValid}
-          >
-            {isSubmitting ? (
-              <>
-                <div className="btn-spinner"></div>
-                Creando clase...
-              </>
-            ) : (
-              <>
-                <FaPlusCircle className="btn-icon" />
-                Crear Clase
-              </>
-            )}
-          </button>
+          {/* Botón crear solo en modo create */}
+          {mode === 'create' && (
+            <button
+              type="submit"
+              className={`create-class-btn ${loading ? 'loading' : ''}`}
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="btn-spinner" />
+              ) : (
+                <>
+                  <span className="btn-icon">
+                    <FaCalendarPlus />
+                  </span>
+                  Crear clase {classType === 'normal' ? 'normal' : 'especial'}
+                </>
+              )}
+            </button>
+          )}
         </form>
+
+        {/* Sección editar/eliminar */}
+        {mode === 'edit' && (
+          <div style={{ marginTop: '32px' }}>
+            <div className="form-field">
+              <div className="field-header">
+                <span className="field-icon">🔍</span>
+                <label>Cargar clases para editar</label>
+              </div>
+              <button
+                type="button"
+                className="create-class-btn"
+                style={{ padding: '10px 16px', fontSize: '0.95rem' }}
+                onClick={handleLoadClassesForEdit}
+                disabled={loading}
+              >
+                {loading ? 'Cargando...' : 'Buscar clases'}
+              </button>
+            </div>
+
+            <div className="form-field" style={{ marginTop: '16px' }}>
+              <div className="field-header">
+                <span className="field-icon">📋</span>
+                <label>Seleccioná una clase</label>
+              </div>
+
+              {classesList.length === 0 && (
+                <p style={{ color: '#666', fontSize: '0.9rem' }}>
+                  No hay clases para los filtros seleccionados.
+                </p>
+              )}
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {classesList.map((clase) => (
+                  <li
+                    key={clase.id_clase_especial || clase.id_original || clase.id_clase}
+                    style={{
+                      border: '1px solid #e9ecef',
+                      borderRadius: '10px',
+                      padding: '10px 12px',
+                      marginBottom: '8px',
+                    }}
+                  >
+                    <label style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <input
+                        type="radio"
+                        name="selectedClass"
+                        onChange={() => handleSelectClass(clase)}
+                      />
+                      <span>
+                        <strong>{clase.disciplina}</strong>{' '}
+                        {clase.hora && `- ${clase.hora.substring(0, 5)}`}{' '}
+                        {clase.descripcion && `- ${clase.descripcion}`}
+                      </span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+              <button
+                type="button"
+                className="create-class-btn"
+                style={{ flex: 1, padding: '12px 16px', fontSize: '0.95rem' }}
+                onClick={handleUpdate}
+                disabled={loading}
+              >
+                Guardar cambios
+              </button>
+              <button
+                type="button"
+                className="create-class-btn"
+                style={{
+                  flex: 1,
+                  padding: '12px 16px',
+                  fontSize: '0.95rem',
+                  background: '#f03e3e',
+                }}
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                Eliminar clase
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default CreateClass;
+export default ModifierClass;

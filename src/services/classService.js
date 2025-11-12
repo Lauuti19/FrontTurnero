@@ -48,7 +48,7 @@ export const classService = {
     });
   },
 
-  // ✅ CORREGIDO - getUsersInClass funcionando
+  // getUsersInClass 
   getUsersInClass: async (token, classId, classType, fecha) => {
     const query = buildQueryString({ classId, classType, fecha });
     return await fetchWithAuth(`/classes/users-by-class?${query}`, token);
@@ -58,6 +58,53 @@ export const classService = {
     return await fetchWithAuth('/classes/create', token, {
       method: 'POST',
       body: JSON.stringify(classData),
+    });
+  },
+
+  //  Crear clase especial / feriado
+  createSpecialClass: async (token, classData) => {
+    // classData: { fecha, id_disciplina, hora, capacidad_max, descripcion }
+    return await fetchWithAuth('/classes/create-special', token, {
+      method: 'POST',
+      body: JSON.stringify(classData),
+    });
+  },
+
+  getClassesByDay: async (token, id_dia) => {
+    const query = buildQueryString({ id_dia });
+    return await fetchWithAuth(`/classes/by-day?${query}`, token);
+  },
+
+  updateClass: async (token, classId, classData) => {
+    return await fetchWithAuth('/classes/update', token, {
+      method: 'PUT',
+      body: JSON.stringify({ id_clase: classId, ...classData }),
+    });
+  },
+
+  //  Actualizar clase especial / feriado
+  updateSpecialClass: async (token, specialClassId, classData) => {
+    return await fetchWithAuth('/classes/update-special', token, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id_clase_especial: specialClassId,
+        ...classData,
+      }),
+    });
+  },
+
+  deleteClass: async (token, classId) => {
+    return await fetchWithAuth('/classes/delete', token, {
+      method: 'PUT',
+      body: JSON.stringify({ classId }),
+    });
+  },
+
+  // 🆕 Eliminar (lógico) clase especial / feriado
+  deleteSpecialClass: async (token, specialClassId) => {
+    return await fetchWithAuth('/classes/delete-special', token, {
+      method: 'PUT',
+      body: JSON.stringify({ id_clase_especial: specialClassId }),
     });
   },
 

@@ -744,3 +744,31 @@
     font-size: 1rem;
   }
 }
+.btn-edit-class,
+.btn-delete-class {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.btn-edit-class {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.btn-edit-class:hover {
+  background-color: #333;
+}
+
+.btn-delete-class {
+  background-color: #e03131;
+  color: #fff;
+}
+
+.btn-delete-class:hover {
+  background-color: #c92a2a;
+}

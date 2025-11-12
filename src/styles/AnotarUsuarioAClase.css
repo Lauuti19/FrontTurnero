@@ -67,24 +67,7 @@
   padding: 16px 14px;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
   border: 1px solid #e5e7eb;
-}
-
-.usuario-info-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.usuario-info-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background-color: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #111827;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .usuario-info-header h3 {
@@ -92,34 +75,7 @@
   font-size: 1rem;
   font-weight: 700;
   color: #111827;
-}
-
-/* Grid de campos: nombre, email, dni */
-
-.usuario-info-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: #f9fafb;
-  border-radius: 12px;
-  padding: 10px 12px;
-}
-
-.info-icon {
-  color: #facc15;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.info-content {
-  display: flex;
-  flex-direction: column;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .info-label {
@@ -128,6 +84,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #9ca3af;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .info-value {
@@ -135,7 +92,9 @@
   font-weight: 600;
   color: #111827;
   word-break: break-word;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
+
 
 /* ========= Columna derecha: clases ========= */
 
