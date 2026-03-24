@@ -1,3 +1,4 @@
+// src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { AnimatePresence } from 'framer-motion';
@@ -28,7 +29,14 @@ import WorkHoursPage from "./pages/WorkHoursPage.js";
 import AdministradoresPage from "./pages/AdministradoresPage.js"; 
 import UserCashMovementsPage from "./pages/UserCashMovementsPage.js"; 
 import EditProfile from "./pages/EditProfile.js";
+import MiCuota from "./pages/MiCuota/MiCuota.jsx";
 import ExpiredTokenPage from "./pages/ExpiredTokenPage.js";
+
+import PaymentSuccess from "./pages/Payments/PaymentSuccess";
+import PaymentPending from "./pages/Payments/PaymentPending";
+import PaymentFailure from "./pages/Payments/PaymentFailure";
+import "./styles/MiCuota.css";
+
 import './App.css';
 
 function AppContent() {
@@ -48,7 +56,7 @@ function AppContent() {
           <Route path="/disciplinas" element={<DisciplinasPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/clasesTodos" element={<ClassSchedule />} />
-          <Route path="/comprar-creditos" element={<BuyCredits />} />
+          <Route path="/comprar-creditos" element={<MiCuota />} />
           <Route path="/registrar-cuota" element={<RegistrarCuota />} />
           <Route path="/perfil" element={<UserProfile />} />
           <Route path="/editar" element={<EditProfile />} />
@@ -65,6 +73,12 @@ function AppContent() {
           <Route path="/mismovimientos" element={<UserCashMovementsPage />} />
           <Route path="/Movimientos" element={<CashMovementsPage />} />
           <Route path="/Expired" element={<ExpiredTokenPage />} />
+          <Route path="/mi-cuota" element={<MiCuota />} />
+
+          {/* 👇 nuevas rutas para back_urls de MP */}
+          <Route path="/payments/success" element={<PaymentSuccess />} />
+          <Route path="/payments/pending" element={<PaymentPending />} />
+          <Route path="/payments/failure" element={<PaymentFailure />} />
         </Routes>
       </AnimatePresence>
       <Footer />

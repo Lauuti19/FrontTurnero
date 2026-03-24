@@ -1,0 +1,308 @@
+/* ====== MiCuota (Moderno + Stepper Circular) ====== */
+
+.MiCuotaPage{
+  min-height: 100vh;
+  padding: 44px 20px;
+  max-width: 980px;
+  margin: 0 auto;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color: #111;
+  background: #ffffff;
+}
+
+.MiCuotaTitle{
+  font-size: 2.4rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.02em;
+  margin: 0 0 28px;
+  position: relative;
+}
+
+.MiCuotaTitle::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -12px;
+  width: 86px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+}
+
+.MiCuotaWrap{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Stepper circular ===== */
+.MiCuotaStepper{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.MiCuotaStepItem{
+  position: relative;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 16px;
+  border-radius: 18px;
+  border: 1px solid #e9ecef;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.MiCuotaStepItem::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .25s ease;
+  background: radial-gradient(
+    600px circle at 0% 0%,
+    rgba(255, 215, 0, 0.18),
+    transparent 60%
+  );
+}
+
+.MiCuotaStepItem.active::before{
+  opacity: 1;
+}
+
+.MiCuotaStepCircle{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 1rem;
+  border: 2px solid #e9ecef;
+  background: #f8f9fa;
+  color: #111;
+  flex-shrink: 0;
+  transition: all .25s ease;
+}
+
+.MiCuotaStepText{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.MiCuotaStepTitle{
+  font-weight: 800;
+  color: #111;
+  line-height: 1.2;
+}
+
+.MiCuotaStepDesc{
+  color: #666;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+/* conector visual */
+.MiCuotaStepLine{
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 4px;
+  border-radius: 999px;
+  background: #e9ecef;
+}
+
+/* estados */
+.MiCuotaStepItem.todo{
+  opacity: 0.75;
+}
+
+.MiCuotaStepItem.active{
+  border-color: rgba(255, 215, 0, 0.55);
+  box-shadow: 0 16px 60px rgba(0,0,0,0.10);
+}
+
+.MiCuotaStepItem.active .MiCuotaStepCircle{
+  border-color: #ffd700;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(255, 215, 0, 0.28);
+}
+
+.MiCuotaStepItem.done{
+  border-color: rgba(40, 167, 69, 0.35);
+}
+
+.MiCuotaStepItem.done .MiCuotaStepCircle{
+  border-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(40, 167, 69, 0.20);
+}
+
+.MiCuotaStepItem.done .MiCuotaStepLine{
+  background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+/* ===== Card ===== */
+.MiCuotaCard{
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  padding: 26px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  animation: MiCuotaSlideUp .35s ease-out;
+}
+
+.MiCuotaH2{
+  margin: 0 0 14px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.MiCuotaLabel{
+  display: block;
+  font-weight: 700;
+  margin: 10px 0 6px;
+  color: #111;
+}
+
+.MiCuotaSelect{
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 2px solid #e9ecef;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+  transition: all .2s ease;
+}
+
+.MiCuotaSelect:focus{
+  border-color: #999;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.18);
+}
+
+/* resumen “tipo pill + borde” */
+.MiCuotaResumen{
+  margin-top: 14px;
+  border-radius: 14px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border: 1px solid #e9ecef;
+  border-left: 4px solid #ffd700;
+}
+
+.MiCuotaResumen span{
+  color: #666;
+  margin-right: 8px;
+}
+
+.MiCuotaInfo{
+  margin-top: 14px;
+  color: #555;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.MiCuotaLoading{
+  padding: 18px 0;
+  color: #666;
+}
+
+.MiCuotaAlert{
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.MiCuotaAlert.error{
+  background: linear-gradient(135deg, #fee, #fdd);
+  border-color: #fcc;
+  color: #c33;
+}
+
+/* ===== Actions ===== */
+.MiCuotaActions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.MiCuotaBtn{
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  cursor: pointer;
+  font-weight: 800;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.MiCuotaBtn:hover:not(:disabled){
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+}
+
+.MiCuotaPrimaryBtn{
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #111;
+  cursor: pointer;
+  font-weight: 900;
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.MiCuotaPrimaryBtn:hover:not(:disabled){
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(255, 215, 0, 0.25);
+  filter: brightness(0.98);
+}
+
+.MiCuotaPrimaryBtn:disabled,
+.MiCuotaBtn:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* animación suave (similar a tus pantallas) */
+@keyframes MiCuotaSlideUp{
+  from{ opacity: 0; transform: translateY(14px) scale(0.98); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* responsive */
+@media (max-width: 820px){
+  .MiCuotaStepper{
+    grid-template-columns: 1fr;
+  }
+  .MiCuotaStepLine{
+    display: none;
+  }
+  .MiCuotaTitle{
+    font-size: 2rem;
+  }
+}

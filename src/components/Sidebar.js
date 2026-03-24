@@ -57,6 +57,8 @@ const menuConfig = {
       { path: "/timer", label: "Timer" },
       { path: "/rutina", label: "Mi Rutina" },
       { path: "/mismovimientos", label: "Movimientos" },
+      { path: "/mi-cuota", label: "Mi Cuota" },
+
 
     ]
   }

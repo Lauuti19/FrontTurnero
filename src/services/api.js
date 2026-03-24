@@ -32,17 +32,28 @@ export const fetchWithAuth = async (endpoint, token, options = {}) => {
       throw new Error('Sesión expirada');
     }
 
-    // Si el fetch devuelve otro error
-    if (!response.ok) {
-      let errorMessage = `Error ${response.status}: ${response.statusText}`;
-      try {
-        const errorText = await response.text();
-        if (errorText) {
+// Si el fetch devuelve otro error
+  if (!response.ok) {
+    let errorMessage = `Error ${response.status}: ${response.statusText}`;
+
+    try {
+      const errorText = await response.text();
+
+      if (errorText) {
+        try {
+          const parsed = JSON.parse(errorText);
+
+          // ✅ si viene { error: "...", code: "..." } quedate con error
+          errorMessage = parsed?.error || parsed?.message || errorText;
+        } catch {
           errorMessage = errorText;
         }
-      } catch (e) {}
-      throw new Error(errorMessage);
-    }
+      }
+    } catch (e) {}
+
+    throw new Error(errorMessage);
+  }
+
 
     // Intentamos parsear la respuesta
     try {
